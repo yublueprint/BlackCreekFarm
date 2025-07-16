@@ -43,7 +43,11 @@
         type="number"
         name="age"
         class="w-full border rounded px-3 py-2 mb-4"
+        min="0"
+        max="100"
         required
+        oninvalid="this.setCustomValidity('Please enter a positive number greater than 0')"
+        oninput="this.setCustomValidity('')"
       />
 
       <label class="block mb-2">Health Status:</label>
@@ -104,7 +108,10 @@
         name="age"
         id="editAge"
         class="w-full border rounded px-3 py-2 mb-4"
+        min="1"
         required
+        oninvalid="this.setCustomValidity('Please enter a positive number greater than 0')"
+        oninput="this.setCustomValidity('')"
       />
 
       <label class="block mb-2">Health Status:</label>
