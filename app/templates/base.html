@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="app-theme"> <!-- bg-gray-100 -->
+<body class="app-theme">
     <div class="flex h-screen">
         <!-- Sidebar -->
         <aside class="w-64 bg-white shadow-md flex flex-col h-full">
@@ -30,7 +30,7 @@
                         src="https://www.blackcreekfarm.ca/custom/uploads/2018/12/logo-all_horizonalt.png" /></h1>
                 <nav class="space-y-4 mt-5">
                     <a href="{% url 'dashboard' %}"
-                        class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}bg-gray-200{% endif %}">
+                        class="block text-gray-700 hover:bg-gray-200 p-2 rounded {% if request.resolver_match.url_name == 'dashboard' %}bg-gray-200{% endif %}">
                         <i class="fas fa-chart-line mr-2"></i>Overview
                     </a>
                     <a href="{% url 'livestock_list' %}"
