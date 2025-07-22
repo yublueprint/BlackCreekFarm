@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* -=- Overall / Theme -=- */
 .app-theme {
     background-color: #f9f8f4;
