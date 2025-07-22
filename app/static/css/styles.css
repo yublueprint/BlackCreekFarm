@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/* -=- Overall / Theme -=- */
+.app-theme {
+    background-color: #f9f8f4;
+    font-family: 'Open Sans', 'Calibri', 'Optima', 'Arial', 'Helvetica', 'sans-serif';
+    font-weight: 400;
+}
+
+/* -=- Base Page -=- */
+/* Sidebar */
+.sidebar-link {
+    @apply block text-gray-700 hover:bg-gray-200 p-2 rounded;
+}

@@ -4,19 +4,33 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}BlackCreek Sync{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Importing Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Importing Theme Stylesheet -->
+    <link rel="stylesheet" href="../static/css/styles.css">
+
+    <!-- Google Fonts for Open Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+
+    <!-- Importing Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="bg-gray-100">
+<body class="app-theme"> <!-- bg-gray-100 -->
     <div class="flex h-screen">
         <!-- Sidebar -->
         <aside class="w-64 bg-white shadow-md flex flex-col h-full">
             <div class="p-6 flex-grow">
-                <h1 class="text-xl font-bold mb-4"><img class="w-full" src="https://www.blackcreekfarm.ca/custom/uploads/2018/12/logo-all_horizonalt.png"/></h1>
+                <h1 class="text-xl font-bold mb-4"><img class="w-full"
+                        src="https://www.blackcreekfarm.ca/custom/uploads/2018/12/logo-all_horizonalt.png" /></h1>
                 <nav class="space-y-4 mt-5">
                     <a href="{% url 'dashboard' %}"
-                        class="block text-gray-700 hover:bg-gray-200 p-2 rounded {% if request.resolver_match.url_name == 'dashboard' %}bg-gray-200{% endif %}">
+                        class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}bg-gray-200{% endif %}">
                         <i class="fas fa-chart-line mr-2"></i>Overview
                     </a>
                     <a href="{% url 'livestock_list' %}"
