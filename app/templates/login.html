@@ -5,56 +5,58 @@
 <head>
     <meta charset="UTF-8">
     <title>Farm Admin Login</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Importing the 'Open Sans' font from GoogleFonts. */
-        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
-        #textDisplayed
-        {
-            font-family: 'Open Sans', 'Calibri', 'Optima', 'Arial', 'Helvetica', 'sans-serif';
-            font-weight: 400;
-        }
-        form p
-        {
+    <!-- Importing Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Importing Theme Stylesheet -->
+    <link rel="stylesheet" href="../static/css/styles.css">
+
+    <!-- Google Fonts for Open Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+        rel="stylesheet">
+
+    <!-- Inline styles needed as can't modify Django login HTML elements any other way as far as I know. -->
+    <style>
+        form p {
             display: flex;
             flex-direction: column;
         }
-        form p label
-        {
+
+        form p label {
             width: 100%;
             font-size: small;
-            /*background-color: green;*/
         }
-        form p input
-        {
+
+        form p input {
             width: 100%;
             height: 35px;
             padding: 2%;
-            /*margin-top: 5px;*/
             border: solid;
             border-width: thin;
             border-radius: 7px;
             border-color: lightgray;
-            /*background-color: orange;*/
             color: black;
         }
-        form ul li
-        {
+
+        form ul li {
             color: red;
         }
     </style>
 </head>
 
-<body class="bg-neutral-50 flex items-center justify-center h-screen">
-    <div id="textDisplayed" class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
+<body class="app-theme flex items-center justify-center h-screen">
+    <div id="container" class="bg-white p-6 rounded-xl shadow-xl w-full max-w-md">
         <h6 class="mt-4 text-center text-sm">BlackCreek DBMS</h6>
         <h2 class="text-3xl font-bold text-center">Welcome back</h2>
         <p class="text-xs text-center text-gray mb-8">Please enter your details to log in</p>
         <form method="post" class="space-y-4">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit" class="w-full bg-slate-900 text-white text-base py-2 rounded-xl my-4 hover:bg-zinc-600">
+            <button type="submit"
+                class="w-full bg-slate-900 text-white text-base py-2 rounded-xl my-4 hover:bg-zinc-600">
                 Log in
             </button>
         </form>
