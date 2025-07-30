@@ -5,60 +5,71 @@
     <meta charset="UTF-8">
     <title>{% block title %}BlackCreek Sync{% endblock %}</title>
 
-    <!-- Importing Tailwind -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Importing Theme Stylesheet -->
     <link rel="stylesheet" href="../static/css/styles.css">
 
-    <!-- Google Fonts for Open Sans -->
+    <!-- Google Fonts: Open Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
 
-    <!-- Importing Font Awesome -->
+    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
-<body class="app-theme">
+<body class="font-sans text-black bg-gray-50">
     <div class="flex h-screen">
         <!-- Sidebar -->
-        <aside class="w-64 bg-white shadow-md flex flex-col h-full">
-            <div class="p-6 flex-grow">
-                <h1 class="text-xl font-bold mb-4"><img class="w-full"
-                        src="https://www.blackcreekfarm.ca/custom/uploads/2018/12/logo-all_horizonalt.png" /></h1>
-                <nav class="space-y-4 mt-5">
+        <aside class="w-64 bg-white border-r flex flex-col h-full justify-between">
+            <div class="p-4">
+                <h1 class="mb-6">
+                    <img class="w-full"
+                        src="https://www.blackcreekfarm.ca/custom/uploads/2018/12/logo-all_horizonalt.png"
+                        alt="Black Creek Community Farm Logo" />
+                </h1>
+
+                <nav class="space-y-1 text-sm">
                     <a href="{% url 'dashboard' %}"
-                        class="block text-gray-700 hover:bg-gray-200 p-2 rounded {% if request.resolver_match.url_name == 'dashboard' %}bg-gray-200{% endif %}">
-                        <i class="fas fa-chart-line mr-2"></i>Overview
+                        class="flex items-center px-3 py-2 rounded-md bg-lime-100 text-black">
+                            <i class="fas fa-chart-line mr-2"></i> Overview
                     </a>
+
+                    <!-- Heading -->
+                    <div class="text-xs uppercase text-gray-500 mt-4 mb-2">Stock</div>
+
                     <a href="{% url 'livestock_list' %}"
-                        class="block text-gray-700 hover:bg-gray-200 p-2 rounded {% if request.resolver_match.url_name == 'livestock_list' %}bg-gray-200{% endif %}">
-                        <i class="fas fa-cow mr-2"></i>Livestock
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 {% if request.resolver_match.url_name == 'livestock_list' %}bg-neutral-200 text-black{% else %}text-black{% endif %}">
+                            <i class="fas fa-cow mr-2"></i> Livestock
                     </a>
                     <a href="{% url 'crop_list' %}"
-                        class="block text-gray-700 hover:bg-gray-200 p-2 rounded {% if request.resolver_match.url_name == 'crop_list' %}bg-gray-200{% endif %}">
-                        <i class="fas fa-seedling mr-2"></i>Crops
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 {% if request.resolver_match.url_name == 'crop_list' %}bg-neutral-200 text-black{% else %}text-black{% endif %}">
+                            <i class="fas fa-seedling mr-2"></i> Crops
                     </a>
                     <a href="{% url 'equipment_list' %}"
-                        class="block text-gray-700 hover:bg-gray-200 p-2 rounded {% if request.resolver_match.url_name == 'equipment_list' %}bg-gray-200{% endif %}">
-                        <i class="fas fa-tractor mr-2"></i>Equipment
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 {% if request.resolver_match.url_name == 'equipment_list' %}bg-neutral-200 text-black{% else %}text-black{% endif %}">
+                            <i class="fas fa-tractor mr-2"></i> Equipment
                     </a>
-                    <a href="/supplies/" class="block text-gray-700 hover:bg-gray-200 p-2 rounded">
-                        <i class="fas fa-box-open mr-2"></i>Supplies
+                    <a href="/supplies/"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 text-black">
+                            <i class="fas fa-box-open mr-2"></i> Supplies
                     </a>
-                    <a href="/transactions/" class="block text-gray-700 hover:bg-gray-200 p-2 rounded">
-                        <i class="fas fa-dollar-sign mr-2"></i>Transactions
+                    <a href="/transactions/"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 text-black">
+                            <i class="fas fa-dollar-sign mr-2"></i> Transactions
                     </a>
-                    <a href="/reports/" class="block text-gray-700 hover:bg-gray-200 p-2 rounded">
-                        <i class="fas fa-file-alt mr-2"></i>Reports
+                    <a href="/reports/"
+                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 bg-neutral-200 text-black">
+                            <i class="fas fa-file-alt mr-2"></i> Reports
                     </a>
                 </nav>
             </div>
+
+            <!-- Logout -->
             <div class="p-4 border-t">
-                <a href="{% url 'logout' %}" class="block text-red-600 hover:bg-red-100 p-2 rounded font-medium">
-                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                <a href="{% url 'logout' %}" class="flex items-center px-3 py-2 text-black text-sm hover:text-red-600">
+                    <i class="fas fa-sign-out-alt mr-2"></i> Logout
                 </a>
             </div>
         </aside>
