@@ -22,15 +22,22 @@ def add_crop(request):
         planting_date = request.POST.get("planting_date")
         harvest_date = request.POST.get("harvest_date")
         yield_estimate = request.POST.get("yield_estimate")
+        purchase_date = request.POST.get("purchase_date")
+        quantity = request.POST.get("quantity")
+        notes = request.POST.get("notes")
 
         Crop.objects.create(
             name=name,
             planting_date=planting_date,
             harvest_date=harvest_date,
             yield_estimate=yield_estimate,
+            purchase_date=purchase_date,
+            quantity=quantity,
+            notes=notes,
         )
         logger.log(f"User {request.user} added crop: {name}")
         return redirect("crop_list")
+    
 
 
 @login_required
@@ -39,9 +46,12 @@ def edit_crop(request):
         crop = get_object_or_404(Crop, id=request.POST.get("id"))
         old_name = crop.name
         crop.name = request.POST.get("name")
+        crop.purchase_date = request.POST.get("purchase_date")
         crop.planting_date = request.POST.get("planting_date")
         crop.harvest_date = request.POST.get("harvest_date")
+        crop.quantity = request.POST.get("quantity")
         crop.yield_estimate = request.POST.get("yield_estimate")
+        crop.notes = request.POST.get("notes")
         crop.save()
         logger.log(f"User {request.user} edited crop: {old_name} to {crop.name}")
         return redirect("crop_list")

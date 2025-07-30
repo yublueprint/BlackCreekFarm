@@ -25,6 +25,9 @@ class Crop(models.Model):
     planting_date = models.DateField()
     harvest_date = models.DateField()
     yield_estimate = models.FloatField()
+    purchase_date = models.DateField(null=True, blank=True)
+    quantity = models.PositiveIntegerField(null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
