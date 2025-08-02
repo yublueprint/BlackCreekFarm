@@ -4,13 +4,12 @@
 
 {% block content %}
 <h2 class="text-2xl font-bold text-gray-800 mb-6">Crop Management</h2>
-
 <!-- Add Button -->
 <button
     id="addButton"
     class="flex items-center gap-2 bg-green-800 text-white py-2 px-4 rounded hover:bg-green-900 mb-4 text-sm"
 >
-    <span class="text-xl">+</span> Add Equipment
+    <span class="text-xl relative -top-[1px]">+</span> Add Equipment
 </button>
 
 <!-- Table -->
@@ -60,7 +59,7 @@
                             '{{ crop.yield_estimate }}',
                             `{{ crop.notes|default_if_none:''|escapejs }}`
                         )"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                        class="bg-blue-950 hover:bg-blue-800 text-white px-3 py-1 rounded text-sm"
                     >
                         Edit
                     </button>
@@ -216,7 +215,7 @@
         <textarea name="notes" id="editNotes" class="w-full border rounded px-2 py-1" rows="3"></textarea>
       </div>
       <div class="mt-4 flex justify-end">
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Save Changes</button>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800">Save Changes</button>
       </div>
     </form>
   </div>

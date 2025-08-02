@@ -1,147 +1,213 @@
 {% extends 'base.html' %}
+
 {% block title %}Transactions | BlackCreek Sync{% endblock %}
 
 {% block content %}
-<h2 class="text-3xl font-semibold mb-6">Transactions Management</h2>
+<h2 class="text-2xl font-bold text-gray-800 mb-6">Transactions Management</h2>
 
 <!-- Add Button -->
-<button id="addButton" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 mb-4">
-    Add Transaction
+<button
+  id="addButton"
+  class="flex items-center gap-2 bg-green-800 text-white py-2 px-4 rounded hover:bg-green-900 mb-4 text-sm"
+>
+  <span class="text-xl relative -top-[1px]">+</span> Add Transaction
 </button>
 
-<!-- Error Message -->
-{% if error %}
-<strong class="text-md border-2 border-solid rounded-lg border-red-900 bg-red-100 text-red-900 flex mb-4 px-4 py-3">
-    Error: {{ error }}
-</strong>
-{% endif %} 
-
-<!-- Add button Popup Form -->
-<div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h3 class="text-xl font-bold mb-4">Add Transaction</h3>
-        <form method="post" action="{% url 'add_transaction' %}">
-            {% csrf_token %}
-
-            <label class="block mb-2">Item Type:</label>
-            <select name="item_type" class="w-full border rounded px-3 py-2 mb-4" required>
-                <option value="Crop">Crop</option>
-                <option value="Supplies">Supplies</option>
-                <option value="Livestock">Livestock</option>
-                <option value="Equipment">Equipment</option>
-            </select>
-
-            <label class="block mb-2">Item ID:</label>
-            <input type="number" name="item_id" class="w-full border rounded px-3 py-2 mb-4" required />
-
-            <label class="block mb-2">Transaction Type:</label>
-            <select name="transaction_type" class="w-full border rounded px-3 py-2 mb-4" required>
-                <option value="Sale">Sale</option>
-                <option value="Purchase">Purchase</option>
-                <option value="Return">Return</option> 
-            </select>
-
-            <label class="block mb-2">Quantity:</label>
-            <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4" required />
-
-            <label class="block mb-2">Date:</label>
-            <input type="date" name="date" class="w-full border rounded px-3 py-2 mb-4" required />
-
-            <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-                Save
-            </button>
-        </form>
-        <button id="closeButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-            Cancel
-        </button>
-    </div>
+<!-- Table -->
+<div class="bg-white rounded-lg shadow overflow-x-auto">
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-100 text-gray-700 text-sm">
+      <tr>
+        <th class="px-4 py-3 text-left">ID</th>
+        <th class="px-4 py-3 text-left">Name</th>
+        <th class="px-4 py-3 text-left">Category</th>
+        <th class="px-4 py-3 text-left">Transaction Type</th>
+        <th class="px-4 py-3 text-left">Amount</th>
+        <th class="px-4 py-3 text-left">Date</th>
+        <th class="px-4 py-3 text-left">Notes</th>
+        <th class="px-4 py-3 text-left">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="text-sm text-gray-800">
+      {% for txn in transactions %}
+      <tr class="border-t hover:bg-gray-50">
+        <td class="px-4 py-3 whitespace-nowrap">{{ txn.id }}</td>
+        <td class="px-4 py-3 whitespace-nowrap">{{ txn.name }}</td>
+        <td class="px-4 py-3 whitespace-nowrap">{{ txn.category }}</td>
+        <td class="px-4 py-3 whitespace-nowrap capitalize">{{ txn.transaction_type }}</td>
+        <td class="px-4 py-3 whitespace-nowrap">{{ txn.amount }}</td>
+        <td class="px-4 py-3 whitespace-nowrap">{{ txn.date|date:"F j, Y" }}</td>
+        <td class="px-4 py-3 whitespace-nowrap">{{ txn.notes }}</td>
+        <td class="px-4 py-3 whitespace-nowrap flex gap-2">
+          <button
+            onclick="openEditPopup('{{ txn.id }}', '{{ txn.category }}', '{{ txn.name }}', '{{ txn.amount }}', '{{ txn.date }}', `{{ txn.notes|default_if_none:''|escapejs }}`, '{{ txn.transaction_type }}')"
+            class="bg-blue-950 hover:bg-blue-800 text-white px-3 py-1 rounded text-sm"
+          >
+            Edit
+          </button>
+          <button
+            onclick="openDeletePopup('{{ txn.id }}', '{{ txn.name }}')"
+            class="text-red-600 hover:text-red-800 text-sm"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="8" class="text-center py-4 text-gray-500">No transaction records found</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 
-<!-- Delete Popup -->
-<div id="deletePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h3 class="text-xl font-bold mb-4">Delete Transaction</h3>
-        <p class="mb-4">
-            Are you sure you want to delete this transaction ID: <strong id="deleteTransactionId"></strong>?
-        </p>
-        <form method="post" action="{% url 'delete_transaction' %}">
-            {% csrf_token %}
-            <input type="hidden" name="id" id="deleteId" />
-            <div class="flex justify-center gap-x-4">
-                <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
-                    Delete
-                </button>
-                <button type="button" id="closeDeleteButton" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">
-                    Cancel
-                </button>
-            </div>
-        </form>
-    </div>
+<!-- Add Transaction Popup -->
+<div id="popupForm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded shadow-md w-96 relative">
+    <button type="button" id="closeButton" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">✕</button>
+    <h3 class="text-lg font-semibold mb-4">Add Transaction</h3>
+    <form method="POST" action="{% url 'add_transaction' %}">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Category</label>
+        <select name="category" class="w-full border rounded px-2 py-1" required>
+          <option value="Crop">Crop</option>
+          <option value="Supplies">Supplies</option>
+          <option value="Livestock">Livestock</option>
+          <option value="Equipment">Equipment</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Transaction Type</label>
+        <select name="transaction_type" class="w-full border rounded px-2 py-1" required>
+          <option value="income">Income</option>
+          <option value="expense" selected>Expense</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Name</label>
+        <input type="text" name="name" class="w-full border rounded px-2 py-1" required />
+      </div>
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Amount</label>
+        <input type="number" name="amount" min="1" class="w-full border rounded px-2 py-1" required />
+      </div>
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Date</label>
+        <input type="date" name="date" class="w-full border rounded px-2 py-1" required />
+      </div>
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Notes</label>
+        <textarea name="notes" class="w-full border rounded px-2 py-1" rows="3"></textarea>
+      </div>
+      <div class="mt-4 flex justify-end">
+        <button type="submit" class="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">Add</button>
+      </div>
+    </form>
+  </div>
 </div>
 
-<!-- Transactions Table -->
-<div class="bg-white rounded-lg shadow-md overflow-hidden">
-    <table class="min-w-full">
-        <thead class="bg-gray-100">
-            <tr>
-                <th class="py-3 px-4 text-left">ID</th>
-                <th class="py-3 px-4 text-left">Item Type</th>
-                <th class="py-3 px-4 text-left">Item ID</th>
-                <th class="py-3 px-4 text-left">Type</th>
-                <th class="py-3 px-4 text-left">Quantity</th>
-                <th class="py-3 px-4 text-left">Date</th>
-                <th class="py-3 px-4 text-left">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for txn in transactions %}
-            <tr class="border-t">
-                <td class="py-3 px-4">{{ txn.id }}</td>
-                <td class="py-3 px-4">{{ txn.item_type }}</td>
-                <td class="py-3 px-4">{{ txn.item_id }}</td>
-                <td class="py-3 px-4">{{ txn.transaction_type }}</td>
-                <td class="py-3 px-4">{{ txn.quantity }}</td>
-                <td class="py-3 px-4">{{ txn.date }}</td>
-                <td class="py-3 px-4">
-                    <button onclick="openDeletePopup('{{ txn.id }}')" class="text-red-600 hover:underline">
-                        Delete
-                    </button>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="7" class="py-3 px-4 text-center">No transaction records found</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<!-- Edit Transaction Popup -->
+<div id="editPopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded shadow-md w-96 relative">
+    <button type="button" id="closeEditButton" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">✕</button>
+    <h3 class="text-lg font-semibold mb-4">Edit Transaction</h3>
+    <form method="POST" action="{% url 'edit_transaction' %}">
+      {% csrf_token %}
+      <input type="hidden" name="id" id="editId" />
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Category</label>
+        <select name="category" id="editCategory" class="w-full border rounded px-2 py-1" required>
+          <option value="Crop">Crop</option>
+          <option value="Supplies">Supplies</option>
+          <option value="Livestock">Livestock</option>
+          <option value="Equipment">Equipment</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Transaction Type</label>
+        <select name="transaction_type" id="editTransactionType" class="w-full border rounded px-2 py-1" required>
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Name</label>
+        <input type="text" name="name" id="editName" class="w-full border rounded px-2 py-1" required />
+      </div>
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Amount</label>
+        <input type="number" name="amount" id="editAmount" min="1" class="w-full border rounded px-2 py-1" required />
+      </div>
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Date</label>
+        <input type="date" name="date" id="editDate" class="w-full border rounded px-2 py-1" required />
+      </div>
+      <div class="mb-3">
+        <label class="block font-medium mb-1">Notes</label>
+        <textarea name="notes" id="editNotes" class="w-full border rounded px-2 py-1" rows="3"></textarea>
+      </div>
+      <div class="mt-4 flex justify-end">
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-800">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Delete Transaction Popup -->
+<div id="deletePopup" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+  <div class="bg-white p-6 rounded shadow-md w-96 relative">
+    <button type="button" id="closeDeleteButton" class="absolute top-2 right-2 text-gray-600 hover:text-gray-900">✕</button>
+    <h3 class="text-lg font-semibold mb-4">Delete Transaction</h3>
+    <p>Are you sure you want to delete <strong id="deleteName"></strong>?</p>
+    <form method="POST" action="{% url 'delete_transaction' %}" class="mt-4">
+      {% csrf_token %}
+      <input type="hidden" name="id" id="deleteId" />
+      <div class="flex justify-end gap-2">
+        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">Delete</button>
+        <button type="button" id="closeDeleteButtonCancel" class="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100">Cancel</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
-    const addButton = document.getElementById("addButton");
-    const popupForm = document.getElementById("popupForm");
-    const closeButton = document.getElementById("closeButton");
+  const addButton = document.getElementById("addButton");
+  const popupForm = document.getElementById("popupForm");
+  const closeButton = document.getElementById("closeButton");
 
-    addButton.addEventListener("click", () => {
-        popupForm.classList.remove("hidden");
-    });
+  addButton.addEventListener("click", () => popupForm.classList.remove("hidden"));
+  closeButton.addEventListener("click", () => popupForm.classList.add("hidden"));
 
-    closeButton.addEventListener("click", () => {
-        popupForm.classList.add("hidden");
-    });
+  const editPopup = document.getElementById("editPopup");
+  const closeEditButton = document.getElementById("closeEditButton");
 
-    // Delete Popup Logic
-    const deletePopup = document.getElementById("deletePopup");
-    const closeDeleteButton = document.getElementById("closeDeleteButton");
+  function openEditPopup(id, category, name, amount, date, notes, transactionType) {
+    document.getElementById("editId").value = id;
+    document.getElementById("editCategory").value = category;
+    document.getElementById("editName").value = name;
+    document.getElementById("editAmount").value = amount;
+    document.getElementById("editDate").value = date;
+    document.getElementById("editNotes").value = notes;
+    document.getElementById("editTransactionType").value = transactionType;
+    editPopup.classList.remove("hidden");
+  }
 
-    function openDeletePopup(id) {
-        document.getElementById("deleteId").value = id;
-        document.getElementById("deleteTransactionId").textContent = id;
-        deletePopup.classList.remove("hidden");
-    }
+  closeEditButton.addEventListener("click", () => editPopup.classList.add("hidden"));
 
-    closeDeleteButton.addEventListener("click", () => {
-        deletePopup.classList.add("hidden");
-    });
+  const deletePopup = document.getElementById("deletePopup");
+  const closeDeleteButton = document.getElementById("closeDeleteButton");
+  const closeDeleteButtonCancel = document.getElementById("closeDeleteButtonCancel");
+
+  function openDeletePopup(id, name) {
+    document.getElementById("deleteId").value = id;
+    document.getElementById("deleteName").textContent = name;
+    deletePopup.classList.remove("hidden");
+  }
+
+  closeDeleteButton.addEventListener("click", () => deletePopup.classList.add("hidden"));
+  closeDeleteButtonCancel.addEventListener("click", () => deletePopup.classList.add("hidden"));
 </script>
-{% endblock %} 
+
+{% endblock %}

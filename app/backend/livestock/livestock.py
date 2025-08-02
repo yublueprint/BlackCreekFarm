@@ -22,12 +22,18 @@ def add_livestock(request):
         breed = request.POST.get("breed")
         age = request.POST.get("age")
         health_status = request.POST.get("health_status")
+        purchase_date = request.POST.get("purchase_date")
+        quantity = request.POST.get("quantity")
+        notes = request.POST.get("notes")
 
         Livestock.objects.create(
             name=name,
             breed=breed,
             age=age,
             health_status=health_status,
+            purchase_date=purchase_date,
+            quantity=quantity,
+            notes=notes,
         )
         logger.log(f"User {request.user} added livestock: {name}")
         return redirect("livestock_list")
@@ -42,6 +48,9 @@ def edit_livestock(request):
         animal.breed = request.POST.get("breed")
         animal.age = request.POST.get("age")
         animal.health_status = request.POST.get("health_status")
+        animal.purchase_date = request.POST.get("purchase_date")
+        animal.quantity = request.POST.get("quantity")
+        animal.notes = request.POST.get("notes")
         animal.save()
         logger.log(f"User {request.user} edited livestock: {old_name} to {animal.name}")
         return redirect("livestock_list")

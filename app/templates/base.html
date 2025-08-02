@@ -37,32 +37,35 @@
                     </a>
 
                     <!-- Headings -->
-                    <div class="text-xs uppercase text-gray-500 mt-4 mb-2">Stock</div>
+                    <div class="text-xs uppercase text-gray-500 mt-6 mb-6">Stock</div>
 
-                    <a href="{% url 'livestock_list' %}"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 {% if request.resolver_match.url_name == 'livestock_list' %}bg-neutral-200 text-black{% else %}text-black{% endif %}">
+
+                    <div class="flex flex-col space-y-3">
+                        <a href="{% url 'livestock_list' %}"
+                            class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 {% if request.resolver_match.url_name == 'livestock_list' %}bg-neutral-200 text-black{% else %}text-black{% endif %}">
                             <i class="fas fa-cow mr-2"></i> Livestock
-                    </a>
-                    <a href="{% url 'crop_list' %}"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 {% if request.resolver_match.url_name == 'crop_list' %}bg-neutral-200 text-black{% else %}text-black{% endif %}">
+                        </a>
+                        <a href="{% url 'crop_list' %}"
+                            class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 {% if request.resolver_match.url_name == 'crop_list' %}bg-neutral-200 text-black{% else %}text-black{% endif %}">
                             <i class="fas fa-seedling mr-2"></i> Crops
-                    </a>
-                    <a href="{% url 'equipment_list' %}"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 {% if request.resolver_match.url_name == 'equipment_list' %}bg-neutral-200 text-black{% else %}text-black{% endif %}">
+                        </a>
+                        <a href="{% url 'equipment_list' %}"
+                            class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 {% if request.resolver_match.url_name == 'equipment_list' %}bg-neutral-200 text-black{% else %}text-black{% endif %}">
                             <i class="fas fa-tractor mr-2"></i> Equipment
-                    </a>
-                    <a href="/supplies/"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 text-black">
+                        </a>
+                        <a href="/supplies/"
+                            class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 text-black">
                             <i class="fas fa-box-open mr-2"></i> Supplies
-                    </a>
-                    <a href="/transactions/"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 text-black">
+                        </a>
+                        <a href="/transactions/"
+                            class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 text-black">
                             <i class="fas fa-dollar-sign mr-2"></i> Transactions
-                    </a>
-                    <a href="/reports/"
-                        class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 bg-neutral-200 text-black">
+                        </a>
+                        <a href="/reports/"
+                            class="flex items-center px-3 py-2 rounded-md hover:bg-neutral-100 bg-neutral-200 text-black">
                             <i class="fas fa-file-alt mr-2"></i> Reports
-                    </a>
+                        </a>
+                    </div>
                 </nav>
             </div>
 

@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import date
 
 
 class Record(models.Model):
@@ -15,6 +16,9 @@ class Livestock(models.Model):
     breed = models.CharField(max_length=100)
     age = models.IntegerField()
     health_status = models.CharField(max_length=100)
+    purchase_date = models.DateField(null=True, blank=True)
+    quantity = models.PositiveIntegerField(default=1)
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -35,9 +39,11 @@ class Crop(models.Model):
 
 class Equipment(models.Model):
     name = models.CharField(max_length=100)
-    type = models.CharField(max_length=100)
+    category = models.CharField(max_length=100)
     purchase_date = models.DateField()
     maintenance_due = models.DateField()
+    quantity = models.PositiveIntegerField(default=1)
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -45,36 +51,39 @@ class Equipment(models.Model):
 
 class Supplies(models.Model):
     name = models.CharField(max_length=100)
-    type = models.CharField(max_length=100)
+    category = models.CharField(max_length=100)
     quantity = models.IntegerField()
     unit = models.CharField(max_length=100)
+    purchase_date = models.DateField(default=date.today)
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
 
 
 class Transaction(models.Model):
-    ITEM_TYPE_CHOICES = [
+    CATEGORY_CHOICES = [
         ("Crop", "Crop"),
         ("Livestock", "Livestock"),
         ("Equipment", "Equipment"),
         ("Supplies", "Supplies"),
-
     ]
 
     TRANSACTION_TYPE_CHOICES = [
-        ("Sale", "Sale"),
-        ("Purchase", "Purchase"),
-        ("Return", "Return"),
-
-
+        ("Income", "Income"),
+        ("Expense", "Expense"),
     ]
 
-    item_type = models.CharField(max_length=20, choices=ITEM_TYPE_CHOICES)
-    item_id = models.PositiveIntegerField()
-    transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPE_CHOICES)
-    quantity = models.PositiveIntegerField()
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+    transaction_type = models.CharField(
+        max_length=10,
+        choices=TRANSACTION_TYPE_CHOICES,
+        default="Expense",
+    )
+    name = models.CharField(max_length=100)
+    amount = models.PositiveIntegerField()
     date = models.DateField()
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.transaction_type} of {self.item_type} (ID: {self.item_id})"
+        return f"{self.category} - {self.name} ({self.amount}) [{self.transaction_type}]"
