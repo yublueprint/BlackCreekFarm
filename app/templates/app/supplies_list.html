@@ -5,11 +5,13 @@
 {% block content %}
 <h2 class="text-3xl font-semibold mb-6">Supplies Management</h2>
 
-<!-- Add Button --> 
+<!-- Add Button with icon --> 
 <button
     id="addButton"
-    class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 mb-4"
+    class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
+    style="background-color: #335D43;"
 >
+    <i class="fas fa-plus"></i>
     Add Supply
 </button> 
 
@@ -190,43 +192,45 @@
 <!-- Table -->
 <div class="bg-white rounded-lg shadow-md overflow-hidden">
     <table class="min-w-full">
-        <thead class="bg-gray-100">
+        <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-                <th class="py-3 px-4 text-left">ID</th>
-                <th class="py-3 px-4 text-left">Name</th>
-                <th class="py-3 px-4 text-left">Type</th>
-                <th class="py-3 px-4 text-left">Quantity</th>
-                <th class="py-3 px-4 text-left">Unit</th>
-                <th class="py-3 px-4 text-left">Actions</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Type</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Quantity</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Unit</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white divide-y divide-gray-200">
             {% for supply in supplies %}
-            <tr class="border-t">
-                <td class="py-3 px-4">{{ supply.id }}</td>
-                <td class="py-3 px-4">{{ supply.name }}</td>
-                <td class="py-3 px-4">{{ supply.type }}</td>
-                <td class="py-3 px-4">{{ supply.quantity }}</td>
-                <td class="py-3 px-4">{{ supply.unit }}</td>
-                <td class="py-3 px-4">
-                    <!-- <a href="#" class="text-blue-600 hover:underline">Edit</a> -->
-                    <button
-                        onclick="openEditPopup('{{ supply.id }}', '{{ supply.name }}', '{{ supply.type }}', '{{ supply.quantity }}', '{{ supply.unit }}')"
-                        class="bg-blue-600 text-white py-1 px-2 rounded hover:bg-blue-700"
-                    >
-                        Edit
-                    </button>
-                    <button
-                        onclick="openDeletePopup('{{ supply.id }}', '{{ supply.name }}')"
-                        class="text-red-600 hover:underline"
-                    >
-                        Delete
-                    </button>
+            <tr class="hover:bg-gray-50">
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.id }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.name }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.type }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.quantity }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.unit }}</td>
+                <td class="py-4 px-6 text-sm">
+                    <div class="flex space-x-2">
+                        <button
+                            onclick="openEditPopup('{{ supply.id }}', '{{ supply.name }}', '{{ supply.type }}', '{{ supply.quantity }}', '{{ supply.unit }}')"
+                            class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
+                            style="background-color: #0D65A0;"
+                        >
+                            Edit
+                        </button>
+                        <button
+                            onclick="openDeletePopup('{{ supply.id }}', '{{ supply.name }}')"
+                            class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700"
+                        >
+                            Delete
+                        </button>
+                    </div>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6" class="py-3 px-4 text-center">No supply records found</td>
+                <td colspan="6" class="py-8 px-6 text-center text-gray-500">No supply records found</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -4,8 +4,10 @@
 {% block content %}
 <h2 class="text-3xl font-semibold mb-6">Transactions Management</h2>
 
-<!-- Add Button -->
-<button id="addButton" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 mb-4">
+<!-- Add Button with icon -->
+<button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
+    style="background-color: #335D43;">
+    <i class="fas fa-plus"></i>
     Add Transaction
 </button>
 
@@ -14,7 +16,7 @@
 <strong class="text-md border-2 border-solid rounded-lg border-red-900 bg-red-100 text-red-900 flex mb-4 px-4 py-3">
     Error: {{ error }}
 </strong>
-{% endif %} 
+{% endif %}
 
 <!-- Add button Popup Form -->
 <div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
@@ -38,7 +40,7 @@
             <select name="transaction_type" class="w-full border rounded px-3 py-2 mb-4" required>
                 <option value="Sale">Sale</option>
                 <option value="Purchase">Purchase</option>
-                <option value="Return">Return</option> 
+                <option value="Return">Return</option>
             </select>
 
             <label class="block mb-2">Quantity:</label>
@@ -71,7 +73,8 @@
                 <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
                     Delete
                 </button>
-                <button type="button" id="closeDeleteButton" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">
+                <button type="button" id="closeDeleteButton"
+                    class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">
                     Cancel
                 </button>
             </div>
@@ -82,35 +85,37 @@
 <!-- Transactions Table -->
 <div class="bg-white rounded-lg shadow-md overflow-hidden">
     <table class="min-w-full">
-        <thead class="bg-gray-100">
+        <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-                <th class="py-3 px-4 text-left">ID</th>
-                <th class="py-3 px-4 text-left">Item Type</th>
-                <th class="py-3 px-4 text-left">Item ID</th>
-                <th class="py-3 px-4 text-left">Type</th>
-                <th class="py-3 px-4 text-left">Quantity</th>
-                <th class="py-3 px-4 text-left">Date</th>
-                <th class="py-3 px-4 text-left">Actions</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Item Type
+                </th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Item ID</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Type</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Quantity</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Date</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody class="bg-white divide-y divide-gray-200">
             {% for txn in transactions %}
-            <tr class="border-t">
-                <td class="py-3 px-4">{{ txn.id }}</td>
-                <td class="py-3 px-4">{{ txn.item_type }}</td>
-                <td class="py-3 px-4">{{ txn.item_id }}</td>
-                <td class="py-3 px-4">{{ txn.transaction_type }}</td>
-                <td class="py-3 px-4">{{ txn.quantity }}</td>
-                <td class="py-3 px-4">{{ txn.date }}</td>
-                <td class="py-3 px-4">
-                    <button onclick="openDeletePopup('{{ txn.id }}')" class="text-red-600 hover:underline">
+            <tr class="hover:bg-gray-50">
+                <td class="py-4 px-6 text-sm text-gray-900">{{ txn.id }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ txn.item_type }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ txn.item_id }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ txn.transaction_type }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ txn.quantity }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ txn.date }}</td>
+                <td class="py-4 px-6 text-sm">
+                    <button onclick="openDeletePopup('{{ txn.id }}')"
+                        class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
                         Delete
                     </button>
                 </td>
             </tr>
             {% empty %}
             <tr>
-                <td colspan="7" class="py-3 px-4 text-center">No transaction records found</td>
+                <td colspan="7" class="py-8 px-6 text-center text-gray-500">No transaction records found</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -144,4 +149,4 @@
         deletePopup.classList.add("hidden");
     });
 </script>
-{% endblock %} 
+{% endblock %}
