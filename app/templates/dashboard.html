@@ -3,20 +3,136 @@
 {% block title %}Dashboard | BlackCreek Sync{% endblock %}
 
 {% block content %}
+<!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <h2 class="text-3xl font-semibold mb-6">Dashboard Overview</h2>
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <!-- Example Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+    <!-- Stat Cards -->
     <div class="bg-white p-4 rounded shadow">
-        <h3 class="text-xl font-bold">Total Livestock</h3>
+        <h3 class="text-xl font-bold"><i class="fas fa-cow mr-2"></i> Total Livestock</h3>
         <p class="text-2xl mt-2">120</p>
+        <div class="text-green-600 text-sm mt-2">↑ 5% from last month</div>
     </div>
     <div class="bg-white p-4 rounded shadow">
-        <h3 class="text-xl font-bold">Active Crops</h3>
+        <h3 class="text-xl font-bold"><i class="fas fa-seedling mr-2"></i> Active Crops</h3>
         <p class="text-2xl mt-2">45</p>
+        <div class="text-green-600 text-sm mt-2">↑ 10% from last season</div>
     </div>
     <div class="bg-white p-4 rounded shadow">
-        <h3 class="text-xl font-bold">Equipment in Use</h3>
+        <h3 class="text-xl font-bold"><i class="fas fa-tractor mr-2"></i> Equipment in Use</h3>
         <p class="text-2xl mt-2">15</p>
+        <div class="text-yellow-600 text-sm mt-2">85% utilization rate</div>
     </div>
 </div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Chart Section -->
+    <div class="bg-white p-4 rounded shadow md:col-span-2">
+        <h3 class="text-xl font-bold mb-4">Monthly Yield Trends</h3>
+        <div class="h-64 w-full">
+            <!-- Add a canvas for chart.js -->
+            <canvas id="yieldChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Alerts Section -->
+    <div class="bg-white p-4 rounded shadow">
+        <h3 class="text-xl font-bold mb-4">Recent Alerts</h3>
+        <ul class="space-y-3">
+            <li class="flex items-start">
+                <div class="bg-red-100 p-1 rounded-full mr-2">
+                    <span class="text-red-600">!</span>
+                </div>
+                <div>
+                    <p class="font-medium">Low feed inventory</p>
+                    <p class="text-sm text-gray-600">30 minutes ago</p>
+                </div>
+            </li>
+            <li class="flex items-start">
+                <div class="bg-yellow-100 p-1 rounded-full mr-2">
+                    <span class="text-yellow-600">!</span>
+                </div>
+                <div>
+                    <p class="font-medium">Equipment maintenance due</p>
+                    <p class="text-sm text-gray-600">2 hours ago</p>
+                </div>
+            </li>
+            <li class="flex items-start">
+                <div class="bg-blue-100 p-1 rounded-full mr-2">
+                    <span class="text-blue-600">i</span>
+                </div>
+                <div>
+                    <p class="font-medium">Weather warning: Rain expected</p>
+                    <p class="text-sm text-gray-600">Today</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="mt-6 bg-white p-4 rounded shadow">
+    <h3 class="text-xl font-bold mb-4">Recent Activity</h3>
+    <div class="overflow-x-auto">
+        <table class="min-w-full">
+            <thead>
+                <tr class="text-left text-gray-600 text-sm">
+                    <th class="pb-3">Activity</th>
+                    <th class="pb-3">Location</th>
+                    <th class="pb-3">User</th>
+                    <th class="pb-3">Time</th>
+                </tr>
+            </thead>
+            <tbody class="text-sm">
+                <tr class="border-t">
+                    <td class="py-2">Feed distribution completed</td>
+                    <td class="py-2">North Paddock</td>
+                    <td class="py-2">John D.</td>
+                    <td class="py-2">10:30 AM</td>
+                </tr>
+                <tr class="border-t">
+                    <td class="py-2">Irrigation system maintenance</td>
+                    <td class="py-2">East Fields</td>
+                    <td class="py-2">Sarah M.</td>
+                    <td class="py-2">Yesterday</td>
+                </tr>
+                <tr class="border-t">
+                    <td class="py-2">Livestock health check</td>
+                    <td class="py-2">Barn 2</td>
+                    <td class="py-2">Mike T.</td>
+                    <td class="py-2">Yesterday</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    // Initialize chart when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('yieldChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Crop Yield (tons)',
+                    data: [12, 19, 15, 17, 21, 25],
+                    borderColor: 'rgb(75, 192, 192)',
+                    tension: 0.1,
+                    fill: false
+                }, {
+                    label: 'Milk Production (gallons)',
+                    data: [18, 15, 20, 22, 24, 23],
+                    borderColor: 'rgb(54, 162, 235)',
+                    tension: 0.1,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    });
+</script>
 {% endblock %}
