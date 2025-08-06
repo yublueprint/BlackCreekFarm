@@ -1,6 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
+from app.exceptions.equipment.exception import (
+    EquipmentCreationException,
+    EquipmentEditException,
+    EquipmentDeleteException,
+)
 from app.logging.logging import Logger
 
 from ..models import Equipment
@@ -18,42 +23,120 @@ def equipment_list(request):
 @login_required
 def add_equipment(request):
     if request.method == "POST":
-        name = request.POST.get("name")
-        type = request.POST.get("type")
-        purchase_date = request.POST.get("purchase_date")
-        maintenance_due = request.POST.get("maintenance_due")
+        try:
+            name = request.POST.get("name")
+            type = request.POST.get("type")
+            purchase_date = request.POST.get("purchase_date")
+            maintenance_due = request.POST.get("maintenance_due")
 
-        Equipment.objects.create(
-            name=name,
-            type=type,
-            purchase_date=purchase_date,
-            maintenance_due=maintenance_due,
-        )
-        logger.log(f"User {request.user} added equipment: {name}")
-        return redirect("equipment_list")
+            if not name or not type or not purchase_date or not maintenance_due:
+                raise EquipmentCreationException("All fields are required.")
+
+            Equipment.objects.create(
+                name=name,
+                type=type,
+                purchase_date=purchase_date,
+                maintenance_due=maintenance_due,
+            )
+
+            logger.log(f"User {request.user} added equipment: {name}")
+            return redirect("equipment_list")
+
+        except EquipmentCreationException as e:
+            logger.log(f"Equipment creation error by {request.user}: {e}")
+            equipment = Equipment.objects.all()
+            return render(
+                request,
+                "app/equipment_list.html",
+                {"equipment": equipment, "error": str(e)},
+            )
+        except Exception as e:
+            logger.log(f"Unexpected error during equipment creation: {e}")
+            equipment = Equipment.objects.all()
+            return render(
+                request,
+                "app/equipment_list.html",
+                {
+                    "equipment": equipment,
+                    "error": "An unexpected error occurred while adding the equipment.",
+                },
+            )
 
 
 @login_required
 def edit_equipment(request):
     if request.method == "POST":
-        equipment = get_object_or_404(Equipment, id=request.POST.get("id"))
-        old_name = equipment.name
-        equipment.name = request.POST.get("name")
-        equipment.type = request.POST.get("type")
-        equipment.purchase_date = request.POST.get("purchase_date")
-        equipment.maintenance_due = request.POST.get("maintenance_due")
-        equipment.save()
-        logger.log(
-            f"User {request.user} edited equipment: {old_name} to {equipment.name}"
-        )
-        return redirect("equipment_list")
+        try:
+            equipment = get_object_or_404(Equipment, id=request.POST.get("id"))
+
+            if not equipment:
+                raise EquipmentEditException("Equipment not found.")
+
+            equipment.name = request.POST.get("name")
+            equipment.type = request.POST.get("type")
+            equipment.purchase_date = request.POST.get("purchase_date")
+            equipment.maintenance_due = request.POST.get("maintenance_due")
+
+            if not equipment.name or not equipment.type or not equipment.purchase_date or not equipment.maintenance_due:
+                raise EquipmentEditException("All fields are required to update equipment.")
+
+            equipment.save()
+
+            logger.log(f"User {request.user} edited equipment: {equipment.name}")
+            return redirect("equipment_list")
+
+        except EquipmentEditException as e:
+            logger.log(f"Equipment edit error by {request.user}: {e}")
+            equipment = Equipment.objects.all()
+            return render(
+                request,
+                "app/equipment_list.html",
+                {"equipment": equipment, "error": str(e)},
+            )
+        except Exception as e:
+            logger.log(f"Unexpected error during equipment edit: {e}")
+            equipment = Equipment.objects.all()
+            return render(
+                request,
+                "app/equipment_list.html",
+                {
+                    "equipment": equipment,
+                    "error": "An unexpected error occurred while editing the equipment.",
+                },
+            )
 
 
 @login_required
 def delete_equipment(request):
     if request.method == "POST":
-        equipment = get_object_or_404(Equipment, id=request.POST.get("id"))
-        equipment_name = equipment.name
-        equipment.delete()
-        logger.log(f"User {request.user} deleted equipment: {equipment_name}")
-        return redirect("equipment_list")
+        try:
+            equipment = get_object_or_404(Equipment, id=request.POST.get("id"))
+
+            if not equipment:
+                raise EquipmentDeleteException("Equipment not found.")
+
+            equipment_name = equipment.name
+            equipment.delete()
+
+            logger.log(f"User {request.user} deleted equipment: {equipment_name}")
+            return redirect("equipment_list")
+
+        except EquipmentDeleteException as e:
+            logger.log(f"Equipment delete error by {request.user}: {e}")
+            equipment = Equipment.objects.all()
+            return render(
+                request,
+                "app/equipment_list.html",
+                {"equipment": equipment, "error": str(e)},
+            )
+        except Exception as e:
+            logger.log(f"Unexpected error during equipment deletion: {e}")
+            equipment = Equipment.objects.all()
+            return render(
+                request,
+                "app/equipment_list.html",
+                {
+                    "equipment": equipment,
+                    "error": "An unexpected error occurred while deleting the equipment.",
+                },
+            )
