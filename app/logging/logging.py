@@ -58,7 +58,7 @@ class Logger:
                         for char in chars_to_remove:
                             line = line.replace(char, "")
                         line = line.split()
-                        print(line)
+                        # print(line)
 
                         the_activity = " ".join(line[2:])
                         the_location = line[5].replace(":","")
@@ -82,7 +82,7 @@ class Logger:
                         recent_activity_array.append(line_object)
                         count = count + 1
 
-                    if count == amount_to_retrieve:
+                    if count >= amount_to_retrieve:
                         break
 
         except Exception as e:
