@@ -41,47 +41,52 @@ class Logger:
         amount_to_retrieve = 3
         count = 0
 
-        with open(self.filename, 'r') as file:
-            all_lines = file.readlines()
+        try:
+            with open(self.filename, 'r') as file:
+                all_lines = file.readlines()
 
-            # Starting by the most recent
-            for line in reversed(all_lines):
-                # Resetting values each iteration
-                the_activity = ''
-                the_location = ''
-                the_user = ''
-                the_time = ''
+                # Starting by the most recent
+                for line in reversed(all_lines):
+                    # Resetting values each iteration
+                    the_activity = ''
+                    the_location = ''
+                    the_user = ''
+                    the_time = ''
 
-                # Only recent activity to include is add, edit, or deletion.
-                if ("added" in line) or ("edited" in line) or ("deleted" in line):
-                    for char in chars_to_remove:
-                        line = line.replace(char, "")
-                    line = line.split()
-                    print(line)
+                    # Only recent activity to include is add, edit, or deletion.
+                    if ("added" in line) or ("edited" in line) or ("deleted" in line):
+                        for char in chars_to_remove:
+                            line = line.replace(char, "")
+                        line = line.split()
+                        print(line)
 
-                    the_activity = " ".join(line[2:])
-                    the_location = line[5].replace(":","")
-                    the_user = line[3]
-                    the_time = " ".join(line[0:2])
+                        the_activity = " ".join(line[2:])
+                        the_location = line[5].replace(":","")
+                        the_user = line[3]
+                        the_time = " ".join(line[0:2])
 
-                    # Keep for testing
-                    # print(the_activity)
-                    # print(the_location)
-                    # print(the_user)
-                    # print(the_time)
-                    
-                    line_object = activityObject(the_activity, the_location, the_user, the_time)
+                        # Keep for testing
+                        # print(the_activity)
+                        # print(the_location)
+                        # print(the_user)
+                        # print(the_time)
+                        
+                        line_object = activityObject(the_activity, the_location, the_user, the_time)
 
-                    # Keep for testing
-                    # print(line_object.activity)
-                    # print(line_object.location)
-                    # print(line_object.user)
-                    # print(line_object.time)
+                        # Keep for testing
+                        # print(line_object.activity)
+                        # print(line_object.location)
+                        # print(line_object.user)
+                        # print(line_object.time)
 
-                    recent_activity_array.append(line_object)
-                    count = count + 1
+                        recent_activity_array.append(line_object)
+                        count = count + 1
 
-                if count == amount_to_retrieve:
-                    break
+                    if count == amount_to_retrieve:
+                        break
 
-        return recent_activity_array
+        except Exception as e:
+            print("Error: " + e)
+
+        finally:
+            return recent_activity_array
