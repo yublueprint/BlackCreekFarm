@@ -10,17 +10,17 @@
     <!-- Stat Cards -->
     <div class="bg-white p-4 rounded shadow">
         <h3 class="text-xl font-bold"><i class="fas fa-cow mr-2"></i> Total Livestock</h3>
-        <p class="text-2xl mt-2">120</p>
+        <p class="text-2xl mt-2">{{ livestock_count }}</p>
         <div class="text-green-600 text-sm mt-2">↑ 5% from last month</div>
     </div>
     <div class="bg-white p-4 rounded shadow">
         <h3 class="text-xl font-bold"><i class="fas fa-seedling mr-2"></i> Active Crops</h3>
-        <p class="text-2xl mt-2">45</p>
+        <p class="text-2xl mt-2">{{ crop_count }}</p>
         <div class="text-green-600 text-sm mt-2">↑ 10% from last season</div>
     </div>
     <div class="bg-white p-4 rounded shadow">
         <h3 class="text-xl font-bold"><i class="fas fa-tractor mr-2"></i> Equipment in Use</h3>
-        <p class="text-2xl mt-2">15</p>
+        <p class="text-2xl mt-2">{{ equipment_count }}</p>
         <div class="text-yellow-600 text-sm mt-2">85% utilization rate</div>
     </div>
 </div>
@@ -34,7 +34,7 @@
             <canvas id="yieldChart"></canvas>
         </div>
     </div>
-    
+
     <!-- Alerts Section -->
     <div class="bg-white p-4 rounded shadow">
         <h3 class="text-xl font-bold mb-4">Recent Alerts</h3>
@@ -77,30 +77,24 @@
             <thead>
                 <tr class="text-left text-gray-600 text-sm">
                     <th class="pb-3">Activity</th>
-                    <th class="pb-3">Location</th>
+                    <th class="pb-3">Details</th>
                     <th class="pb-3">User</th>
                     <th class="pb-3">Time</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
+                {% for activity in recent_activity %}
                 <tr class="border-t">
-                    <td class="py-2">Feed distribution completed</td>
-                    <td class="py-2">North Paddock</td>
-                    <td class="py-2">John D.</td>
-                    <td class="py-2">10:30 AM</td>
+                    <td class="py-2">{{ activity.activity }}</td>
+                    <td class="py-2">{{ activity.location }}</td>
+                    <td class="py-2">{{ activity.user }}</td>
+                    <td class="py-2">{{ activity.time }}</td>
                 </tr>
+                {% empty %}
                 <tr class="border-t">
-                    <td class="py-2">Irrigation system maintenance</td>
-                    <td class="py-2">East Fields</td>
-                    <td class="py-2">Sarah M.</td>
-                    <td class="py-2">Yesterday</td>
+                    <td class="py-2">No recent activity found</td>
                 </tr>
-                <tr class="border-t">
-                    <td class="py-2">Livestock health check</td>
-                    <td class="py-2">Barn 2</td>
-                    <td class="py-2">Mike T.</td>
-                    <td class="py-2">Yesterday</td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
@@ -108,7 +102,7 @@
 
 <script>
     // Initialize chart when the DOM is loaded
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const ctx = document.getElementById('yieldChart').getContext('2d');
         new Chart(ctx, {
             type: 'line',

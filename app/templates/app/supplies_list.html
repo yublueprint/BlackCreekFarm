@@ -5,92 +5,58 @@
 {% block content %}
 <h2 class="text-3xl font-semibold mb-6">Supplies Management</h2>
 
-<!-- Add Button with icon --> 
-<button
-    id="addButton"
-    class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
-    style="background-color: #335D43;"
->
+<!-- Add Button with icon -->
+<button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
+    style="background-color: #335D43;">
     <i class="fas fa-plus"></i>
     Add Supply
-</button> 
+</button>
 
 <!-- Display Error Message if Error occurs-->
 {% if error %}
-<strong
-    id="errorMessageToDisplay"
+<strong id="errorMessageToDisplay"
     class="text-md border-2 border-solid rounded-lg border-red-900 bg-red-100 text-red-900 flex mb-4 px-4 py-3">
     Error: {{ error }}
 </strong>
 {% endif %}
 
 <!-- Add Button Popup Form -->
-<div
-    id="popupForm"
-    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
-> 
+<div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
     <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
         <h3 class="text-xl font-bold mb-4">Add Supply</h3>
         <form method="post" id="addSupplyForm" action="{% url 'add_supplies' %}">
             {% csrf_token %}
             <!-- Name of the Supply -->
             <label class="block mb-2">Name:</label>
-            <input
-                type="text"
-                name="name"
-                class="w-full border rounded px-3 py-2 mb-4"
-                required
-            />
+            <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" required />
 
             <!-- Type of the Supply -->
             <label class="block mb-2">Type:</label>
-            <input
-                type="text"
-                name="type"
-                class="w-full border rounded px-3 py-2 mb-4"
-                required
-            />
+            <input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4" required />
 
             <!-- Quantity of the Supply -->
             <label class="block mb-2">Quantity:</label>
-            <input
-                type="number"
-                name="quantity"
-                class="w-full border rounded px-3 py-2 mb-4"
-                required
-            />
+            <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4" required />
 
             <!-- Type of Unit of Quantity of the Supply -->
             <label class="block mb-2">Unit:</label>
-            <input
-                type="text"
-                name="unit"
-                class="w-full border rounded px-3 py-2 mb-4"
-                required
-            />
+            <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4" required />
 
-            <!-- Submit Information Button -->
             <button
                 type="submit"
                 class="text-white py-2 px-4 rounded hover:bg-green-700" style="background-color: #335D43;"
             > 
                 Save
-            </button> 
+            </button>
         </form>
-        <button
-            id="closeButton"
-            class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400"
-        >
+        <button id="closeButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
             Cancel
         </button>
     </div>
-</div> 
+</div>
 
 <!-- Edit Popup -->
-<div
-    id="editPopup"
-    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
->
+<div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
     <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
         <h3 class="text-xl font-bold mb-4">Edit Supply</h3>
         <form method="post" id="editSupplyForm" action="{% url 'edit_supplies' %}">
@@ -101,43 +67,20 @@
 
             <!-- Name of the Supply -->
             <label class="block mb-2">Name:</label>
-            <input
-                type="text"
-                name="name"
-                id="editName"
-                class="w-full border rounded px-3 py-2 mb-4"
-                required
-            />
+            <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" required />
 
             <!-- Type of the Supply -->
             <label class="block mb-2">Type:</label>
-            <input
-                type="text"
-                name="type"
-                id="editType"
-                class="w-full border rounded px-3 py-2 mb-4"
-                required
-            />
+            <input type="text" name="type" id="editType" class="w-full border rounded px-3 py-2 mb-4" required />
 
             <!-- Quantity of the Supply -->
             <label class="block mb-2">Quantity:</label>
-            <input
-                type="number"
-                name="quantity"
-                id="editQuantity"
-                class="w-full border rounded px-3 py-2 mb-4"
-                required
-            />
+            <input type="number" name="quantity" id="editQuantity" class="w-full border rounded px-3 py-2 mb-4"
+                required />
 
             <!-- Type of Unit of Quantity of the Supply -->
             <label class="block mb-2">Unit:</label>
-            <input
-                type="text"
-                name="unit"
-                id="editUnit"
-                class="w-full border rounded px-3 py-2 mb-4"
-                required
-            />
+            <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4" required />
 
             <!-- Save Changes -->
             <button
@@ -147,20 +90,14 @@
                 Save Changes
             </button>
         </form>
-        <button
-            id="closeEditButton"
-            class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400"
-        >
+        <button id="closeEditButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
             Cancel
         </button>
     </div>
-</div> 
+</div>
 
 <!-- Delete Popup -->
-<div
-    id="deletePopup"
-    class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center"
->
+<div id="deletePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
     <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
         <h3 class="text-xl font-bold mb-4">Delete Supply</h3>
         <p class="mb-4">
@@ -171,23 +108,17 @@
             {% csrf_token %}
             <input type="hidden" name="id" id="deleteId" />
             <div class="flex justify-center gap-x-4">
-                <button
-                    type="submit"
-                    class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700"
-                >
+                <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
                     Delete
                 </button>
-                <button
-                    type="button"
-                    id="closeDeleteButton"
-                    class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700"
-                >
+                <button type="button" id="closeDeleteButton"
+                    class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">
                     Cancel
                 </button>
             </div>
         </form>
     </div>
-</div> 
+</div>
 
 <!-- Table -->
 <div class="bg-white rounded-lg shadow-md overflow-hidden">
@@ -215,14 +146,11 @@
                         <button
                             onclick="openEditPopup('{{ supply.id }}', '{{ supply.name }}', '{{ supply.type }}', '{{ supply.quantity }}', '{{ supply.unit }}')"
                             class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
-                            style="background-color: #0D65A0;"
-                        >
+                            style="background-color: #0D65A0;">
                             Edit
                         </button>
-                        <button
-                            onclick="openDeletePopup('{{ supply.id }}', '{{ supply.name }}')"
-                            class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700"
-                        >
+                        <button onclick="openDeletePopup('{{ supply.id }}', '{{ supply.name }}')"
+                            class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
                             Delete
                         </button>
                     </div>
@@ -241,14 +169,14 @@
     const addButton = document.getElementById("addButton");
     const popupForm = document.getElementById("popupForm");
     const closeButton = document.getElementById("closeButton");
-    
+
 
     addButton.addEventListener("click", () => {
-    popupForm.classList.remove("hidden");
+        popupForm.classList.remove("hidden");
     });
 
     closeButton.addEventListener("click", () => {
-    popupForm.classList.add("hidden");
+        popupForm.classList.add("hidden");
     });
 
     const editPopup = document.getElementById("editPopup");
@@ -264,7 +192,7 @@
     }
 
     closeEditButton.addEventListener("click", () => {
-    editPopup.classList.add("hidden");
+        editPopup.classList.add("hidden");
     });
 
     // Delete Popup Logic
@@ -278,7 +206,7 @@
     }
 
     closeDeleteButton.addEventListener("click", () => {
-    deletePopup.classList.add("hidden");
+        deletePopup.classList.add("hidden");
     });
 </script>
 
