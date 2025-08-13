@@ -134,7 +134,13 @@
 				<td class="py-4 px-6 text-sm">
 					<div class="flex space-x-2">
 						<button
-							onclick="openEditPopup('{{ item.id }}', '{{ item.name }}', '{{ item.type }}', '{{ item.purchase_date }}', '{{ item.maintenance_due }}')"
+							onclick="openEditPopup(
+								'{{ item.id }}',
+								'{{ item.name }}',
+								'{{ item.type }}',
+								'{{ item.purchase_date|date:'Y-m-d' }}',
+								'{{ item.maintenance_due|date:'Y-m-d' }}'
+							)"
 							class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
 							style="background-color: #0D65A0;">
 							Edit
