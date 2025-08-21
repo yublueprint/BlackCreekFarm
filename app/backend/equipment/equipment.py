@@ -25,7 +25,7 @@ def add_equipment(request):
     if request.method == "POST":
         try:
             name = request.POST.get("name")
-            equipment_type = request.POST.get("type")  # renamed to avoid shadowing
+            equipment_type = request.POST.get("type")  # avoid shadowing builtin `type`
             purchase_date = request.POST.get("purchase_date")
             maintenance_due = request.POST.get("maintenance_due")
 
