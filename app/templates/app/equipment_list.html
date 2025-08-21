@@ -5,6 +5,14 @@
 {% block content %}
 <h2 class="text-3xl font-semibold mb-6">Equipment Management</h2>
 
+
+{% if error %}
+  <div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+    {{ error }}
+  </div>
+{% endif %}
+
+
 <!-- Add Button with icon -->
 <button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
 	style="background-color: #335D43;">
