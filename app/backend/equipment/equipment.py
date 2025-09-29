@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import Http404
 
 from app.exceptions.equipment.exception import (
     EquipmentCreationException,
@@ -7,7 +8,6 @@ from app.exceptions.equipment.exception import (
     EquipmentDeleteException,
 )
 from app.logging.logging import Logger
-
 from ..models import Equipment
 
 logger = Logger("app/logging/app.log")
@@ -25,16 +25,16 @@ def add_equipment(request):
     if request.method == "POST":
         try:
             name = request.POST.get("name")
-            type = request.POST.get("type")
+            equipment_type = request.POST.get("type")  # avoid shadowing builtin `type`
             purchase_date = request.POST.get("purchase_date")
             maintenance_due = request.POST.get("maintenance_due")
 
-            if not name or not type or not purchase_date or not maintenance_due:
+            if not name or not equipment_type or not purchase_date or not maintenance_due:
                 raise EquipmentCreationException("All fields are required.")
 
             Equipment.objects.create(
                 name=name,
-                type=type,
+                type=equipment_type,
                 purchase_date=purchase_date,
                 maintenance_due=maintenance_due,
             )
@@ -61,15 +61,16 @@ def add_equipment(request):
                     "error": "An unexpected error occurred while adding the equipment.",
                 },
             )
+    return redirect("equipment_list")
 
 
 @login_required
 def edit_equipment(request):
     if request.method == "POST":
         try:
-            equipment = get_object_or_404(Equipment, id=request.POST.get("id"))
-
-            if not equipment:
+            try:
+                equipment = get_object_or_404(Equipment, id=request.POST.get("id"))
+            except Http404:
                 raise EquipmentEditException("Equipment not found.")
 
             equipment.name = request.POST.get("name")
@@ -77,7 +78,12 @@ def edit_equipment(request):
             equipment.purchase_date = request.POST.get("purchase_date")
             equipment.maintenance_due = request.POST.get("maintenance_due")
 
-            if not equipment.name or not equipment.type or not equipment.purchase_date or not equipment.maintenance_due:
+            if (
+                not equipment.name
+                or not equipment.type
+                or not equipment.purchase_date
+                or not equipment.maintenance_due
+            ):
                 raise EquipmentEditException("All fields are required to update equipment.")
 
             equipment.save()
@@ -104,15 +110,16 @@ def edit_equipment(request):
                     "error": "An unexpected error occurred while editing the equipment.",
                 },
             )
+    return redirect("equipment_list")
 
 
 @login_required
 def delete_equipment(request):
     if request.method == "POST":
         try:
-            equipment = get_object_or_404(Equipment, id=request.POST.get("id"))
-
-            if not equipment:
+            try:
+                equipment = get_object_or_404(Equipment, id=request.POST.get("id"))
+            except Http404:
                 raise EquipmentDeleteException("Equipment not found.")
 
             equipment_name = equipment.name
@@ -140,3 +147,4 @@ def delete_equipment(request):
                     "error": "An unexpected error occurred while deleting the equipment.",
                 },
             )
+    return redirect("equipment_list")

@@ -4,6 +4,11 @@
 
 {% block content %}
 <h2 class="text-3xl font-semibold mb-6">Equipment Management</h2>
+{% if error %}
+  <div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+    {{ error }}
+  </div>
+{% endif %}
 
 <!-- Add Button with icon -->
 <button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
@@ -35,7 +40,7 @@
 			<input type="date" name="maintenance_due" class="w-full border rounded px-3 py-2 mb-4" required />
 
 			<!-- Submit Information Button -->
-			<button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700" style="background-color: #335D43;">
+			<button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
 				Save
 			</button>
 		</form>
@@ -74,7 +79,7 @@
 				class="w-full border rounded px-3 py-2 mb-4" required />
 
 			<!-- Save Changes -->
-			<button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700" style="background-color: #335D43;">
+			<button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
 				Save Changes
 			</button>
 		</form>
@@ -134,13 +139,7 @@
 				<td class="py-4 px-6 text-sm">
 					<div class="flex space-x-2">
 						<button
-							onclick="openEditPopup(
-								'{{ item.id }}',
-								'{{ item.name }}',
-								'{{ item.type }}',
-								'{{ item.purchase_date|date:'Y-m-d' }}',
-								'{{ item.maintenance_due|date:'Y-m-d' }}'
-							)"
+							onclick="openEditPopup('{{ item.id }}', '{{ item.name }}', '{{ item.type }}', '{{ item.purchase_date }}', '{{ item.maintenance_due }}')"
 							class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
 							style="background-color: #0D65A0;">
 							Edit

@@ -1,11 +1,13 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.http import Http404
 
-from app.exceptions.supplies.exception import (SupplyCreationException,
-                                               SupplyDeleteException,
-                                               SupplyEditException)
+from app.exceptions.supplies.exception import (
+    SupplyCreationException,
+    SupplyEditException,
+    SupplyDeleteException,
+)
 from app.logging.logging import Logger
-
 from ..models import Supplies
 
 logger = Logger("app/logging/app.log")
@@ -23,16 +25,16 @@ def add_supplies(request):
     if request.method == "POST":
         try:
             name = request.POST.get("name")
-            type = request.POST.get("type")
+            supply_type = request.POST.get("type")  # avoid shadowing builtin `type`
             quantity = request.POST.get("quantity")
             unit = request.POST.get("unit")
 
-            if not name or not type:
+            if not name or not supply_type:
                 raise SupplyCreationException("Missing name or type for supply.")
 
             Supplies.objects.create(
                 name=name,
-                type=type,
+                type=supply_type,
                 quantity=quantity,
                 unit=unit,
             )
@@ -59,21 +61,26 @@ def add_supplies(request):
                     "error": "An unexpected error occurred while adding the supply.",
                 },
             )
+    return redirect("supplies_list")
 
 
 @login_required
 def edit_supplies(request):
     if request.method == "POST":
         try:
-            supply = get_object_or_404(Supplies, id=request.POST.get("id"))
-
-            if not supply:
+            try:
+                supply = get_object_or_404(Supplies, id=request.POST.get("id"))
+            except Http404:
                 raise SupplyEditException("Supply not found.")
 
             supply.name = request.POST.get("name")
             supply.type = request.POST.get("type")
             supply.quantity = request.POST.get("quantity")
             supply.unit = request.POST.get("unit")
+
+            if not supply.name or not supply.type:
+                raise SupplyEditException("Name and type are required to update supply.")
+
             supply.save()
 
             logger.log(f"User {request.user} edited supply: {supply.name}")
@@ -98,15 +105,16 @@ def edit_supplies(request):
                     "error": "An unexpected error occurred while editing the supply.",
                 },
             )
+    return redirect("supplies_list")
 
 
 @login_required
 def delete_supplies(request):
     if request.method == "POST":
         try:
-            supply = get_object_or_404(Supplies, id=request.POST.get("id"))
-
-            if not supply:
+            try:
+                supply = get_object_or_404(Supplies, id=request.POST.get("id"))
+            except Http404:
                 raise SupplyDeleteException("Supply not found.")
 
             supply_name = supply.name
@@ -134,3 +142,4 @@ def delete_supplies(request):
                     "error": "An unexpected error occurred while deleting the supply.",
                 },
             )
+    return redirect("supplies_list")
