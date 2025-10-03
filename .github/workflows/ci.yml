@@ -32,7 +32,7 @@ jobs:
         if: failure()
         run: |
           curl -H "Content-Type: application/json" \
-               -d '{"content": "⚠️ CI Failed on branch '${GITHUB_REF_NAME}'! Commit: '${GITHUB_SHA}'"}' \
+               -d '{"content": "⚠️ CI Failed on branch '${GITHUB_REF_NAME}'! Commit: '${GITHUB_SHA}'", "username": "GitHub Actions"}' \
                $DISCORD_WEBHOOK_URL
 
       # Discord notification on success
@@ -40,5 +40,5 @@ jobs:
         if: success()
         run: |
           curl -H "Content-Type: application/json" \
-               -d '{"content": "✅ CI Succeeded on branch '${GITHUB_REF_NAME}'! Commit: '${GITHUB_SHA}'"}' \
+               -d '{"content": "✅ CI Succeeded on branch '${GITHUB_REF_NAME}'! Commit: '${GITHUB_SHA}'", "username": "GitHub Actions"}' \
                $DISCORD_WEBHOOK_URL
