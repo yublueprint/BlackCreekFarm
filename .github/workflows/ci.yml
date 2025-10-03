@@ -13,32 +13,36 @@ jobs:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     steps:
+      # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10.6'
 
+      # 3. Install dependencies
       - name: Install dependencies
         run: make build
 
+      # 4. Run tests
       - name: Run tests
         run: make test
 
-      # Discord notification on failure
+      # 5. Discord notification on failure
       - name: Notify Discord on failure
         if: failure()
         run: |
           curl -H "Content-Type: application/json" \
-               -d '{"content": "⚠️ CI Failed on branch '${GITHUB_REF_NAME}'! Commit: '${GITHUB_SHA}'", "username": "GitHub Actions"}' \
+               -d '{"content": "⚠️ CI Failed on branch '${GITHUB_REF_NAME}'", "sender": "GitHub Actions"}' \
                $DISCORD_WEBHOOK_URL
 
-      # Discord notification on success
+      # 6. Discord notification on success
       - name: Notify Discord on success
         if: success()
         run: |
           curl -H "Content-Type: application/json" \
-               -d '{"content": "✅ CI Succeeded on branch '${GITHUB_REF_NAME}'! Commit: '${GITHUB_SHA}'", "username": "GitHub Actions"}' \
+               -d '{"content": "✅ CI Succeeded on branch '${GITHUB_REF_NAME}'", "sender": "GitHub Actions"}' \
                $DISCORD_WEBHOOK_URL
