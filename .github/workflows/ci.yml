@@ -9,6 +9,8 @@ on:
 jobs:
   build-test-lint:
     runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     steps:
       - name: Checkout code
@@ -24,3 +26,19 @@ jobs:
 
       - name: Run tests
         run: make test
+
+      # Discord notification on failure
+      - name: Notify Discord on failure
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{"content": "⚠️ CI Failed on branch '${GITHUB_REF_NAME}'! Commit: '${GITHUB_SHA}'"}' \
+               $DISCORD_WEBHOOK_URL
+
+      # Discord notification on success
+      - name: Notify Discord on success
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d '{"content": "✅ CI Succeeded on branch '${GITHUB_REF_NAME}'! Commit: '${GITHUB_SHA}'"}' \
+               $DISCORD_WEBHOOK_URL
