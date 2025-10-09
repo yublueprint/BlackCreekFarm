@@ -1,37 +1,43 @@
 import pytest
 
+from django.test import RequestFactory
 from django.contrib.auth.models import User
 
-# @pytest.mark.django_db
-# def test_user_create():
-#     User.objects.create_user('test', 'test@gmail.com', 'test')
-#     count = User.objects.all().count()
-#     print(count)
-#     assert User.objects.count() == 1
+from ...backend.supplies import supplies
+from ...backend.models import Supplies
+from ...tests.reusableFixtures import reusableFixtures
 
-# @pytest.mark.django_db
-# def test_user_create_2():
-#     assert User.objects.count() == 0
+rf = reusableFixtures.rf
+uf = reusableFixtures.uf
 
-# @pytest.fixture()
-# def user_1(db):
-#     return User.objects.create_user("test-user")
+@pytest.fixture
+def mock_supply_fixture(mocker):
+    mock_supply = mocker.Mock(
+        name="Fertilizer",
+        type="Nutrient Supply",
+        quantity=3,
+        unit="Field 1",
+    )
+    return mock_supply
 
-# @pytest.mark.django_db
-# def test_set_check_password(user_1):
-#     user_1.set_password("new-password")
-#     assert user_1.check_password("new-password") is True
+@pytest.mark.django_db
+def test_empty_supplies_list(rf, uf):
+    request = rf.get('/supplies/')
+    request.user = uf
+    response = supplies.supplies_list(request)
 
-# def test_example():
-#     assert 1 == 1
+    assert response.status_code == 200
+    assert Supplies.objects.count() == 0
+    assert b'No supply records found' in response.content
 
-# def test_example_2():
-#     assert 2 == 2
+@pytest.mark.django_db
+def test_add_supplies():
+    pass
 
-# @pytest.mark.xfail
-# def test_example_3():
-#     assert 2 == 3
+@pytest.mark.django_db
+def test_edit_supplies():
+    pass
 
-# def test_example_4():
-#     print("Hello")
-#     assert 4 == 4
+@pytest.mark.django_db
+def test_delete_supplies():
+    pass
