@@ -29,12 +29,64 @@ def new_mock_supply():
     }
     return supply_info_change
 
+# SECTION 1: All mocks, no db access/connection required.
+def test_supplies_mocks(rf, mock_supply, new_mock_supply, mocker):
+    # Viewing supplies mock
+    mock_fetch_1 = mocker.patch(
+        'app.backend.supplies.supplies.supplies_list',
+        return_value = {"status":200}
+    )
+
+    request_1 = rf.get('/supplies/')
+    response_1 = supplies.supplies_list(request_1)
+
+    mock_fetch_1.assert_called_once()
+    assert response_1.get("status") == 200
+
+    # Adding supplies mock
+    mock_fetch_2 = mocker.patch(
+        'app.backend.supplies.supplies.add_supplies',
+        return_value = {"status":200}
+    )
+
+    request_2 = rf.post('/supplies/add/', data=mock_supply)
+    response_2 = supplies.add_supplies(request_2)
+
+    mock_fetch_2.assert_called_once()
+    assert response_2.get("status") == 200
+
+    # Editing supplies mock
+    mock_fetch_3 = mocker.patch(
+        'app.backend.supplies.supplies.edit_supplies',
+        return_value = {"status":200}
+    )
+
+    request_3 = rf.post('/supplies/edit/', data=new_mock_supply)
+    response_3 = supplies.edit_supplies(request_3)
+
+    mock_fetch_3.assert_called_once()
+    assert response_3.get("status") == 200
+
+    # Deleting supplies mock
+    mock_fetch_4 = mocker.patch(
+        'app.backend.supplies.supplies.delete_supplies',
+        return_value = {"status":200}
+    )
+
+    request_4 = rf.post('/supplies/delete/', data=mock_supply)
+    response_4 = supplies.delete_supplies(request_4)
+
+    mock_fetch_4.assert_called_once()
+    assert response_4.get("status") == 200
+
+# SECTION 2: Requires connection to the DB, however it doesn't actually affect the DB.
+#            It makes a fake copy DB to test on.
 @pytest.mark.django_db
 def test_supplies_list(rf, uf, mocker):
-    # mock_data = "Service Status: OK"
-    mock_fetch = mocker.patch(
+    assert Supplies.objects.count() == 0
+
+    mock_fetch_1 = mocker.patch(
         'app.logging.logging.Logger.log',
-        # return_value=mock_data,
     )
 
     request = rf.get('/supplies/')
@@ -42,7 +94,7 @@ def test_supplies_list(rf, uf, mocker):
     response = supplies.supplies_list(request)
 
     assert response.status_code == 200
-    mock_fetch.assert_called_once()
+    mock_fetch_1.assert_called_once()
     assert Supplies.objects.count() == 0
     assert b'No supply records found' in response.content
 
