@@ -10,3 +10,13 @@ def uf():
 @pytest.fixture
 def rf():
     return RequestFactory()
+
+@pytest.fixture
+def mock_supply():
+    supply_given = {
+        'name':"Fertilizer",
+        'type':"Nutrient Supply",
+        'quantity':3,
+        'unit':"Field 1",
+        }
+    return supply_given
