@@ -78,6 +78,7 @@ def test_edit_supplies(rf, uf, mock_supply, mocker):
     assert Supplies.objects.count() == 1
 
     supply_info_change = {
+        'id':1,
         'name':"Pesticide",
         'type':"Bugs Be Gone",
         'quantity': 5,
@@ -88,17 +89,9 @@ def test_edit_supplies(rf, uf, mock_supply, mocker):
     request_2.user = uf
     response_2 = supplies.edit_supplies(request_2)
 
-    new_supply = Supplies.objects.get(name="Fertilizer")
-    print("HELLO WORLD")
-    print(new_supply.name)
-    print(new_supply.type)
-    print(new_supply.quantity)
-    print(new_supply.unit)
-
     assert response_2.status_code == 302
     assert Supplies.objects.count() == 1
     
-
     request_3 = rf.get('/supplies/')
     request_3.user = uf
     response_3 = supplies.supplies_list(request_3)
