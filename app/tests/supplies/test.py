@@ -1,5 +1,7 @@
 import pytest
 
+from django.urls import reverse
+
 from ...backend.supplies import supplies
 from ...backend.models import Supplies
 from ...tests.reusableFixtures import reusableFixtures
@@ -29,8 +31,97 @@ def new_mock_supply():
     }
     return supply_info_change
 
+# SECTION 0: Mocking the database, no interactice tests yet.
+# Decorator @pytest.mark.django_db is required as the views have login_required.
+@pytest.mark.django_db
+def test_mock_supplies_list(rf, uf, mock_supply, new_mock_supply, mocker):
+    mock_fetch_1 = mocker.patch(
+        'app.backend.supplies.supplies.Supplies.objects.all',
+        return_value = [mock_supply, new_mock_supply]
+    )
+
+    mock_fetch_2 = mocker.patch(
+        'app.logging.logging.Logger.log',
+    )
+
+    request_1 = rf.get("/supplies/")
+    request_1.user = uf
+    response_1 = supplies.supplies_list(request_1)
+
+    assert response_1.status_code == 200
+    assert b'Fertilizer' in response_1.content
+    assert b'Pesticide' in response_1.content
+    mock_fetch_1.assert_called_once()
+    mock_fetch_2.assert_called_once()
+
+@pytest.mark.django_db
+def test_mock_add_supplies(rf, uf, mock_supply, mocker):
+    mock_fetch_1 = mocker.patch(
+        'app.backend.supplies.supplies.Supplies.objects.create',
+    )
+
+    mock_fetch_2 = mocker.patch(
+        'app.logging.logging.Logger.log',
+    )
+
+    request_1 = rf.post('/supplies/add/', data=mock_supply)
+    request_1.user = uf
+    response_1 = supplies.add_supplies(request_1)
+
+    redirect_url_1 = response_1.url
+
+    # 302 as it quickly redirects to supplies_list
+    assert response_1.status_code == 302
+    assert redirect_url_1 == '/supplies/'
+    mock_fetch_1.assert_called_once()
+    mock_fetch_2.assert_called_once()
+
+@pytest.mark.django_db
+def test_mock_edit_supplies(rf, uf, new_mock_supply, mocker):
+    mock_fetch_1 = mocker.patch(
+        'app.backend.supplies.supplies.get_object_or_404',
+    )
+
+    mock_fetch_2 = mocker.patch(
+        'app.logging.logging.Logger.log',
+    )
+
+    request_1 = rf.post('/supplies/edit/', data=new_mock_supply)
+    request_1.user = uf
+    response_1 = supplies.edit_supplies(request_1)
+
+    redirect_url_1 = response_1.url
+
+    # 302 as it quickly redirects to supplies_list
+    assert response_1.status_code == 302
+    assert redirect_url_1 == '/supplies/'
+    mock_fetch_1.assert_called_once()
+    mock_fetch_2.assert_called_once()
+
+@pytest.mark.django_db
+def test_mock_delete_supplies(rf, uf, mock_supply, new_mock_supply, mocker):
+    mock_fetch_1 = mocker.patch(
+        'app.backend.supplies.supplies.get_object_or_404',
+    )
+
+    mock_fetch_2 = mocker.patch(
+        'app.logging.logging.Logger.log',
+    )
+
+    request_1 = rf.post('/supplies/delete/', data=new_mock_supply)
+    request_1.user = uf
+    response_1 = supplies.delete_supplies(request_1)
+
+    redirect_url_1 = response_1.url
+
+    # 302 as it quickly redirects to supplies_list
+    assert response_1.status_code == 302
+    assert redirect_url_1 == '/supplies/'
+    mock_fetch_1.assert_called_once()
+    mock_fetch_2.assert_called_once()
+
 # SECTION 1: All mocks, no db access/connection required.
-def test_supplies_mocks(rf, mock_supply, new_mock_supply, mocker):
+def test_supplies_views_mocks(rf, mock_supply, new_mock_supply, mocker):
     # Viewing supplies mock
     mock_fetch_1 = mocker.patch(
         'app.backend.supplies.supplies.supplies_list',
