@@ -1,7 +1,5 @@
 import pytest
 
-from django.urls import reverse
-
 from ...backend.supplies import supplies
 from ...backend.models import Supplies
 from ...tests.reusableFixtures import reusableFixtures
