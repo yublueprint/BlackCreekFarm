@@ -194,8 +194,8 @@
                             onclick="openEditPopup(
                                 '{{ crop.id }}',
                                 '{{ crop.name }}',
-                                '{{ crop.planting_date|date:'Y-m-d' }}',
-                                '{{ crop.harvest_date|date:'Y-m-d' }}',
+                                '{{ crop.planting_date|date:&quot;Y-m-d&quot; }}',
+                                '{{ crop.harvest_date|date:&quot;Y-m-d&quot; }}',
                                 '{{ crop.yield_estimate }}'
                             )"
                             class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
@@ -221,49 +221,6 @@
     </table>
 </div>
 
-<script>
-    const addButton = document.getElementById("addButton");
-    const popupForm = document.getElementById("popupForm");
-    const closeButton = document.getElementById("closeButton");
-    
-
-    addButton.addEventListener("click", () => {
-    popupForm.classList.remove("hidden");
-    });
-
-    closeButton.addEventListener("click", () => {
-    popupForm.classList.add("hidden");
-    });
-
-    const editPopup = document.getElementById("editPopup");
-    const closeEditButton = document.getElementById("closeEditButton");
-
-    function openEditPopup(id, name, planting, harvest, yieldValue) {
-        document.getElementById("editId").value = id;
-        document.getElementById("editName").value = name;
-        document.getElementById("editPlantingDate").value = planting;
-        document.getElementById("editHarvestDate").value = harvest;
-        document.getElementById("editYieldEstimate").value = yieldValue;
-        editPopup.classList.remove("hidden");
-    }
-
-    closeEditButton.addEventListener("click", () => {
-    editPopup.classList.add("hidden");
-    });
-
-    // Delete Popup Logic
-    const deletePopup = document.getElementById("deletePopup");
-    const closeDeleteButton = document.getElementById("closeDeleteButton");
-
-    function openDeletePopup(id, name) {
-        document.getElementById("deleteId").value = id;
-        document.getElementById("deleteCropName").textContent = name;
-        deletePopup.classList.remove("hidden");
-    }
-
-    closeDeleteButton.addEventListener("click", () => {
-    deletePopup.classList.add("hidden");
-    });
-</script>
+<script src="{%static 'js/crop_list.js' %}"></script>
 
 {% endblock %}
