@@ -64,15 +64,21 @@ run:
 	$(PYTHON) manage.py runserver
 
 test:
-	$(PYTHON) manage.py test
+	@echo "🧪 Running tests..."
+	$(PYTHON) -m pytest -v --disable-warnings
+
+coverage:
+	@echo "📊 Generating coverage report..."
+	@if [ -f .coverage ]; then \
+		$(PYTHON) -m coverage report -m; \
+		$(PYTHON) -m coverage html; \
+		echo "→ Open htmlcov/index.html for detailed report."; \
+	else \
+		echo "⚠️  No .coverage data found. Run 'make test' first."; \
+	fi
 
 lint:
 	$(FLAKE8) app
-
-coverage:
-	$(COVERAGE) run --source=app manage.py test
-	$(COVERAGE) report -m
-	$(COVERAGE) html
 
 lint-fix:
 	@echo "Running black..."

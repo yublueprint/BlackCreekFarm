@@ -9,3 +9,9 @@ playwright       # Controls the browser
 pytest              # Runs our tests
 pytest-django      # Makes pytest work with Django
 pytest-playwright   # Makes pytest work with Playwright
+# Testing & coverage
+pytest>=8.0.0
+pytest-cov
+pytest-django>=4.9.0
+pytest-mock>=3.12.0
+coverage>=7.6.0
