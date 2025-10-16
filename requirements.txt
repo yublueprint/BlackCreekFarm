@@ -5,3 +5,7 @@ flake8
 black 
 autoflake 
 isort
+playwright       # Controls the browser
+pytest              # Runs our tests
+pytest-django      # Makes pytest work with Django
+pytest-playwright   # Makes pytest work with Playwright

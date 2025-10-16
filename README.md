@@ -94,5 +94,60 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+### 7. Create an Admin/SuperUser
+
+```bat
+python manage.py createsuperuser
+```
+
 Visit: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
+**Admin Panel:** [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin)
+
+
+## End-to-End (E2E) Testing Setup
+
+This project uses **pytest** and **Playwright** for E2E browser testing.
+
+### 1. Install Testing Dependencies
+
+First, activate your virtual environment:
+
+```bat
+venv\Scripts\activate
+```
+
+Then install the testing dependencies:
+
+```bat
+pip install -r requirements-test.txt
+python -m playwright install
+```
+
+### 2. Test User Setup
+
+A test admin user will be created automatically by the test fixtures with these credentials:
+
+- **Username:** `testadmin`
+- **Password:** `testpass123`
+- **Email:** `admin@blackcreek.com`
+
+### 3. Running the Tests
+
+Start your Django development server in one terminal:
+
+```bat
+python manage.py runserver
+```
+
+In another terminal, run the E2E tests:
+
+```bat
+pytest tests/e2e/ -v
+```
+
+To see the browser window during tests (for debugging):
+
+```bat
+pytest tests/e2e/ -v --headed
+```
