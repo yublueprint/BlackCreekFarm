@@ -1,26 +1,46 @@
-name: CI
+name: CI Pipeline
 
 on:
   push:
-    branches: [ Prod ]
   pull_request:
-    branches: [ Prod ]
 
 jobs:
   build-test-lint:
     runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     steps:
+      # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10.6'
 
+      # 3. Install dependencies
       - name: Install dependencies
         run: make build
 
+      # 4. Run tests
       - name: Run tests
         run: make test
+
+      # 5. Discord notification on failure
+      - name: Notify Discord on failure
+        if: failure()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d "{\"content\": \"⚠️ **CI Failed** on branch **${GITHUB_REF_NAME}** by **${{ github.actor }}** → [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\"}" \
+               $DISCORD_WEBHOOK_URL
+
+      # 6. Discord notification on success
+      - name: Notify Discord on success
+        if: success()
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d "{\"content\": \"✅ **CI Succeeded** on branch **${GITHUB_REF_NAME}** by **${{ github.actor }}** → [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\"}" \
+               $DISCORD_WEBHOOK_URL
