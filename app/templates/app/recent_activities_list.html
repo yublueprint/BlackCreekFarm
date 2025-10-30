@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Recent Activities | BlackCreek Sync{% endblock %}
+
+{% block content %}
+<!-- Include Chart.js library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<h2 class="text-3xl font-semibold mb-6">Recent Activities List</h2>
+
+<!-- Add Button with icon -->
+<button id="loadMore" data-offset="{{ next_offset }}"
+    class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
+    style="background-color: #335D43;">
+    <i class="fas fa-plus"></i>
+    Load More
+</button>
+
+<!-- bg-white rounded-lg shadow-md overflow-x-auto -->
+<div class="bg-white rounded-lg shadow-md overflow-x-auto">
+    <table class="min-w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Activity</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Details</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">User</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Time</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for activity in recent_activities %}
+            <tr class="hover:bg-gray-50">
+                <td class="py-4 px-6 text-sm text-gray-900">{{ activity.activity }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ activity.location }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ activity.user }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ activity.time }}</td>
+            </tr>
+            {% empty %}
+            <tr class="border-t">
+                <td class="py-2">No recent activity found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // Nothing so far.
+    const loadMoreButton = document.getElementById("loadMore");
+    loadMoreButton.addEventListener("click", () => {
+        console.log("TESTING");
+    });
+</script>
+{% endblock %}

@@ -76,19 +76,19 @@
         <table class="min-w-full">
             <thead>
                 <tr class="text-left text-gray-600 text-sm">
-                    <th class="pb-3">Activity</th>
-                    <th class="pb-3">Details</th>
-                    <th class="pb-3">User</th>
-                    <th class="pb-3">Time</th>
+                    <th class="pb-3 px-4">Activity</th>
+                    <th class="pb-3 px-4">Details</th>
+                    <th class="pb-3 px-4">User</th>
+                    <th class="pb-3 px-4">Time</th>
                 </tr>
             </thead>
             <tbody class="text-sm">
                 {% for activity in recent_activity %}
                 <tr class="border-t">
-                    <td class="py-2">{{ activity.activity }}</td>
-                    <td class="py-2">{{ activity.location }}</td>
-                    <td class="py-2">{{ activity.user }}</td>
-                    <td class="py-2">{{ activity.time }}</td>
+                    <td class="py-2 px-4">{{ activity.activity }}</td>
+                    <td class="py-2 px-4">{{ activity.location }}</td>
+                    <td class="py-2 px-4">{{ activity.user }}</td>
+                    <td class="py-2 px-4">{{ activity.time }}</td>
                 </tr>
                 {% empty %}
                 <tr class="border-t">

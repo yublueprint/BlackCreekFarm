@@ -12,7 +12,6 @@ from ..models import Supplies
 
 logger = Logger("app/logging/app.log")
 
-
 @login_required
 def supplies_list(request):
     supplies = Supplies.objects.all()
@@ -34,7 +33,7 @@ def add_supplies(request):
 
             Supplies.objects.create(
                 name=name,
-                type=supply_type,
+                type=supply_type, 
                 quantity=quantity,
                 unit=unit,
             )
