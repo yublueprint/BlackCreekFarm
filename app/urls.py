@@ -10,7 +10,7 @@ from .backend.supplies.supplies import (add_supplies, delete_supplies,
                                         edit_supplies, supplies_list)
 from .backend.transactions.transaction import (add_transaction, delete_transaction,transaction_list) 
 from .backend.reports.reports import (reports)
-from .backend.recent_activities.recent_activities import (recent_activities_list, retrieve_more)
+from .backend.recent_activities.recent_activities import (recent_activities_list)
 
 urlpatterns = [
     path("", dashboard, name="dashboard"),
@@ -45,5 +45,4 @@ urlpatterns = [
 
     # Recent activites URLs
     path("recent_activities/", recent_activities_list, name="recent_activities_list"),
-    path("recent_activities/load_more", retrieve_more, name="retrieve_more_recent_activities"),
 ]

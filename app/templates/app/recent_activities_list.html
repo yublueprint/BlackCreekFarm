@@ -7,14 +7,6 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <h2 class="text-3xl font-semibold mb-6">Recent Activities List</h2>
 
-<!-- Add Button with icon -->
-<button id="loadMore" data-offset="{{ next_offset }}"
-    class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
-    style="background-color: #335D43;">
-    <i class="fas fa-plus"></i>
-    Load More
-</button>
-
 <!-- bg-white rounded-lg shadow-md overflow-x-auto -->
 <div class="bg-white rounded-lg shadow-md overflow-x-auto">
     <table class="min-w-full">
@@ -45,9 +37,5 @@
 
 <script>
     // Nothing so far.
-    const loadMoreButton = document.getElementById("loadMore");
-    loadMoreButton.addEventListener("click", () => {
-        console.log("TESTING");
-    });
 </script>
 {% endblock %}

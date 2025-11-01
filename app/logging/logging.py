@@ -75,7 +75,7 @@ class Logger:
             with open(self.modifications_filename, "a") as f:
                 f.write(f"[{timestamp}] {message}\n")
 
-    def retrieve_recent_activity(self, amount_to_retrieve=5):
+    def retrieve_recent_activity(self, amount_to_retrieve=5, get_all=False, chunk_size=4096):
         recent_activity_array = []
 
         try:
@@ -83,14 +83,16 @@ class Logger:
                 # Go to the end of the file.
                 f.seek(0,2)
                 file_size = f.tell()
-                chunk_size = 4096
 
                 # Start reading back from the very end.
                 position = file_size
                 lines = []
 
                 # Loop backward, reading chunks until we have enough lines.
-                while (position > 0) and (len(lines) < amount_to_retrieve):
+                # (len(lines) < amount_to_retrieve)
+                while (position > 0):
+                    if ((get_all == False) and (len(lines) > amount_to_retrieve)):
+                        break
                     # Calculate where to seek to (start of the chunk).
                     seek_to = max(0, position - chunk_size)
 
@@ -109,7 +111,7 @@ class Logger:
                     for line in lines_in_chunk[:-1][::-1]:
                         # Prepend the line to the list.
                         lines.insert(0, line)
-                        if (len(lines) == amount_to_retrieve):
+                        if ((get_all == False) and (len(lines) == amount_to_retrieve)):
                             break
 
                     # Update the position for the next iteration.
@@ -117,12 +119,16 @@ class Logger:
 
                 # If reached the start of the file (position == 0) and we haven't retrieved the amount of lines we want,
                 # the very first element of the chunk (lines_in_chunk[0]) is the start of the file and must be included.
-                if (position == 0) and (len(lines) < amount_to_retrieve) and lines_in_chunk:
+                # and (len(lines) < amount_to_retrieve)
+                if (position == 0) and len(lines) < amount_to_retrieve and lines_in_chunk:
                     lines.insert(0, lines_in_chunk[0])
 
                 # Decode and return the final list of lines (trimmed to the amount of lines we want to retrieve).
                 # Since we inserted lines at index 0, they are already in correct order.
-                final_lines = [line.decode('utf-8') for line in lines[-amount_to_retrieve:] if line]
+                if (get_all == False):
+                    final_lines = [line.decode('utf-8') for line in lines[-amount_to_retrieve:] if line]
+                else:
+                    final_lines = [line.decode('utf-8') for line in lines if line]
 
             # Format the lines we retrieved into activityObjects to be displayed in the dashboard.
             recent_activity_array = format_lines(final_lines)

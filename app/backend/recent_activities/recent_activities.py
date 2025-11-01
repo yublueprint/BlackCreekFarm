@@ -11,14 +11,7 @@ def recent_activities_list(request):
     logger.log(f"User {request.user} viewed recent activities list.")
 
     context = {
-        "recent_activities" : logger.retrieve_recent_activity(50),
-        "next_offset" : 50,
+        "recent_activities" : logger.retrieve_recent_activity(50, True),
     }
 
     return render(request, "app/recent_activities_list.html", context)
-
-@login_required
-def retrieve_more(request):
-    logger.log(f"User {request.user} retrieved more recent activities.")
-
-    return redirect("recent_activities_list")
