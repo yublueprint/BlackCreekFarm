@@ -19,7 +19,7 @@
             </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-            {% for activity in recent_activities %}
+            {% for activity in recent_activity %}
             <tr class="hover:bg-gray-50">
                 <td class="py-4 px-6 text-sm text-gray-900">{{ activity.activity }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ activity.location }}</td>
@@ -28,7 +28,7 @@
             </tr>
             {% empty %}
             <tr class="border-t">
-                <td class="py-2">No recent activity found</td>
+                <td class="py-4 px-6 text-sm text-gray-900">No recent activity found.</td>
             </tr>
             {% endfor %}
         </tbody>

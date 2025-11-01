@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
-from django.http import Http404
+from django.shortcuts import render
 
 from app.logging.logging import Logger
 
@@ -11,7 +10,7 @@ def recent_activities_list(request):
     logger.log(f"User {request.user} viewed recent activities list.")
 
     context = {
-        "recent_activities" : logger.retrieve_recent_activity(50, True),
+        "recent_activity": logger.retrieve_recent_activity(5, True),
     }
 
     return render(request, "app/recent_activities_list.html", context)

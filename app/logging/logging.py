@@ -56,9 +56,7 @@ def format_lines(final_lines):
 class Logger:
     def __init__(self, filename="app.log", modifications_filename="modification_activities.log", max_bytes=1024 * 1024, first_backup_count=3, second_backup_count=3):
         self.filename = filename
-        # modification_activites.log file MUST be in the same directory as app.log
-        # For some reason and I don't know why, app.log is detected but modification_activites.log isn't, 
-        # so I have to do this where I get the pathway.
+        # modification_activites.log file MUST be in the same directory as app.log. Unless we should put modification_activites.log in the instantiation of Logger of all other files.
         self.modifications_filename = os.path.dirname(filename) + "/" + modifications_filename
         self.max_bytes = max_bytes
         self.first_backup_count = first_backup_count
@@ -89,7 +87,6 @@ class Logger:
                 lines = []
 
                 # Loop backward, reading chunks until we have enough lines.
-                # (len(lines) < amount_to_retrieve)
                 while (position > 0):
                     if ((get_all == False) and (len(lines) > amount_to_retrieve)):
                         break
@@ -120,22 +117,21 @@ class Logger:
                 # If reached the start of the file (position == 0) and we haven't retrieved the amount of lines we want,
                 # the very first element of the chunk (lines_in_chunk[0]) is the start of the file and must be included.
                 # and (len(lines) < amount_to_retrieve)
-                if (position == 0) and len(lines) < amount_to_retrieve and lines_in_chunk:
+                if (position == 0) and (get_all == False) and len(lines) < amount_to_retrieve and lines_in_chunk:
                     lines.insert(0, lines_in_chunk[0])
 
-                # Decode and return the final list of lines (trimmed to the amount of lines we want to retrieve).
-                # Since we inserted lines at index 0, they are already in correct order.
-                if (get_all == False):
-                    final_lines = [line.decode('utf-8') for line in lines[-amount_to_retrieve:] if line]
-                else:
-                    final_lines = [line.decode('utf-8') for line in lines if line]
+                final_lines = []
+
+                for line in lines:
+                    if line:
+                        final_lines.append(line.decode('utf-8'))
 
             # Format the lines we retrieved into activityObjects to be displayed in the dashboard.
             recent_activity_array = format_lines(final_lines)
 
         except Exception as e:
             full_error_message = f"Error: {e}"
-            print(full_error_message)
+            # print(full_error_message)
             Logger.log(full_error_message)
         finally:
             return recent_activity_array

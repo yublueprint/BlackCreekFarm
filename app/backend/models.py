@@ -1,8 +1,10 @@
 from django.db import models
 
+# Max text length for a Char field.
+DEFAULT_TEXT_MAX_LENGTH = 100
 
 class Record(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     email = models.EmailField()
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -11,17 +13,17 @@ class Record(models.Model):
 
 
 class Livestock(models.Model):
-    name = models.CharField(max_length=100)
-    breed = models.CharField(max_length=100)
+    name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    breed = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     age = models.IntegerField()
-    health_status = models.CharField(max_length=100)
+    health_status = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
 
     def __str__(self):
         return self.name
 
 
 class Crop(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     planting_date = models.DateField()
     harvest_date = models.DateField()
     yield_estimate = models.FloatField()
@@ -31,8 +33,8 @@ class Crop(models.Model):
 
 
 class Equipment(models.Model):
-    name = models.CharField(max_length=100)
-    type = models.CharField(max_length=100)
+    name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     purchase_date = models.DateField()
     maintenance_due = models.DateField()
 
@@ -41,10 +43,10 @@ class Equipment(models.Model):
 
 
 class Supplies(models.Model):
-    name = models.CharField(max_length=100)
-    type = models.CharField(max_length=100)
+    name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     quantity = models.IntegerField()
-    unit = models.CharField(max_length=100)
+    unit = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
 
     def __str__(self):
         return self.name

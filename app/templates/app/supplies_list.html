@@ -5,13 +5,6 @@
 {% block content %}
 <h2 class="text-3xl font-semibold mb-6">Supplies Management</h2>
 
-{% if error %}
-<div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-    {{ error }}
-</div>
-{% endif %}
-
-
 <!-- Add Button with icon -->
 <button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
     style="background-color: #335D43;">
@@ -21,10 +14,9 @@
 
 <!-- Display Error Message if Error occurs-->
 {% if error %}
-<strong id="errorMessageToDisplay"
-    class="text-md border-2 border-solid rounded-lg border-red-900 bg-red-100 text-red-900 flex mb-4 px-4 py-3">
+<div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
     Error: {{ error }}
-</strong>
+</div>
 {% endif %}
 
 <!-- Add Button Popup Form -->
@@ -35,11 +27,13 @@
             {% csrf_token %}
             <!-- Name of the Supply -->
             <label class="block mb-2">Name:</label>
-            <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+            <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_text_length }}" required />
 
             <!-- Type of the Supply -->
             <label class="block mb-2">Type:</label>
-            <input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+            <input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_text_length }}" required />
 
             <!-- Quantity of the Supply -->
             <label class="block mb-2">Quantity:</label>
@@ -47,7 +41,8 @@
 
             <!-- Type of Unit of Quantity of the Supply -->
             <label class="block mb-2">Unit:</label>
-            <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+            <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_text_length }}" required />
 
             <!-- Submit Information Button -->
             <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
@@ -72,13 +67,13 @@
 
             <!-- Name of the Supply -->
             <label class="block mb-2">Name:</label>
-            <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" max_length="100"
-                required />
+            <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_text_length }}" required />
 
             <!-- Type of the Supply -->
             <label class="block mb-2">Type:</label>
-            <input type="text" name="type" id="editType" class="w-full border rounded px-3 py-2 mb-4" max_length="100"
-                required />
+            <input type="text" name="type" id="editType" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_text_length }}" required />
 
             <!-- Quantity of the Supply -->
             <label class="block mb-2">Quantity:</label>
@@ -87,8 +82,8 @@
 
             <!-- Type of Unit of Quantity of the Supply -->
             <label class="block mb-2">Unit:</label>
-            <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4" max_length="100"
-                required />
+            <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_text_length }}" required />
 
             <!-- Save Changes -->
             <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
