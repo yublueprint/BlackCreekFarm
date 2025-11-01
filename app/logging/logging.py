@@ -76,6 +76,9 @@ class Logger:
     def retrieve_recent_activity(self, amount_to_retrieve=5, get_all=False, chunk_size=4096):
         recent_activity_array = []
 
+        # Temporary fix for a bug.
+        amount_to_retrieve += 1
+
         try:
             with open(self.modifications_filename, 'rb') as f:
                 # Go to the end of the file.
@@ -88,7 +91,7 @@ class Logger:
 
                 # Loop backward, reading chunks until we have enough lines.
                 while (position > 0):
-                    if ((get_all == False) and (len(lines) > amount_to_retrieve)):
+                    if ((not get_all) and (len(lines) > amount_to_retrieve)):
                         break
                     # Calculate where to seek to (start of the chunk).
                     seek_to = max(0, position - chunk_size)
@@ -108,7 +111,7 @@ class Logger:
                     for line in lines_in_chunk[:-1][::-1]:
                         # Prepend the line to the list.
                         lines.insert(0, line)
-                        if ((get_all == False) and (len(lines) == amount_to_retrieve)):
+                        if ((not get_all) and (len(lines) == amount_to_retrieve)):
                             break
 
                     # Update the position for the next iteration.
@@ -117,14 +120,23 @@ class Logger:
                 # If reached the start of the file (position == 0) and we haven't retrieved the amount of lines we want,
                 # the very first element of the chunk (lines_in_chunk[0]) is the start of the file and must be included.
                 # and (len(lines) < amount_to_retrieve)
-                if (position == 0) and (get_all == False) and len(lines) < amount_to_retrieve and lines_in_chunk:
-                    lines.insert(0, lines_in_chunk[0])
+                if (position == 0) and (not get_all) and len(lines) < amount_to_retrieve and lines_in_chunk:
+                   lines.insert(0, lines_in_chunk[0])
 
                 final_lines = []
 
+                # Note: Doing lines[-amount_to_retrieve] was original way.
                 for line in lines:
                     if line:
+                        if (not get_all and len(final_lines) > amount_to_retrieve):
+                            break
                         final_lines.append(line.decode('utf-8'))
+
+                # There is a bug where if not get all, there is a duplicate.
+                # This is a temporary fix.
+                if (not get_all and len(final_lines) >= 2):
+                    final_lines.pop(0)
+                # print(final_lines)
 
             # Format the lines we retrieved into activityObjects to be displayed in the dashboard.
             recent_activity_array = format_lines(final_lines)
