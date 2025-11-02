@@ -28,16 +28,16 @@ jobs:
       # 4. Run tests
       - name: Run tests
         run: make test
-
+        
       - name: Notify Discord on PR merge success
         if: ${{ success() && github.event.pull_request.merged == true }}
         run: |
           curl -H "Content-Type: application/json" \
                -d "{
-                 \"content\": \"🎉 *${{ github.event.pull_request.title }}* passed all checks and just launched successfully in **Production** 🚀 Someone call NASA — mission accomplished!\"
+                 \"content\": \"🎉 *${{ github.event.pull_request.title }}* passed all checks and was launched to **Production** by **${{ github.actor }}** 🚀 Someone call NASA — mission accomplished!\"
                }" \
                $DISCORD_WEBHOOK_URL
-
+               
       - name: Notify Discord on failure
         if: ${{ failure() && github.event_name == 'pull_request' }}
         run: |
