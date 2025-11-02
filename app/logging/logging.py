@@ -31,6 +31,9 @@ def formatLine(line_given):
                 self.user = user
                 self.time = time
 
+            def __str__(self):
+                return f"Activity: {self.activity}, Location: {self.location}, User: {self.user}, Time: {self.time}"
+
     chars_to_remove = ["[","]"]
 
     for char in chars_to_remove:
