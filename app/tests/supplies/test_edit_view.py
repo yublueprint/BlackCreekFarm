@@ -30,7 +30,7 @@ def test_edit_supplies_missing_fields(client, user, supply, mocker):
     assert response.status_code == 200
     assert "error" in response.context
     mock_logger.assert_any_call(
-        f"Supply edit error by {user}: Name and type are required to update supply."
+        f"Supply edit error by {user}: Missing name for supply."
     )
 
 

@@ -40,7 +40,7 @@ def add_supplies(request):
 
             for key, value in text_inputs_given.items():
                 if (not value):
-                    raise SupplyCreationException(f"Missing {key} for supply")
+                    raise SupplyCreationException(f"Missing {key} for supply.")
                 if (len(value) > DEFAULT_TEXT_MAX_LENGTH):
                     raise SupplyCreationException(f"Supply {key} input must be less than or equal to 100 characters.")
 
@@ -99,7 +99,7 @@ def edit_supplies(request):
 
             for key, value in text_inputs_given.items():
                 if (not value):
-                    raise SupplyEditException(f"Missing {key} for supply")
+                    raise SupplyEditException(f"Missing {key} for supply.")
                 if (len(value) > DEFAULT_TEXT_MAX_LENGTH):
                     raise SupplyEditException(f"Supply {key} input must be less than or equal to 100 characters.")
 
