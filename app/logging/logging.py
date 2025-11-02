@@ -1,6 +1,8 @@
 import datetime
 import os
 
+from memory_profiler import profile
+
 # Making it so that it can do both files, whichever gets passed in.
 def rotate_if_needed(filename, max_bytes, backup_count):
     if (
@@ -13,8 +15,15 @@ def rotate_if_needed(filename, max_bytes, backup_count):
                 if os.path.exists(prev_file):
                     os.rename(prev_file, backup_file)
 
-# Format lines into activityObjects function.
-def format_lines(final_lines):
+def formatLine(line_given):
+    """
+    Formats line for retrieve_recent_activities function in logging.py
+
+    LINE FORMAT TO GIVE
+    -------------------
+    Format : YEAR-MONTH-DAY HOUR:MINUTE:SECOND User {user name} {action} {location}: {object name}
+    Example : "2025-11-02 16:09:38 User ryan deleted supply: Test Supply C"
+    """
     class activityObject:
             def __init__(self, activity, location, user, time):
                 self.activity = activity
@@ -22,36 +31,21 @@ def format_lines(final_lines):
                 self.user = user
                 self.time = time
 
-    final_result = []
     chars_to_remove = ["[","]"]
 
-    for line in reversed(final_lines):
-        the_activity = ''
-        the_location = ''
-        the_user = ''
-        the_time = ''
+    for char in chars_to_remove:
+        line_given = line_given.replace(char, "")
 
-        for char in chars_to_remove:
-            line = line.replace(char, "")
-        line = line.split()
+    line_given = line_given.split()
 
-        # print(line)
+    the_activity = " ".join(line_given[2:])
+    the_location = (line_given[5].capitalize())[:-1]
+    the_user = line_given[3]
+    the_time = " ".join(line_given[0:2])
 
-        the_activity = " ".join(line[2:])
-        the_location = (line[5].capitalize())[:-1]
-        the_user = line[3]
-        the_time = " ".join(line[0:2])
+    line_object = activityObject(the_activity, the_location, the_user, the_time)
 
-        # print(the_activity)
-        # print(the_location)
-        # print(the_user)
-        # print(the_time)
-
-        # Create the activityObject
-        line_object = activityObject(the_activity, the_location, the_user, the_time)
-
-        final_result.append(line_object)
-    return final_result
+    return line_object
 
 class Logger:
     def __init__(self, filename="app.log", modifications_filename="modification_activities.log", max_bytes=1024 * 1024, first_backup_count=3, second_backup_count=3):
@@ -73,11 +67,23 @@ class Logger:
             with open(self.modifications_filename, "a") as f:
                 f.write(f"[{timestamp}] {message}\n")
 
+    #@profile
     def retrieve_recent_activity(self, amount_to_retrieve=5, get_all=False, chunk_size=4096):
-        recent_activity_array = []
+        """
+        Memory and speed efficient way of retrieving recent activity.
 
-        # Temporary fix for a bug.
-        amount_to_retrieve += 1
+        Parameters
+        ----------
+        amount_to_retrieve : (integer) most recent number of activities to retrieve. Set to 5 by default.
+        get_all : (boolean) get all activities or not. False by default.
+        chunk_size : (integer) number of bytes to iterate through. 4096 by default.
+
+        Returns
+        -------
+        An array of recent activities.
+        """
+        
+        recent_activity_array = []
 
         try:
             with open(self.modifications_filename, 'rb') as f:
@@ -87,11 +93,10 @@ class Logger:
 
                 # Start reading back from the very end.
                 position = file_size
-                lines = []
 
                 # Loop backward, reading chunks until we have enough lines.
                 while (position > 0):
-                    if ((not get_all) and (len(lines) > amount_to_retrieve)):
+                    if ((not get_all) and (len(recent_activity_array) >= amount_to_retrieve)):
                         break
                     # Calculate where to seek to (start of the chunk).
                     seek_to = max(0, position - chunk_size)
@@ -107,39 +112,15 @@ class Logger:
                     lines_in_chunk = chunk.split(b'\n')
 
                     # Process lines in the chunk from last to first.
-                    # Note: Very last element of the split is either empty (if the file ends with a newline) or the content after the last newline.
-                    for line in lines_in_chunk[:-1][::-1]:
-                        # Prepend the line to the list.
-                        lines.insert(0, line)
-                        if ((not get_all) and (len(lines) == amount_to_retrieve)):
+                    for line in reversed(lines_in_chunk):
+                        if line:
+                            # lines.append(line)
+                            recent_activity_array.append(formatLine(line.decode('utf-8')))
+                        if ((not get_all) and (len(recent_activity_array) >= amount_to_retrieve)):
                             break
 
                     # Update the position for the next iteration.
                     position = seek_to
-
-                # If reached the start of the file (position == 0) and we haven't retrieved the amount of lines we want,
-                # the very first element of the chunk (lines_in_chunk[0]) is the start of the file and must be included.
-                # and (len(lines) < amount_to_retrieve)
-                if (position == 0) and (not get_all) and len(lines) < amount_to_retrieve and lines_in_chunk:
-                   lines.insert(0, lines_in_chunk[0])
-
-                final_lines = []
-
-                # Note: Doing lines[-amount_to_retrieve] was original way.
-                for line in lines:
-                    if line:
-                        if (not get_all and len(final_lines) > amount_to_retrieve):
-                            break
-                        final_lines.append(line.decode('utf-8'))
-
-                # There is a bug where if not get all, there is a duplicate.
-                # This is a temporary fix.
-                if (not get_all and len(final_lines) >= 2):
-                    final_lines.pop(0)
-                # print(final_lines)
-
-            # Format the lines we retrieved into activityObjects to be displayed in the dashboard.
-            recent_activity_array = format_lines(final_lines)
 
         except Exception as e:
             full_error_message = f"Error: {e}"
