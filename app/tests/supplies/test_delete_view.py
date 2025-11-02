@@ -24,7 +24,7 @@ def test_delete_supplies_not_found(client, user, mocker):
     response = client.post(reverse("delete_supplies"), {"id": 999})
     assert response.status_code == 200
     assert "error" in response.context
-    mock_logger.assert_any_call(f"Supply delete error by {user}: Supply not found.")
+    mock_logger.assert_any_call(f"Supply delete error by {user}:ply not found.")
     mock_all.assert_called_once()
 
 
