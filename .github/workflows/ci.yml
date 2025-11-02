@@ -1,8 +1,8 @@
 name: CI Pipeline
 
 on:
-  push:
   pull_request:
+    types: [opened, synchronize, reopened, closed]
 
 jobs:
   build-test-lint:
@@ -29,18 +29,20 @@ jobs:
       - name: Run tests
         run: make test
 
-      # 5. Notify Discord on failure (Prod only)
-      - name: Notify Discord on failure (Prod only)
-        if: failure() && github.ref_name == 'Prod'
+      - name: Notify Discord on PR merge success
+        if: ${{ success() && github.event.pull_request.merged == true }}
         run: |
           curl -H "Content-Type: application/json" \
-               -d "{\"content\": \"⚠️ CI failed on branch **${GITHUB_REF_NAME}** by **${{ github.actor }}**\"}" \
+               -d "{
+                 \"content\": \"🎉 *${{ github.event.pull_request.title }}* passed all checks and just launched successfully in **Production** 🚀 Someone call NASA — mission accomplished!\"
+               }" \
                $DISCORD_WEBHOOK_URL
 
-      # 6. Notify Discord on success (Prod only)
-      - name: Notify Discord on success (Prod only)
-        if: success() && github.ref_name == 'Prod'
+      - name: Notify Discord on failure
+        if: ${{ failure() && github.event_name == 'pull_request' }}
         run: |
           curl -H "Content-Type: application/json" \
-               -d "{\"content\": \"🚀 New feature pushed to **${GITHUB_REF_NAME}** by **${{ github.actor }}** — CI passed ✅\"}" \
+               -d "{
+                 \"content\": \"💀 *${{ github.event.pull_request.title }}* crashed and burned.\n**${{ github.actor }}**, you broke the build again. Time to debug, legend. 🧩\"
+               }" \
                $DISCORD_WEBHOOK_URL
