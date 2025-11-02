@@ -29,18 +29,18 @@ jobs:
       - name: Run tests
         run: make test
 
-      # 5. Discord notification on failure
-      - name: Notify Discord on failure
-        if: failure()
+      # 5. Notify Discord on failure (Prod only)
+      - name: Notify Discord on failure (Prod only)
+        if: failure() && github.ref_name == 'Prod'
         run: |
           curl -H "Content-Type: application/json" \
-               -d "{\"content\": \"⚠️ **CI Failed** on branch **${GITHUB_REF_NAME}** by **${{ github.actor }}** → [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\"}" \
+               -d "{\"content\": \"⚠️ CI failed on branch **${GITHUB_REF_NAME}** by **${{ github.actor }}**\"}" \
                $DISCORD_WEBHOOK_URL
 
-      # 6. Discord notification on success
-      - name: Notify Discord on success
-        if: success()
+      # 6. Notify Discord on success (Prod only)
+      - name: Notify Discord on success (Prod only)
+        if: success() && github.ref_name == 'Prod'
         run: |
           curl -H "Content-Type: application/json" \
-               -d "{\"content\": \"✅ **CI Succeeded** on branch **${GITHUB_REF_NAME}** by **${{ github.actor }}** → [View Run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})\"}" \
+               -d "{\"content\": \"🚀 New feature pushed to **${GITHUB_REF_NAME}** by **${{ github.actor }}** — CI passed ✅\"}" \
                $DISCORD_WEBHOOK_URL
