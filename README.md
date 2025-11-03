@@ -96,3 +96,10 @@ python manage.py runserver
 
 Visit: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
+## Cloud Infra
+
+### 1. Build the Docker Image
+
+```bash
+docker build -t blackcreek-dbms:latest .
+docker run -p 8000:8000 blackcreek-dbms:latest
