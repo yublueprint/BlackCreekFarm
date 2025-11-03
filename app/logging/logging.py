@@ -1,7 +1,7 @@
 import datetime
 import os
 
-from memory_profiler import profile
+#from memory_profiler import profile
 
 # Making it so that it can do both files, whichever gets passed in.
 def rotate_if_needed(filename, max_bytes, backup_count):
@@ -93,6 +93,10 @@ class Logger:
                 # Go to the end of the file.
                 f.seek(0,2)
                 file_size = f.tell()
+
+                # If get all, the chunk_size must be the file size for now.
+                if (get_all):
+                    chunk_size = file_size
 
                 # Start reading back from the very end.
                 position = file_size
