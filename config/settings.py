@@ -25,8 +25,9 @@ SECRET_KEY = 'django-insecure-hp!vq%%2cpsg4ulu)b116c(vf52jhg7=3xq(vm-j^f=(h+wuwj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*", "0.0.0.0", "localhost", "127.0.0.1"]
 
+ENABLE_SILK = False
 
 # Application definition
 
@@ -102,6 +103,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+if ENABLE_SILK:
+    INSTALLED_APPS += [
+        "silk",
+    ]
+
+    MIDDLEWARE.insert(0, "silk.middleware.SilkyMiddleware")
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

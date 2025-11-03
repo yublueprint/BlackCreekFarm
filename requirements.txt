@@ -5,6 +5,8 @@ flake8
 black 
 autoflake 
 isort
+django-silk
+memory-profiler
 # Testing & coverage
 pytest>=8.0.0
 pytest-cov
