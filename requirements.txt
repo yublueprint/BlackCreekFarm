@@ -6,6 +6,7 @@ black
 autoflake 
 isort
 # Testing & coverage
+psycopg2-binary
 pytest>=8.0.0
 pytest-cov
 pytest-django>=4.9.0

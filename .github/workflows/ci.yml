@@ -9,6 +9,27 @@ on:
 jobs:
   build-test-lint:
     runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      POSTGRES_DB: blackcreekfarm
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+      DATABASE_URL: postgres://user:user@localhost:5432/blackcreekfarm
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: blackcreekfarm
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: user
+        options: >-
+          --health-cmd="pg_isready -U user -d blackcreekfarm"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout code
@@ -22,5 +43,40 @@ jobs:
       - name: Install dependencies
         run: make build
 
+      # 4. Wait for DB to be ready
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h localhost -U user -d blackcreekfarm; do
+            echo "⏳ Waiting for database..."
+            sleep 2
+          done
+          echo "✅ Database is ready!"
+
+      # 5. Run migrations
+      - name: Run migrations
+        run: |
+          python manage.py migrate --noinput
+
+      # 6. Run tests
       - name: Run tests
         run: make test
+
+      # 7. Notify Discord on PR merge success
+      - name: Notify Discord on PR merge success
+        if: ${{ success() && github.event.pull_request.merged == true }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d "{
+                 \"content\": \"🎉 *${{ github.event.pull_request.title }}* passed all checks and was launched to **Production** by **${{ github.actor }}** 🚀 Someone call NASA — mission accomplished!\"
+               }" \
+               $DISCORD_WEBHOOK_URL
+
+      # 8. Notify Discord on failure
+      - name: Notify Discord on failure
+        if: ${{ failure() && github.event_name == 'pull_request' }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d "{
+                 \"content\": \"💀 *${{ github.event.pull_request.title }}* crashed and burned.\n**${{ github.actor }}**, you broke the build again. Time to debug, legend. 🧩\"
+               }" \
+               $DISCORD_WEBHOOK_URL
