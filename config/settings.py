@@ -23,14 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-hp!vq%%2cpsg4ulu)b116c(vf52jhg7=3xq(vm-j^f=(h+wuwj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-<<<<<<< HEAD
-DEBUG = True
-=======
 DEBUG = False
 ENABLE_SILK = False
 if (DEBUG):
     ENABLE_SILK = True
->>>>>>> c15e9a3 (Migrated to Postgres Setup)
 
 ALLOWED_HOSTS = ["*", "0.0.0.0", "localhost", "127.0.0.1"]
 
