@@ -1,5 +1,6 @@
 import datetime
 import os
+import gc
 
 #from memory_profiler import profile
 
@@ -71,7 +72,7 @@ class Logger:
                 f.write(f"[{timestamp}] {message}\n")
 
     #@profile
-    def retrieve_recent_activity(self, amount_to_retrieve=5, get_all=False, chunk_size=4096):
+    def retrieve_recent_activity(self, amount_to_retrieve=5, get_all=False):
         """
         Memory and speed efficient way of retrieving recent activity.
 
@@ -86,52 +87,35 @@ class Logger:
         An array of recent activities.
         """
         
+        #NOTES:
+        # When loading an entire 1MB log file, it will always have high memory usage no matter which way you implement it.
+        # Time is actually better using readlines and just going through it reversed. Even though it is O(n^2), even at worst case it loads really fast (at most 2 seconds), so time is not to worry here.
+        # Now I just gotta find out how to free the memory when entering new page.
+        # Solutions I found for the memory problem are...
+        # * Force refresh the page. When you click the browser refresh page, the memory drops back to normal baselines. Whereas if you go on another page when on the full recent activities list, it will keep the previous session from the previous page in memory. We have to free that.
+        # * Find out how to make Django free all memory when entering a new page ALWAYS.
+
         recent_activity_array = []
 
         try:
-            with open(self.modifications_filename, 'rb') as f:
-                # Go to the end of the file.
-                f.seek(0,2)
-                file_size = f.tell()
+            gc.collect()
 
-                # If get all, the chunk_size must be the file size for now.
-                if (get_all):
-                    chunk_size = file_size
+            with open(self.modifications_filename, "r") as f:
+                lines = f.readlines()
 
-                # Start reading back from the very end.
-                position = file_size
-
-                # Loop backward, reading chunks until we have enough lines.
-                while (position > 0):
-                    if ((not get_all) and (len(recent_activity_array) >= amount_to_retrieve)):
+                for line in reversed(lines):
+                    recent_activity_array.append(formatLine(line))
+                    if (not get_all and len(recent_activity_array) >= amount_to_retrieve):
                         break
-                    # Calculate where to seek to (start of the chunk).
-                    seek_to = max(0, position - chunk_size)
 
-                    # Move the file pointer back.
-                    f.seek(seek_to)
-
-                    # Read the chunk of data.
-                    chunk = f.read(position - seek_to)
-
-                    # Split the chunk by newlines (b'\n').
-                    # Last element usually is an empty string or an incomplete line from the previous chunk.
-                    lines_in_chunk = chunk.split(b'\n')
-
-                    # Process lines in the chunk from last to first.
-                    for line in reversed(lines_in_chunk):
-                        if line:
-                            # lines.append(line)
-                            recent_activity_array.append(formatLine(line.decode('utf-8')))
-                        if ((not get_all) and (len(recent_activity_array) >= amount_to_retrieve)):
-                            break
-
-                    # Update the position for the next iteration.
-                    position = seek_to
+                del lines
+                    
 
         except Exception as e:
             full_error_message = f"Error: {e}"
             # print(full_error_message)
             Logger.log(full_error_message)
         finally:
+            # The line below made HUGE improvement to memory. Makes memory drop bac kto baseline after exiting full list page.
+            gc.collect()
             return recent_activity_array

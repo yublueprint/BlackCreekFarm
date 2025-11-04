@@ -1,3 +1,5 @@
+import gc
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
@@ -31,6 +33,8 @@ def dashboard(request):
         "equipment_count": Equipment.objects.count(),      # Count of all equipment records
         "recent_activity": logger.retrieve_recent_activity() # Recent user/system activity
     }
+    
+    gc.collect()
 
     # Render the dashboard template with the context data
     return render(request, "dashboard.html", context)
