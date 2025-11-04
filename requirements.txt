@@ -5,6 +5,8 @@ flake8
 black 
 autoflake 
 isort
+django-silk
+memory-profiler
 # Testing & coverage
 psycopg2-binary
 pytest>=8.0.0

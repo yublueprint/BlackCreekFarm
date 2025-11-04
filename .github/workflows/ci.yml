@@ -1,10 +1,8 @@
-name: CI
+name: CI Pipeline
 
 on:
-  push:
-    branches: [ Prod ]
   pull_request:
-    branches: [ Prod ]
+    types: [opened, synchronize, reopened, closed]
 
 jobs:
   build-test-lint:
@@ -32,14 +30,17 @@ jobs:
           --health-retries=5
 
     steps:
+      # 1. Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10.6'
 
+      # 3. Install dependencies
       - name: Install dependencies
         run: make build
 

@@ -32,8 +32,9 @@ if (DEBUG):
     ENABLE_SILK = True
 >>>>>>> c15e9a3 (Migrated to Postgres Setup)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*", "0.0.0.0", "localhost", "127.0.0.1"]
 
+ENABLE_SILK = False
 
 # Application definition
 
@@ -111,6 +112,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+if ENABLE_SILK:
+    INSTALLED_APPS += [
+        "silk",
+    ]
+
+    MIDDLEWARE.insert(0, "silk.middleware.SilkyMiddleware")
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
