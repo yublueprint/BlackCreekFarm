@@ -128,8 +128,8 @@ if ENABLE_SILK:
     MIDDLEWARE.insert(0, "silk.middleware.SilkyMiddleware")
 
 if DEBUG:
-    print("For memory panel, considering doing: python manage.py runserver --nothreading --noreload")
-    print("Memory panel does not work at the moment.")
+    #print("For memory panel, considering doing: python manage.py runserver --nothreading --noreload")
+    #print("Memory panel does not work at the moment.")
     INSTALLED_APPS += [
         'debug_toolbar',
         'pympler',
