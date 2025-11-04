@@ -28,20 +28,20 @@ ENABLE_SILK = False
 if (DEBUG):
     ENABLE_SILK = True
 
-DEBUG_TOOLBAR_PANELS = [
-    'debug_toolbar.panels.history.HistoryPanel',
-    'debug_toolbar.panels.versions.VersionsPanel',
-    'debug_toolbar.panels.timer.TimerPanel',
-    'debug_toolbar.panels.settings.SettingsPanel',
-    'debug_toolbar.panels.headers.HeadersPanel',
-    'debug_toolbar.panels.request.RequestPanel',
-    'debug_toolbar.panels.sql.SQLPanel',
-    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-    'debug_toolbar.panels.templates.TemplatesPanel',
-    'debug_toolbar.panels.signals.SignalsPanel',
-    'debug_toolbar.panels.redirects.RedirectsPanel',
-    'pympler.panels.MemoryPanel', # This is the Pympler panel
-]
+# DEBUG_TOOLBAR_PANELS = [
+#     'debug_toolbar.panels.history.HistoryPanel',
+#     'debug_toolbar.panels.versions.VersionsPanel',
+#     'debug_toolbar.panels.timer.TimerPanel',
+#     'debug_toolbar.panels.settings.SettingsPanel',
+#     'debug_toolbar.panels.headers.HeadersPanel',
+#     'debug_toolbar.panels.request.RequestPanel',
+#     'debug_toolbar.panels.sql.SQLPanel',
+#     'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+#     'debug_toolbar.panels.templates.TemplatesPanel',
+#     'debug_toolbar.panels.signals.SignalsPanel',
+#     'debug_toolbar.panels.redirects.RedirectsPanel',
+#     'pympler.panels.MemoryPanel', # This is the Pympler panel
+# ]
 
 ALLOWED_HOSTS = ["*", "0.0.0.0", "localhost", "127.0.0.1"]
 
@@ -130,16 +130,17 @@ if ENABLE_SILK:
 if DEBUG:
     #print("For memory panel, considering doing: python manage.py runserver --nothreading --noreload")
     #print("Memory panel does not work at the moment.")
-    INSTALLED_APPS += [
-        'debug_toolbar',
-        'pympler',
-    ]
+    # INSTALLED_APPS += [
+    #     'debug_toolbar',
+    #     'pympler',
+    # ]
 
-    INTERNAL_IPS += [
-        "127.0.0.1",
-    ]
+    # INTERNAL_IPS += [
+    #     "127.0.0.1",
+    # ]
 
-    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+    # MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+    pass
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
