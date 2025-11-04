@@ -80,7 +80,6 @@ class Logger:
         ----------
         amount_to_retrieve : (integer) most recent number of activities to retrieve. Set to 5 by default.
         get_all : (boolean) get all activities or not. False by default.
-        chunk_size : (integer) number of bytes to iterate through. 4096 by default.
 
         Returns
         -------
