@@ -89,11 +89,9 @@ class Logger:
         
         #NOTES:
         # When loading an entire 1MB log file, it will always have high memory usage no matter which way you implement it.
-        # Time is actually better using readlines and just going through it reversed. Even though it is O(n^2), even at worst case it loads really fast (at most 2 seconds), so time is not to worry here.
-        # Now I just gotta find out how to free the memory when entering new page.
-        # Solutions I found for the memory problem are...
-        # * Force refresh the page. When you click the browser refresh page, the memory drops back to normal baselines. Whereas if you go on another page when on the full recent activities list, it will keep the previous session from the previous page in memory. We have to free that.
-        # * Find out how to make Django free all memory when entering a new page ALWAYS.
+        # Time is actually better using readlines and just going through it reversed. Even though it is O(n^2), even at worst case it loads really fast. So time is not a worry here.
+        # Readlines is also just a safe way of doing it, as chunking can risk broken lines.
+        # Making the user force reload like clicking on reload button on browser completely empties memory, could be done with Javascript where it takes them to a page that force reloads then sends them back to dashboard. Can be done later.
 
         recent_activity_array = []
 
