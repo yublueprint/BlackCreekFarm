@@ -5,46 +5,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
-    env:
-      POSTGRES_DB: blackcreekfarm
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: user
-      DATABASE_URL: postgres://user:user@postgres:5432/blackcreekfarm
-      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-
-    services:
-      postgres:
-        image: postgres:15
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_DB: blackcreekfarm
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: user
-        options: >-
-          --health-cmd="pg_isready -U user -d blackcreekfarm"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
-      - name: ✔️ Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: ✔️ Set Up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10.6'
-
-      - name: ✔️ Install Dependencies
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: ✔️ Wait for Postgres
+      - name: Wait for Postgres
         run: |
           until pg_isready --host=postgres --port=5432 --username=user --dbname=blackcreekfarm --quiet; do
             echo "⏳ Waiting for database..."
@@ -52,12 +14,12 @@ jobs:
           done
           echo "✅ PostgreSQL is ready!"
 
-      - name: ✔️ Run Migrations
+      - name: Run migrations
         run: |
           source venv/bin/activate
           python manage.py migrate --noinput
 
-      - name: ✔️ Run Tests
+      - name: Run tests
         run: |
           source venv/bin/activate
           make test

@@ -5,25 +5,21 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-    env:
-      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-      BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
-
     steps:
-      - name: ✔️ Notify Discord on PR merge success (Prod only)
+      - name: Notify on success
         if: ${{ success() && github.event.pull_request.merged == true && github.base_ref == 'Prod' }}
         run: |
           curl -H "Content-Type: application/json" \
                -d "{
-                 \"content\": \"✅ *${{ github.event.pull_request.title }}* on branch **${{ env.BRANCH_NAME }}** passed all checks and was launched to **Production** by **${{ github.actor }}** 🚀 Someone call NASA — mission accomplished!\"
+                 \"content\": \"✅ *${{ github.event.pull_request.title }}* passed all checks and was launched to **Production** by **${{ github.actor }}** 🚀\"
                }" \
                $DISCORD_WEBHOOK_URL
 
-      - name: ✔️ Notify Discord on Failure
+      - name: Notify on failure
         if: ${{ failure() && github.event_name == 'pull_request' }}
         run: |
           curl -H "Content-Type: application/json" \
                -d "{
-                 \"content\": \"💀 *${{ github.event.pull_request.title }}* on branch **${{ env.BRANCH_NAME }}** crashed and burned.\\n**${{ github.actor }}**, you broke the build again. Time to debug, legend. 🧩\"
+                 \"content\": \"💀 *${{ github.event.pull_request.title }}* failed CI.\\n**${{ github.actor }}**, time to debug 🧩\"
                }" \
                $DISCORD_WEBHOOK_URL
