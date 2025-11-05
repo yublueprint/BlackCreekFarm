@@ -10,20 +10,9 @@ jobs:
       BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
     steps:
-      - name: ✔️ Notify on PR merge success (Prod only)
+      - name: ✔️ Notify Discord on PR merge success (Prod only)
         if: ${{ success() && github.event.pull_request.merged == true && github.base_ref == 'Prod' }}
         run: |
           curl -H "Content-Type: application/json" \
                -d "{
-                 \"content\": \"✅ *${{ github.event.pull_request.title }}* on branch **${{ env.BRANCH_NAME }}** passed all checks and was deployed to **Production** by **${{ github.actor }}** 🚀\"
-               }" \
-               $DISCORD_WEBHOOK_URL
-
-      - name: ✔️ Notify on failure
-        if: ${{ failure() && github.event_name == 'pull_request' }}
-        run: |
-          curl -H "Content-Type: application/json" \
-               -d "{
-                 \"content\": \"💀 *${{ github.event.pull_request.title }}* on branch **${{ env.BRANCH_NAME }}** failed CI.\\n**${{ github.actor }}**, please debug 🧩\"
-               }" \
-               $DISCORD_WEBHOOK_URL
+                 \"content\": \"✅ *${{ github.event.pull_request.title }}* on branch **${{ env.BRANCH_NAME }}** passed all checks and**_*_*
