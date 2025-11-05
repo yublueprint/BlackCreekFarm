@@ -1,0 +1,47 @@
+name: 'Discord Notification'
+description: 'Sends notifications to Discord'
+
+inputs:
+  webhook_url:
+    description: 'Discord webhook URL'
+    required: true
+  pr_title:
+    description: 'PR title'
+    required: true
+  actor:
+    description: 'GitHub actor'
+    required: true
+  job_status:
+    description: 'Job status'
+    required: true
+  is_merged:
+    description: 'Whether PR was merged'
+    required: false
+    default: 'false'
+  base_ref:
+    description: 'Base branch'
+    required: false
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    - name: Notify on success (Prod merge)
+      if: ${{ inputs.job_status == 'success' && inputs.is_merged == 'true' && inputs.base_ref == 'Prod' }}
+      shell: bash
+      run: |
+        curl -H "Content-Type: application/json" \
+             -d "{
+               \"content\": \"✅ *\\\"${{ inputs.pr_title }}\\\"* passed all checks and was launched to **Production** by **${{ inputs.actor }}** 🚀 Someone call NASA — mission accomplished!\"
+             }" \
+             ${{ inputs.webhook_url }}
+
+    - name: Notify on failure
+      if: ${{ inputs.job_status == 'failure' }}
+      shell: bash
+      run: |
+        curl -H "Content-Type: application/json" \
+             -d "{
+               \"content\": \"💀 *\\\"${{ inputs.pr_title }}\\\"* crashed and burned.\\n**${{ inputs.actor }}**, you broke the build again. Time to debug, legend. 🧩\"
+             }" \
+             ${{ inputs.webhook_url }}

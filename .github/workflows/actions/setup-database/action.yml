@@ -1,0 +1,20 @@
+name: 'Setup Database'
+description: 'Waits for database and runs migrations'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Wait for Postgres
+      shell: bash
+      run: |
+        until pg_isready -h localhost -U user -d blackcreekfarm; do
+          echo "⏳ Waiting for database..."
+          sleep 2
+        done
+        echo "✅ Database is ready!"
+
+    - name: Run migrations
+      shell: bash
+      run: |
+        source venv/bin/activate
+        python manage.py migrate --noinput

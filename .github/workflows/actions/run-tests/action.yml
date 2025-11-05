@@ -1,0 +1,11 @@
+name: 'Run Tests'
+description: 'Runs test suite'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run tests
+      shell: bash
+      run: |
+        source venv/bin/activate
+        make test
