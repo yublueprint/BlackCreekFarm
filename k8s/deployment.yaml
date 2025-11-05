@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: blackcreek-dbms
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: blackcreek-dbms
+  template:
+    metadata:
+      labels:
+        app: blackcreek-dbms
+    spec:
+      containers:
+        - name: blackcreek-dbms
+          image: blackcreek-dbms:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: config.settings

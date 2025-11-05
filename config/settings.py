@@ -23,25 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-hp!vq%%2cpsg4ulu)b116c(vf52jhg7=3xq(vm-j^f=(h+wuwj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 ENABLE_SILK = False
 if (DEBUG):
     ENABLE_SILK = True
-
-# DEBUG_TOOLBAR_PANELS = [
-#     'debug_toolbar.panels.history.HistoryPanel',
-#     'debug_toolbar.panels.versions.VersionsPanel',
-#     'debug_toolbar.panels.timer.TimerPanel',
-#     'debug_toolbar.panels.settings.SettingsPanel',
-#     'debug_toolbar.panels.headers.HeadersPanel',
-#     'debug_toolbar.panels.request.RequestPanel',
-#     'debug_toolbar.panels.sql.SQLPanel',
-#     'debug_toolbar.panels.staticfiles.StaticFilesPanel',
-#     'debug_toolbar.panels.templates.TemplatesPanel',
-#     'debug_toolbar.panels.signals.SignalsPanel',
-#     'debug_toolbar.panels.redirects.RedirectsPanel',
-#     'pympler.panels.MemoryPanel', # This is the Pympler panel
-# ]
 
 ALLOWED_HOSTS = ["*", "0.0.0.0", "localhost", "127.0.0.1"]
 
@@ -96,8 +81,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'blackcreekfarm',
+        'USER': 'user',
+        'PASSWORD': 'user',
+        'HOST': 'localhost',   # 👈 local connection to container
+        'PORT': '5432',
     }
 }
 
