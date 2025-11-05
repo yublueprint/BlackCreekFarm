@@ -74,34 +74,7 @@ docker compose down -v    # Stop + delete data
 | Django App | [localhost:8000](http://127.0.0.1:8000) | Via signup |
 | pgAdmin | [localhost:5050](http://localhost:5050) | `admin@blackcreek.com` / `admin` |
 
-> ⚠️ Change default pgAdmin password in production
-
 ---
-
-## 🔧 Development Commands
-
-**macOS/Linux:**
-
-| Command | Action |
-|---------|--------|
-| `make build` | Install dependencies |
-| `make migrate` | Apply migrations |
-| `make run` | Start server |
-| `make signup` | Create admin |
-| `make clean` | Remove venv |
-
-**Windows:** Use standard Django commands with activated venv
-
----
-
-## 🛠️ Troubleshooting
-
-**Docker:**
-```bash
-docker compose ps              # Check status
-docker compose logs [service]  # View logs
-docker compose restart         # Restart
-```
 
 **Environment Reset:**
 - macOS/Linux: `make clean && make build && make migrate`
