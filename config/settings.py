@@ -30,7 +30,8 @@ if (DEBUG):
 
 ALLOWED_HOSTS = ["*", "0.0.0.0", "localhost", "127.0.0.1"]
 
-ENABLE_SILK = False
+INTERNAL_IPS = []
+
 
 # Application definition
 
@@ -114,6 +115,21 @@ if ENABLE_SILK:
     ]
 
     MIDDLEWARE.insert(0, "silk.middleware.SilkyMiddleware")
+
+if DEBUG:
+    #print("For memory panel, considering doing: python manage.py runserver --nothreading --noreload")
+    #print("Memory panel does not work at the moment.")
+    # INSTALLED_APPS += [
+    #     'debug_toolbar',
+    #     'pympler',
+    # ]
+
+    # INTERNAL_IPS += [
+    #     "127.0.0.1",
+    # ]
+
+    # MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
+    pass
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/

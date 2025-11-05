@@ -6,9 +6,9 @@
 <h2 class="text-3xl font-semibold mb-6">Livestock Management</h2>
 
 {% if error %}
-  <div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-    {{ error }}
-  </div>
+<div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+	{{ error }}
+</div>
 {% endif %}
 
 
@@ -26,10 +26,10 @@
 		<form method="post" id="addLivestockForm" action="{% url 'add_livestock' %}">
 			{% csrf_token %}
 			<label class="block mb-2">Name:</label>
-			<input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" required />
+			<input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
 
 			<label class="block mb-2">Breed:</label>
-			<input type="text" name="breed" class="w-full border rounded px-3 py-2 mb-4" required />
+			<input type="text" name="breed" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
 
 			<label class="block mb-2">Age:</label>
 			<input type="number" name="age" class="w-full border rounded px-3 py-2 mb-4" min="0" max="100" required
@@ -37,9 +37,11 @@
 				oninput="this.setCustomValidity('')" />
 
 			<label class="block mb-2">Health Status:</label>
-			<input type="text" name="health_status" class="w-full border rounded px-3 py-2 mb-4" required />
+			<input type="text" name="health_status" class="w-full border rounded px-3 py-2 mb-4" maxlength="100"
+				required />
 
-			<button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700" style="background-color: #335D43;">
+			<button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
+				style="background-color: #335D43;">
 				Save
 			</button>
 		</form>
@@ -57,10 +59,12 @@
 			{% csrf_token %}
 			<input type="hidden" name="id" id="editId" />
 			<label class="block mb-2">Name:</label>
-			<input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" required />
+			<input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" maxlength="100"
+				required />
 
 			<label class="block mb-2">Breed:</label>
-			<input type="text" name="breed" id="editBreed" class="w-full border rounded px-3 py-2 mb-4" required />
+			<input type="text" name="breed" id="editBreed" class="w-full border rounded px-3 py-2 mb-4" maxlength="100"
+				required />
 
 			<label class="block mb-2">Age:</label>
 			<input type="number" name="age" id="editAge" class="w-full border rounded px-3 py-2 mb-4" min="1" required
@@ -69,9 +73,10 @@
 
 			<label class="block mb-2">Health Status:</label>
 			<input type="text" name="health_status" id="editHealthStatus" class="w-full border rounded px-3 py-2 mb-4"
-				required />
+				maxlength="100" required />
 
-			<button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700" style="background-color: #335D43;">
+			<button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
+				style="background-color: #335D43;">
 				Save Changes
 			</button>
 		</form>
@@ -106,7 +111,7 @@
 </div>
 
 <!-- Table -->
-<div class="bg-white rounded-lg shadow-md overflow-hidden">
+<div class="bg-white rounded-lg shadow-md overflow-x-auto">
 	<table class="min-w-full">
 		<thead class="bg-gray-50 border-b border-gray-200">
 			<tr>

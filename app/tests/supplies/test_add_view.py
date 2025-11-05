@@ -26,7 +26,7 @@ def test_add_supplies_missing_fields(client, user, mocker):
     response = client.post(reverse("add_supplies"), {"name": ""})
     assert response.status_code == 200
     assert "error" in response.context
-    mock_logger.assert_any_call(f"Supply creation error by {user}: Missing name or type for supply.")
+    mock_logger.assert_any_call(f"Supply creation error by {user}: Missing name for supply.")
     mock_all.assert_called_once()
 
 
