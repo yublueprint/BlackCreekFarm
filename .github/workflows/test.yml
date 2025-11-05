@@ -5,6 +5,22 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: blackcreekfarm
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: user
+        options: >-
+          --health-cmd="pg_isready -U user -d blackcreekfarm"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     env:
       POSTGRES_DB: blackcreekfarm
       POSTGRES_USER: user
@@ -24,7 +40,22 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
+          pip install --upgrade pip
           pip install -r requirements.txt
+
+      - name: ✔️ Wait for Postgres to be ready
+        run: |
+          echo "⏳ Waiting for PostgreSQL to accept connections..."
+          for i in {1..30}; do
+            if pg_isready --host=postgres --port=5432 --username=user --dbname=blackcreekfarm --quiet; then
+              echo "✅ PostgreSQL is ready!"
+              exit 0
+            fi
+            echo "⏳ Attempt $i/30: still waiting..."
+            sleep 2
+          done
+          echo "❌ PostgreSQL never became ready." >&2
+          exit 1
 
       - name: ✔️ Run Migrations
         run: |
