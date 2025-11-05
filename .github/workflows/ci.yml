@@ -8,11 +8,8 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
 
-  postgres:
-    uses: ./.github/workflows/postgres.yml
-
   test:
-    needs: [build, postgres]
+    needs: build
     uses: ./.github/workflows/test.yml
 
   notify:
