@@ -7,12 +7,13 @@ on:
 jobs:
   build-test-lint:
     runs-on: ubuntu-latest
+
     env:
-      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
       POSTGRES_DB: blackcreekfarm
       POSTGRES_USER: user
       POSTGRES_PASSWORD: user
-      DATABASE_URL: postgres://user:user@localhost:5432/blackcreekfarm
+      DATABASE_URL: postgres://user:user@postgres:5432/blackcreekfarm
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
 
     services:
       postgres:
@@ -30,20 +31,25 @@ jobs:
           --health-retries=5
 
     steps:
+      # 1️⃣ Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup Python
       - name: Setup Python environment
         uses: ./.github/actions/setup-python
 
+      # 3️⃣ Wait for Postgres to be ready
       - name: Setup database
         uses: ./.github/actions/setup-database
 
+      # 4️⃣ Run migrations and tests
       - name: Run tests
         uses: ./.github/actions/run-tests
 
+      # 5️⃣ Send Discord notification (always runs)
       - name: Notify Discord
-        if: always()
+        if: ${{ always() }}
         uses: ./.github/actions/discord-notify
         with:
           webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}
