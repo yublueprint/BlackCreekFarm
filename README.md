@@ -1,12 +1,24 @@
 # Blackcreek DBMS
 
-A Django-based database management system with PostgreSQL and pgAdmin integration.
+Django-based database management system with PostgreSQL and pgAdmin.
 
-**Repository:** [https://github.com/yublueprint/blackcreek_dbms](https://github.com/yublueprint/blackcreek_dbms)
+[![Repository](https://img.shields.io/badge/GitHub-blackcreek__dbms-blue)](https://github.com/yublueprint/blackcreek_dbms)
 
 ---
 
-## 🚀 Quickstart
+## 📋 Table of Contents
+
+- [Quick Start](#-quick-start)
+- [Database Setup](#-database-setup)
+- [Development Commands](#-development-commands)
+- [Troubleshooting](#-troubleshooting)
+- [Contributing](#-contributing)
+
+---
+
+## 🚀 Quick Start
+
+**Prerequisites:** Python 3.8+, Docker, Docker Compose, Git
 
 <table>
 <tr>
@@ -16,36 +28,23 @@ A Django-based database management system with PostgreSQL and pgAdmin integratio
 <tr>
 <td valign="top">
 
-**Clone Repository**
 ```bash
 git clone https://github.com/yublueprint/blackcreek_dbms.git
 cd blackcreek_dbms
-```
 
-**Setup & Run**
-```bash
-make build    # Install dependencies
-make migrate  # Apply migrations
-make run      # Start server
-make signup   # Create admin
-```
-
-**Clean**
-```bash
-make clean
+make build
+make migrate
+make run
+make signup  # Create admin
 ```
 
 </td>
 <td valign="top">
 
-**Clone Repository**
 ```bat
 git clone https://github.com/yublueprint/blackcreek_dbms.git
 cd blackcreek_dbms
-```
 
-**Setup & Run**
-```bat
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
@@ -62,39 +61,71 @@ python manage.py createsuperuser
 
 ---
 
-## 🐘 PostgreSQL + pgAdmin
+## 🐘 Database Setup
 
-**Start Services**
 ```bash
-docker compose up -d
+docker compose up -d      # Start
+docker compose down       # Stop
+docker compose down -v    # Stop + delete data
 ```
 
-**Access pgAdmin:** [http://localhost:5050](http://localhost:5050)
-- Email: `admin@blackcreek.com`
-- Password: `admin`
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| Django App | [localhost:8000](http://127.0.0.1:8000) | Via signup |
+| pgAdmin | [localhost:5050](http://localhost:5050) | `admin@blackcreek.com` / `admin` |
 
-**Stop Services**
-```bash
-docker compose down     # Stop
-docker compose down -v  # Stop + delete data
-```
+> ⚠️ Change default pgAdmin password in production
+
+---
+
+## 🔧 Development Commands
+
+**macOS/Linux:**
+
+| Command | Action |
+|---------|--------|
+| `make build` | Install dependencies |
+| `make migrate` | Apply migrations |
+| `make run` | Start server |
+| `make signup` | Create admin |
+| `make clean` | Remove venv |
+
+**Windows:** Use standard Django commands with activated venv
 
 ---
 
 ## 🛠️ Troubleshooting
 
-**Check containers:** `docker compose ps`  
-**View logs:** `docker compose logs`  
-**Restart:** `docker compose restart`
+**Docker:**
+```bash
+docker compose ps              # Check status
+docker compose logs [service]  # View logs
+docker compose restart         # Restart
+```
+
+**Environment Reset:**
+- macOS/Linux: `make clean && make build && make migrate`
+- Windows: Delete venv folder, recreate with `python -m venv venv`
+
+**Common Issues:**
+
+| Problem | Fix |
+|---------|-----|
+| Port 8000 in use | Kill process or change port |
+| Database error | Check `docker compose ps` |
+| Permission denied | Use `sudo` or add user to docker group |
 
 ---
 
-## 🔧 Make Commands (macOS/Linux)
+## 🤝 Contributing
 
-| Command | Action |
-|---------|--------|
-| `make build` | Setup environment |
-| `make migrate` | Run migrations |
-| `make run` | Start server |
-| `make signup` | Create admin |
-| `make clean` | Remove venv |
+```bash
+git checkout -b feature/your-feature
+git commit -m "Add feature" -m "Description"
+git push origin feature/your-feature
+# Open pull request
+```
+
+---
+
+**Questions?** [Open an issue](https://github.com/yublueprint/blackcreek_dbms/issues) | Part of Yu Blueprint initiative
