@@ -1,0 +1,30 @@
+name: Setup Postgres
+on:
+  workflow_call:
+
+jobs:
+  postgres:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: blackcreekfarm
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: user
+        options: >-
+          --health-cmd="pg_isready -U user -d blackcreekfarm"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h localhost -U user -d blackcreekfarm; do
+            echo "⏳ Waiting for database..."
+            sleep 2
+          done
+          echo "✅ Database is ready!"

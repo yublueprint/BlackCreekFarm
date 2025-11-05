@@ -1,0 +1,28 @@
+name: Discord Notifications
+on:
+  workflow_call:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    steps:
+      - name: Notify on PR merge success (Prod only)
+        if: ${{ success() && github.event.pull_request.merged == true && github.base_ref == 'Prod' }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d "{
+                 \"content\": \"✅ *\\\"${{ github.event.pull_request.title }}\\\"* passed all checks and was launched to **Production** by **${{ github.actor }}** 🚀 Someone call NASA — mission accomplished!\"
+               }" \
+               $DISCORD_WEBHOOK_URL
+
+      - name: Notify on failure
+        if: ${{ failure() && github.event_name == 'pull_request' }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d "{
+                 \"content\": \"💀 *\\\"${{ github.event.pull_request.title }}\\\"* crashed and burned.\\n**${{ github.actor }}**, you broke the build again. Time to debug, legend. 🧩\"
+               }" \
+               $DISCORD_WEBHOOK_URL
