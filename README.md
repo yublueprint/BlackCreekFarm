@@ -1,102 +1,100 @@
 # Blackcreek DBMS
 
-A Django-based database management system for managing and tracking records.
+A Django-based database management system with PostgreSQL and pgAdmin integration.
 
-Repository: [https://github.com/yublueprint/blackcreek_dbms](https://github.com/yublueprint/blackcreek_dbms)
+**Repository:** [https://github.com/yublueprint/blackcreek_dbms](https://github.com/yublueprint/blackcreek_dbms)
 
 ---
 
-## Quickstart (MAC)
+## 🚀 Quickstart
 
-### 1. Clone the Repository from desktop
+<table>
+<tr>
+<th width="50%">🍎 macOS/Linux</th>
+<th width="50%">🪟 Windows</th>
+</tr>
+<tr>
+<td valign="top">
 
+**Clone Repository**
 ```bash
 git clone https://github.com/yublueprint/blackcreek_dbms.git
 cd blackcreek_dbms
 ```
 
-### 2. Build the Project
-
+**Setup & Run**
 ```bash
-make build
+make build    # Install dependencies
+make migrate  # Apply migrations
+make run      # Start server
+make signup   # Create admin
 ```
 
-- Creates a virtual environment (`venv`)
-- Installs dependencies from `requirements.txt`
-
-### 3. Migrate
-
-```bash
-make migrate
-```
-
-### 4. Run the Development Server
-
-```bash
-make run
-```
-
-### 5. Create an Admin/SignUp
-
-```bash
-make signup
-```
-
-### 6. Clean the Venv
-
+**Clean**
 ```bash
 make clean
 ```
 
-### Local Development Server
+</td>
+<td valign="top">
 
-**[Open the app at http://127.0.0.1:8000](http://127.0.0.1:8000)**
-
----
-
-## Quickstart (Windows)
-
-### 1. Clone the Repository
-
+**Clone Repository**
 ```bat
 git clone https://github.com/yublueprint/blackcreek_dbms.git
 cd blackcreek_dbms
 ```
 
-### 2. Create a Virtual Environment
-
+**Setup & Run**
 ```bat
 python -m venv venv
-```
-
-### 3. Activate the Virtual Environment
-
-```bat
 venv\Scripts\activate
-```
-
-### 4. Install Dependencies
-
-```bat
-pip install --upgrade pip
 pip install -r requirements.txt
-```
-
-### 5. Apply Database Migrations
-
-```bat
 python manage.py migrate
-```
-
-### 6. Run the Development Server
-
-```bat
 python manage.py runserver
+python manage.py createsuperuser
 ```
 
-Visit: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+</td>
+</tr>
+</table>
 
+**Access:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
+---
+
+## 🐘 PostgreSQL + pgAdmin
+
+**Start Services**
 ```bash
-docker build -t blackcreek-dbms:latest .
-docker run -p 8000:8000 blackcreek-dbms:latest
+docker compose up -d
+```
+
+**Access pgAdmin:** [http://localhost:5050](http://localhost:5050)
+- Email: `admin@blackcreek.com`
+- Password: `admin`
+
+**Stop Services**
+```bash
+docker compose down     # Stop
+docker compose down -v  # Stop + delete data
+```
+
+---
+
+## 🛠️ Troubleshooting
+
+**Check containers:** `docker compose ps`  
+**View logs:** `docker compose logs`  
+**Restart:** `docker compose restart`
+
+---
+
+## 🔧 Make Commands (macOS/Linux)
+
+| Command | Action |
+|---------|--------|
+| `make build` | Setup environment |
+| `make migrate` | Run migrations |
+| `make run` | Start server |
+| `make signup` | Create admin |
+| `make clean` | Remove venv |
