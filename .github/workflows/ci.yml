@@ -5,39 +5,13 @@ on:
     types: [opened, synchronize, reopened, closed]
 
 jobs:
-  pipeline:
-    runs-on: ubuntu-latest
-    env:
-      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-      POSTGRES_DB: blackcreekfarm
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: user
-      DATABASE_URL: postgres://user:user@postgres:5432/blackcreekfarm
+  setup:
+    uses: ./.github/workflows/setup.yml
 
-    services:
-      postgres:
-        image: postgres:15
-        ports:
-          - 5432:5432
-        env:
-          POSTGRES_DB: blackcreekfarm
-          POSTGRES_USER: user
-          POSTGRES_PASSWORD: user
-        options: >-
-          --health-cmd="pg_isready -U user -d blackcreekfarm"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+  test:
+    needs: setup
+    uses: ./.github/workflows/test.yml
 
-    steps:
-      - name: ✔️ Checkout code
-        uses: actions/checkout@v4
-
-      - name: 🧱 Setup Environment
-        uses: ./.github/workflows/setup.yml
-
-      - name: 🧪 Run Tests
-        uses: ./.github/workflows/test.yml
-
-      - name: 📢 Notify Discord
-        uses: ./.github/workflows/notify.yml
+  notify:
+    needs: test
+    uses: ./.github/workflows/notify.yml
