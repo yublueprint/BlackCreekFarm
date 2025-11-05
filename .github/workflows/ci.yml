@@ -5,11 +5,11 @@ on:
     types: [opened, synchronize, reopened, closed]
 
 jobs:
-  # ✔️ Run tests (includes DB + migrations)
+  # ✔️ Run all tests (includes Postgres setup and migrations)
   test:
     uses: ./.github/workflows/test.yml
 
-  # ✔️ Send Discord notifications
+  # ✔️ Send Discord notifications after tests
   notify:
     needs: test
     uses: ./.github/workflows/notify.yml

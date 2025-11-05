@@ -29,7 +29,7 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: ✔️ Checkout Code
+      - name: ✔️ Checkout Repository
         uses: actions/checkout@v4
 
       - name: ✔️ Set Up Python
@@ -46,8 +46,18 @@ jobs:
 
       - name: ✔️ Wait for Postgres
         run: |
-          echo "⏳ Waiting for PostgreSQL to accept connections..."
-          for i in {1..30}; do
-            if pg_isready --host=postgres --port=5432 --username=user --dbname=blackcreekfarm --quiet; then
-              echo "✅ PostgreSQL is ready!"
-              exit 0
+          until pg_isready --host=postgres --port=5432 --username=user --dbname=blackcreekfarm --quiet; do
+            echo "⏳ Waiting for database..."
+            sleep 2
+          done
+          echo "✅ PostgreSQL is ready!"
+
+      - name: ✔️ Run Migrations
+        run: |
+          source venv/bin/activate
+          python manage.py migrate --noinput
+
+      - name: ✔️ Run Tests
+        run: |
+          source venv/bin/activate
+          make test

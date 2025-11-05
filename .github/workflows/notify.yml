@@ -15,4 +15,15 @@ jobs:
         run: |
           curl -H "Content-Type: application/json" \
                -d "{
-                 \"content\": \"✅ *${{ github.event.pull_request.title }}* on branch **${{ env.BRANCH_NAME }}** passed all checks and**_*_*
+                 \"content\": \"✅ *${{ github.event.pull_request.title }}* on branch **${{ env.BRANCH_NAME }}** passed all checks and was launched to **Production** by **${{ github.actor }}** 🚀 Someone call NASA — mission accomplished!\"
+               }" \
+               $DISCORD_WEBHOOK_URL
+
+      - name: ✔️ Notify Discord on Failure
+        if: ${{ failure() && github.event_name == 'pull_request' }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d "{
+                 \"content\": \"💀 *${{ github.event.pull_request.title }}* on branch **${{ env.BRANCH_NAME }}** crashed and burned.\\n**${{ github.actor }}**, you broke the build again. Time to debug, legend. 🧩\"
+               }" \
+               $DISCORD_WEBHOOK_URL
