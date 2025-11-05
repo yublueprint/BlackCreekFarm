@@ -21,10 +21,10 @@ jobs:
           --health-retries=5
 
     steps:
-      - name: Wait for Postgres
+      - name: ✔️ Wait for Postgres to be ready
         run: |
-          until pg_isready -h localhost -U user -d blackcreekfarm; do
-            echo "⏳ Waiting for database..."
+          echo "⏳ Waiting for PostgreSQL to accept connections..."
+          until pg_isready --host=postgres --port=5432 --username=user --dbname=blackcreekfarm --quiet; do
             sleep 2
           done
-          echo "✅ Database is ready!"
+          echo "✅ PostgreSQL is ready!"

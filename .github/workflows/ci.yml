@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: "CI Pipeline"
 
 on:
   pull_request:
@@ -8,8 +8,11 @@ jobs:
   build:
     uses: ./.github/workflows/build.yml
 
+  postgres:
+    uses: ./.github/workflows/postgres.yml
+
   test:
-    needs: build
+    needs: [build, postgres]
     uses: ./.github/workflows/test.yml
 
   notify:
