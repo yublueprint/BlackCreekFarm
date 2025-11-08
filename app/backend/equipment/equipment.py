@@ -1,13 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.equipment.exception import (
-    EquipmentCreationException,
-    EquipmentEditException,
-    EquipmentDeleteException,
-)
+from app.exceptions.equipment.exception import (EquipmentCreationException,
+                                                EquipmentDeleteException,
+                                                EquipmentEditException)
 from app.logging.logging import Logger
+
 from ..models import Equipment
 
 logger = Logger("app/logging/app.log")
@@ -29,7 +28,12 @@ def add_equipment(request):
             purchase_date = request.POST.get("purchase_date")
             maintenance_due = request.POST.get("maintenance_due")
 
-            if not name or not equipment_type or not purchase_date or not maintenance_due:
+            if (
+                not name
+                or not equipment_type
+                or not purchase_date
+                or not maintenance_due
+            ):
                 raise EquipmentCreationException("All fields are required.")
 
             Equipment.objects.create(
@@ -84,7 +88,9 @@ def edit_equipment(request):
                 or not equipment.purchase_date
                 or not equipment.maintenance_due
             ):
-                raise EquipmentEditException("All fields are required to update equipment.")
+                raise EquipmentEditException(
+                    "All fields are required to update equipment."
+                )
 
             equipment.save()
 

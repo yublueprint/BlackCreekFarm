@@ -30,17 +30,17 @@ jobs:
           --health-retries=5
 
     steps:
-      # 1️⃣ Checkout code
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ Set up Python
+      # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10.6'
 
-      # 3️⃣ Install dependencies
+      # Install dependencies
       - name: Install dependencies
         run: |
           python -m venv venv
@@ -48,7 +48,7 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4️⃣ Wait for DB to be ready
+      # Wait for Postgres
       - name: Wait for Postgres
         run: |
           until pg_isready -h localhost -U user -d blackcreekfarm; do
@@ -57,34 +57,40 @@ jobs:
           done
           echo "✅ Database is ready!"
 
-      # 5️⃣ Run migrations
+      # Run migrations
       - name: Run migrations
         run: |
           source venv/bin/activate
           python manage.py migrate --noinput
 
-      # 6️⃣ Run tests
+      # Run tests
       - name: Run tests
         run: |
           source venv/bin/activate
           make test
 
-      # 7️⃣ Notify Discord on PR merge success (Prod only)
+      # Run linter
+      - name: Run flake8 linter
+        run: |
+          source venv/bin/activate
+          flake8 app --max-line-length 99
+
+      # Notify Discord on PR merge success (Prod only)
       - name: Notify Discord on PR merge success (Prod only)
         if: ${{ success() && github.event.pull_request.merged == true && github.base_ref == 'Prod' }}
         run: |
           curl -H "Content-Type: application/json" \
                -d "{
-                 \"content\": \"🎉 *\\\"${{ github.event.pull_request.title }}\\\"* passed all checks and was launched to **Production** by **${{ github.actor }}** 🚀 Someone call NASA — mission accomplished!\"
+                 \"content\": \"✅ *\\\"${{ github.event.pull_request.title }}\\\"* passed all checks and was launched to **Production** by **${{ github.actor }}** 🚀 Someone call NASA — mission accomplished!\"
                }" \
                $DISCORD_WEBHOOK_URL
 
-      # 8️⃣ Notify Discord on failure
+      # Notify Discord on failure (tests or lint)
       - name: Notify Discord on failure
         if: ${{ failure() && github.event_name == 'pull_request' }}
         run: |
           curl -H "Content-Type: application/json" \
                -d "{
-                 \"content\": \"💀 *\\\"${{ github.event.pull_request.title }}\\\"* crashed and burned.\\n**${{ github.actor }}**, you broke the build again. Time to debug, legend. 🧩\"
+                 \"content\": \"💀 *\\\"${{ github.event.pull_request.title }}\\\"* failed checks.\\n**${{ github.actor }}**, check tests or lint errors!\"
                }" \
                $DISCORD_WEBHOOK_URL

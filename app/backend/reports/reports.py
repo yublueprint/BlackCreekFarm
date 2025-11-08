@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import render
 
 from app.logging.logging import Logger
 
@@ -16,4 +16,6 @@ def reports(request):
         return render(request, "app/reports.html", {"livestock": livestock})
     except Exception as e:
         logger.log(f"Error in reports view: {e}")
-        return render(request, "app/error.html", {"error": "Failed to retrieve livestock data"})
+        return render(
+            request, "app/error.html", {"error": "Failed to retrieve livestock data"}
+        )
