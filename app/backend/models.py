@@ -3,6 +3,7 @@ from django.db import models
 # Max text length for a Char field.
 DEFAULT_TEXT_MAX_LENGTH = 100
 
+
 class Record(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     email = models.EmailField()
@@ -58,15 +59,12 @@ class Transaction(models.Model):
         ("Livestock", "Livestock"),
         ("Equipment", "Equipment"),
         ("Supplies", "Supplies"),
-
     ]
 
     TRANSACTION_TYPE_CHOICES = [
         ("Sale", "Sale"),
         ("Purchase", "Purchase"),
         ("Return", "Return"),
-
-
     ]
 
     item_type = models.CharField(max_length=20, choices=ITEM_TYPE_CHOICES)

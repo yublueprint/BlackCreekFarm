@@ -1,7 +1,6 @@
 import pytest
-from django.urls import reverse
 from django.http import Http404
-from app.backend.models import Supplies
+from django.urls import reverse
 
 pytestmark = pytest.mark.django_db
 
@@ -11,7 +10,13 @@ def test_edit_supplies_success(client, user, supply, mocker):
 
     response = client.post(
         reverse("edit_supplies"),
-        {"id": supply.id, "name": "Updated", "type": "NewType", "quantity": 5, "unit": "Liters"},
+        {
+            "id": supply.id,
+            "name": "Updated",
+            "type": "NewType",
+            "quantity": 5,
+            "unit": "Liters",
+        },
     )
 
     supply.refresh_from_db()
@@ -36,7 +41,9 @@ def test_edit_supplies_missing_fields(client, user, supply, mocker):
 
 def test_edit_supplies_not_found(client, user, mocker):
     mocker.patch("app.backend.supplies.supplies.get_object_or_404", side_effect=Http404)
-    mock_all = mocker.patch("app.backend.supplies.supplies.Supplies.objects.all", return_value=[])
+    mock_all = mocker.patch(
+        "app.backend.supplies.supplies.Supplies.objects.all", return_value=[]
+    )
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
     response = client.post(reverse("edit_supplies"), {"id": 999})
@@ -51,7 +58,9 @@ def test_edit_supplies_unexpected_exception(client, user, mocker):
         "app.backend.supplies.supplies.get_object_or_404",
         side_effect=Exception("Something broke"),
     )
-    mock_all = mocker.patch("app.backend.supplies.supplies.Supplies.objects.all", return_value=[])
+    mock_all = mocker.patch(
+        "app.backend.supplies.supplies.Supplies.objects.all", return_value=[]
+    )
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
     response = client.post(reverse("edit_supplies"), {"id": 1})

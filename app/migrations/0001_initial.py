@@ -7,68 +7,136 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Crop',
+            name="Crop",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('planting_date', models.DateField()),
-                ('harvest_date', models.DateField()),
-                ('yield_estimate', models.FloatField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("planting_date", models.DateField()),
+                ("harvest_date", models.DateField()),
+                ("yield_estimate", models.FloatField()),
             ],
         ),
         migrations.CreateModel(
-            name='Equipment',
+            name="Equipment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('type', models.CharField(max_length=100)),
-                ('purchase_date', models.DateField()),
-                ('maintenance_due', models.DateField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("type", models.CharField(max_length=100)),
+                ("purchase_date", models.DateField()),
+                ("maintenance_due", models.DateField()),
             ],
         ),
         migrations.CreateModel(
-            name='Livestock',
+            name="Livestock",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('breed', models.CharField(max_length=100)),
-                ('age', models.IntegerField()),
-                ('health_status', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("breed", models.CharField(max_length=100)),
+                ("age", models.IntegerField()),
+                ("health_status", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
-            name='Record',
+            name="Record",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('email', models.EmailField(max_length=254)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("email", models.EmailField(max_length=254)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Supplies',
+            name="Supplies",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('type', models.CharField(max_length=100)),
-                ('quantity', models.IntegerField()),
-                ('unit', models.CharField(max_length=100)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("type", models.CharField(max_length=100)),
+                ("quantity", models.IntegerField()),
+                ("unit", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
-            name='Transaction',
+            name="Transaction",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('item_type', models.CharField(choices=[('Crop', 'Crop'), ('Livestock', 'Livestock'), ('Equipment', 'Equipment'), ('Supplies', 'Supplies')], max_length=20)),
-                ('item_id', models.PositiveIntegerField()),
-                ('transaction_type', models.CharField(choices=[('Sale', 'Sale'), ('Purchase', 'Purchase'), ('Return', 'Return')], max_length=20)),
-                ('quantity', models.PositiveIntegerField()),
-                ('date', models.DateField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "item_type",
+                    models.CharField(
+                        choices=[
+                            ("Crop", "Crop"),
+                            ("Livestock", "Livestock"),
+                            ("Equipment", "Equipment"),
+                            ("Supplies", "Supplies"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("item_id", models.PositiveIntegerField()),
+                (
+                    "transaction_type",
+                    models.CharField(
+                        choices=[
+                            ("Sale", "Sale"),
+                            ("Purchase", "Purchase"),
+                            ("Return", "Return"),
+                        ],
+                        max_length=20,
+                    ),
+                ),
+                ("quantity", models.PositiveIntegerField()),
+                ("date", models.DateField()),
             ],
         ),
     ]

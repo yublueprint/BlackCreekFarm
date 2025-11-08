@@ -5,6 +5,7 @@ from app.logging.logging import Logger
 
 logger = Logger("app/logging/app.log")
 
+
 @login_required
 def recent_activities_list(request):
     logger.log(f"User {request.user} viewed recent activities list.")
