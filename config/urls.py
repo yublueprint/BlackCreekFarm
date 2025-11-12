@@ -15,3 +15,9 @@ if settings.ENABLE_SILK:
     urlpatterns += [
         path("silk/", include("silk.urls", namespace="silk")),
     ]
+
+if settings.DEBUG:
+    # urlpatterns += [
+    #         path('__debug__/', include('debug_toolbar.urls')),
+    #     ]
+    pass

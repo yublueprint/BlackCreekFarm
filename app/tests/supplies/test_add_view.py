@@ -21,18 +21,27 @@ def test_add_supplies_success(client, user, mocker):
 
 def test_add_supplies_missing_fields(client, user, mocker):
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
-    mock_all = mocker.patch("app.backend.supplies.supplies.Supplies.objects.all", return_value=[])
+    mock_all = mocker.patch(
+        "app.backend.supplies.supplies.Supplies.objects.all", return_value=[]
+    )
 
     response = client.post(reverse("add_supplies"), {"name": ""})
     assert response.status_code == 200
     assert "error" in response.context
-    mock_logger.assert_any_call(f"Supply creation error by {user}: Missing name or type for supply.")
+    mock_logger.assert_any_call(
+        f"Supply creation error by {user}: Missing name for supply."
+    )
     mock_all.assert_called_once()
 
 
 def test_add_supplies_unexpected_exception(client, user, mocker):
-    mocker.patch("app.backend.supplies.supplies.Supplies.objects.create", side_effect=Exception("DB Error"))
-    mock_all = mocker.patch("app.backend.supplies.supplies.Supplies.objects.all", return_value=[])
+    mocker.patch(
+        "app.backend.supplies.supplies.Supplies.objects.create",
+        side_effect=Exception("DB Error"),
+    )
+    mock_all = mocker.patch(
+        "app.backend.supplies.supplies.Supplies.objects.all", return_value=[]
+    )
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
     response = client.post(

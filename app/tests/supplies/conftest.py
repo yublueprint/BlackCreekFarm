@@ -1,5 +1,6 @@
 import pytest
 from django.contrib.auth.models import User
+
 from app.backend.models import Supplies
 
 pytestmark = pytest.mark.django_db
@@ -15,8 +16,5 @@ def user(client):
 @pytest.fixture
 def supply():
     return Supplies.objects.create(
-        name="Fertilizer",
-        type="Nutrient",
-        quantity=3,
-        unit="kg"
+        name="Fertilizer", type="Nutrient", quantity=3, unit="kg"
     )

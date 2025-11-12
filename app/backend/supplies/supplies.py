@@ -1,14 +1,13 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.supplies.exception import (
-    SupplyCreationException,
-    SupplyEditException,
-    SupplyDeleteException,
-)
+from app.exceptions.supplies.exception import (SupplyCreationException,
+                                               SupplyDeleteException,
+                                               SupplyEditException)
 from app.logging.logging import Logger
-from ..models import Supplies
+
+from ..models import DEFAULT_TEXT_MAX_LENGTH, Supplies
 
 logger = Logger("app/logging/app.log")
 
@@ -17,7 +16,11 @@ logger = Logger("app/logging/app.log")
 def supplies_list(request):
     supplies = Supplies.objects.all()
     logger.log(f"User {request.user} viewed supplies list.")
-    return render(request, "app/supplies_list.html", {"supplies": supplies})
+    context = {
+        "supplies": supplies,
+        "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
+    }
+    return render(request, "app/supplies_list.html", context)
 
 
 @login_required
@@ -29,8 +32,19 @@ def add_supplies(request):
             quantity = request.POST.get("quantity")
             unit = request.POST.get("unit")
 
-            if not name or not supply_type:
-                raise SupplyCreationException("Missing name or type for supply.")
+            text_inputs_given = {
+                "name": name,
+                "type": supply_type,
+                "unit": unit,
+            }
+
+            for key, value in text_inputs_given.items():
+                if not value:
+                    raise SupplyCreationException(f"Missing {key} for supply.")
+                if len(value) > DEFAULT_TEXT_MAX_LENGTH:
+                    raise SupplyCreationException(
+                        f"Supply {key} input must be less than or equal to 100 characters."
+                    )
 
             Supplies.objects.create(
                 name=name,
@@ -78,8 +92,19 @@ def edit_supplies(request):
             supply.quantity = request.POST.get("quantity")
             supply.unit = request.POST.get("unit")
 
-            if not supply.name or not supply.type:
-                raise SupplyEditException("Name and type are required to update supply.")
+            text_inputs_given = {
+                "name": supply.name,
+                "type": supply.type,
+                "unit": supply.unit,
+            }
+
+            for key, value in text_inputs_given.items():
+                if not value:
+                    raise SupplyEditException(f"Missing {key} for supply.")
+                if len(value) > DEFAULT_TEXT_MAX_LENGTH:
+                    raise SupplyEditException(
+                        f"Supply {key} input must be less than or equal to 100 characters."
+                    )
 
             supply.save()
 

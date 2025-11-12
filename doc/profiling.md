@@ -1,62 +1,70 @@
-# ⚙️ Django Profiling Usage Guide
+# ⚙️ Django Profiling Guide
 
-This guide walks you through how to **verify**, **use**, and **analyze** profiling results
-after successfully setting up **Django Silk** and **Memory Profiler** (we will use both of them)
+Performance profiling tools for Django: **Silk Profiler** for request/query analysis and **Memory Profiler** for memory usage tracking.
 
+---
 
+## 🧩 Silk Profiler
 
+**Track HTTP requests, database queries, and execution times**
 
---------------------------------------------------------------------------------------
+### Setup
 
-### 🧩 Silk Profiler
+1. **Enable in `settings.py`:**
+   ```python
+   ENABLE_SILK = True  # Set to False after testing
+   ```
 
-1. **Enable profiling** in your `settings.py`:
+2. **Access dashboard:**  
+   [http://127.0.0.1:8000/silk/](http://127.0.0.1:8000/silk/)
+
+3. **Disable after profiling:**
+   ```python
    ENABLE_SILK = False
-   **Set to True to enable profiling; switch back to False after testing**
-2. http://127.0.0.1:8000/silk/ **Run your Django application and open the Silk dashboard**
-3. After profiling is complete, disable it to avoid extra overhead:
-   ENABLE_SILK = False
+   ```
 
--------------------------------------------------------------------------------------
+---
 
-# 🧠 Django Memory Profiler Guide
+## 🧠 Memory Profiler
 
-This guide explains how to use the **Memory Profiler** in your Django project to measure
-function-level memory usage and identify inefficiencies.
+**Measure function-level memory consumption**
 
+### Usage
 
-## ⚙️ Configuration Example
-
-Add the `@profile` decorator to the function you want to analyze:
+Add `@profile` decorator to target functions:
 
 ```python
 from memory_profiler import profile
 
 @profile
 def retrieve_recent_activity():
-    # Example code
     data = []
     for i in range(10000):
         data.append(i * 2)
     return data
+```
 
+### Run with profiling:
+```bash
+python -m memory_profiler manage.py runserver
+```
 
-## 📊 Interpreting Results
+### Understanding Results
 
-| Column | Meaning |
-|---------|----------|
-| **Mem usage** | The total memory used by the process at that line |
-| **Increment** | The difference in memory from the previous line |
-| **Occurrences** | Number of times that line of code was executed |
+| Column | Description |
+|--------|-------------|
+| **Mem usage** | Total process memory at that line |
+| **Increment** | Memory change from previous line |
+| **Occurrences** | Execution count for that line |
 
 ---
 
-## ⚠️ Clean Up After Profiling
+## ⚠️ Post-Profiling Cleanup
 
-Once you finish profiling:
+**Always disable profiling in production:**
 
-1. **Remove or comment out** all `@profile` decorators.  
-2. **Stop running** with `memory_profiler` active.  
-3. **Revert** any temporary debug or Silk changes.  
+- ✅ Remove `@profile` decorators
+- ✅ Set `ENABLE_SILK = False`
+- ✅ Stop memory profiler execution
 
-Leaving profiling enabled will increase runtime overhead and memory usage.
+> 💡 **Tip:** Leaving profiling enabled causes significant performance overhead.
