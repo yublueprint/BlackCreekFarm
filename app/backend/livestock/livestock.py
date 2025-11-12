@@ -31,7 +31,8 @@ def add_livestock(request):
         )
         logger.log(f"User {request.user} added livestock: {name}")
         return redirect("livestock_list")
-
+    else:
+        return redirect("livestock_list")
 
 @login_required
 def edit_livestock(request):
@@ -45,7 +46,8 @@ def edit_livestock(request):
         animal.save()
         logger.log(f"User {request.user} edited livestock: {old_name} to {animal.name}")
         return redirect("livestock_list")
-
+    else:
+        return redirect("livestock_list")
 
 @login_required
 def delete_livestock(request):
@@ -55,3 +57,5 @@ def delete_livestock(request):
         animal.delete()
         logger.log(f"User {request.user} deleted livestock: {animal_name}")
         return redirect("livestock_list")
+    else:
+        return redirect("livestock_list") 
