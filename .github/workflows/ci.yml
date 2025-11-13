@@ -47,10 +47,10 @@ jobs:
       - name: Wait for Postgres
         run: |
           until pg_isready -h localhost -U user -d blackcreekfarm; do
-            echo "⏳ Waiting for database..."
+            echo "Waiting for database..."
             sleep 2
           done
-          echo "✅ Database is ready!"
+          echo "Database is ready!"
 
       - name: Run migrations
         run: |
@@ -86,14 +86,14 @@ jobs:
           flake8 app --max-line-length 99
 
   notify:
-    needs: [build-test, lint]
+    needs: [test, lint]
     runs-on: ubuntu-latest
     env:
       DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
     if: always()
     steps:
       - name: Notify Discord on success (Prod only)
-        if: ${{ needs.build-test.result == 'success' && needs.lint.result == 'success' && github.event.pull_request.merged == true && github.base_ref == 'Prod' }}
+        if: ${{ needs.test.result == 'success' && needs.lint.result == 'success' && github.event.pull_request.merged == true && github.base_ref == 'Prod' }}
         run: |
           curl -H "Content-Type: application/json" \
                -d "{
@@ -102,10 +102,10 @@ jobs:
                $DISCORD_WEBHOOK_URL
 
       - name: Notify Discord on failure
-        if: ${{ needs.build-test.result != 'success' || needs.lint.result != 'success' }}
+        if: ${{ needs.test.result != 'success' || needs.lint.result != 'success' }}
         run: |
           curl -H "Content-Type: application/json" \
-              -d "{
-                \"content\": \"💀 *\\\"${{ inputs.pr_title }}\\\"* crashed and burned.\\n**${{ inputs.actor }}**, you broke the build again. Time to debug, legend. 🧩\"
-              }" \
-              ${{ inputs.webhook_url }}
+               -d "{
+                 \"content\": \"💀 *\\\"${{ github.event.pull_request.title }}\\\"* crashed and burned.\\n**${{ github.actor }}**, you broke the build again. Time to debug, legend. 🧩\\n📉 Build: *${{ needs.test.result }}*, Lint: *${{ needs.lint.result }}*\"
+               }" \
+               $DISCORD_WEBHOOK_URL
