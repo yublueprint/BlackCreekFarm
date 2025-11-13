@@ -1,13 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.livestock.exception import (
-    LivestockCreationException,
-    LivestockEditException,
-    LivestockDeleteException,
-)
+from app.exceptions.livestock.exception import (LivestockCreationException,
+                                                LivestockDeleteException,
+                                                LivestockEditException)
 from app.logging.logging import Logger
+
 from ..models import Livestock
 
 logger = Logger("app/logging/app.log")
@@ -79,7 +78,9 @@ def edit_livestock(request):
             animal.health_status = request.POST.get("health_status")
 
             if not animal.name or not animal.breed:
-                raise LivestockEditException("Name and breed are required to update livestock.")
+                raise LivestockEditException(
+                    "Name and breed are required to update livestock."
+                )
 
             animal.save()
             logger.log(f"User {request.user} edited livestock: {animal.name}")

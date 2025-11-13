@@ -1,5 +1,6 @@
 import pytest
 from django.urls import reverse
+
 from app.backend.models import Livestock
 
 pytestmark = pytest.mark.django_db

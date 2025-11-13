@@ -6,7 +6,10 @@ pytestmark = pytest.mark.django_db
 
 def test_livestock_list_renders_all(client, user, mocker):
     mock_livestock = [mocker.Mock(name="animal1"), mocker.Mock(name="animal2")]
-    mock_all = mocker.patch("app.backend.livestock.livestock.Livestock.objects.all", return_value=mock_livestock)
+    mock_all = mocker.patch(
+        "app.backend.livestock.livestock.Livestock.objects.all",
+        return_value=mock_livestock,
+    )
     mock_logger = mocker.patch("app.backend.livestock.livestock.logger.log")
 
     response = client.get(reverse("livestock_list"))

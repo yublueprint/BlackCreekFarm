@@ -5,7 +5,9 @@ pytestmark = pytest.mark.django_db
 
 
 def test_add_livestock_success(client, user, mocker):
-    mock_create = mocker.patch("app.backend.livestock.livestock.Livestock.objects.create")
+    mock_create = mocker.patch(
+        "app.backend.livestock.livestock.Livestock.objects.create"
+    )
     mock_logger = mocker.patch("app.backend.livestock.livestock.logger.log")
 
     response = client.post(

@@ -42,7 +42,7 @@ class Logger:
         if os.path.exists(filename) and os.path.getsize(filename) >= max_bytes:
             for i in range(backup_count, 0, -1):
                 backup_file = f"{filename}.{i}"
-                prev_file = f"{filename}.{i-1}" if i > 1 else filename
+                prev_file = f"{filename}.{i - 1}" if i > 1 else filename
                 if os.path.exists(prev_file):
                     os.rename(prev_file, backup_file)
 
