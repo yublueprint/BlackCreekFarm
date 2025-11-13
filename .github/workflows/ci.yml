@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened, closed]
 
 jobs:
-  build-test:
+  test:
     runs-on: ubuntu-latest
     env:
       POSTGRES_DB: blackcreekfarm
