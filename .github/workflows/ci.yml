@@ -105,7 +105,7 @@ jobs:
         if: ${{ needs.build-test.result != 'success' || needs.lint.result != 'success' }}
         run: |
           curl -H "Content-Type: application/json" \
-               -d "{
-                 \"content\": \"💀 *\\\"${{ github.event.pull_request.title }}\\\"* failed checks.\\n**${{ github.actor }}**, check tests or lint errors!\"
-               }" \
-               $DISCORD_WEBHOOK_URL
+              -d "{
+                \"content\": \"💀 *\\\"${{ inputs.pr_title }}\\\"* crashed and burned.\\n**${{ inputs.actor }}**, you broke the build again. Time to debug, legend. 🧩\"
+              }" \
+              ${{ inputs.webhook_url }}
