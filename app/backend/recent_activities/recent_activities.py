@@ -1,9 +1,9 @@
 import os
-import zipfile 
+import zipfile
 import io
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.http import FileResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -24,13 +24,12 @@ def recent_activities_list(request):
     if (page_number):
         page_number = int(page_number)
 
-    #If none or less than 1, make it 1.
-    #If it's higher than total amount of pages we have, set it to last page.
+    # If none or less than 1, make it 1.
+    # If it's higher than total amount of pages we have, set it to last page.
     if (not page_number or page_number < 1):
         page_number = 1
     elif (page_number > paginator.num_pages):
         page_number = paginator.num_pages
-    
 
     try:
         page_obj = paginator.get_page(page_number)
@@ -41,10 +40,10 @@ def recent_activities_list(request):
 
     amount_to_go = 5
     backward_pages_end = max(1, page_number - amount_to_go)
-    backward_pages = reversed(range(page_number-1, backward_pages_end-1, -1))
+    backward_pages = reversed(range(page_number - 1, backward_pages_end - 1, -1))
 
-    forward_pages_end = min(paginator.num_pages, page_number+amount_to_go)
-    forward_pages = range(page_number+1, forward_pages_end+1, 1)
+    forward_pages_end = min(paginator.num_pages, page_number + amount_to_go)
+    forward_pages = range(page_number + 1, forward_pages_end + 1, 1)
 
     context = {
         "recent_activity": recent_activities,
@@ -57,7 +56,7 @@ def recent_activities_list(request):
 
 @login_required
 def download_all_activities(request):
-    logger.log(f"User {request.user} downloaded all activity logs from the recent activities list page.")
+    logger.log(f"User {request.user} downloaded all activity logs from recent activities list page.")
 
     try:
         buffer = io.BytesIO()

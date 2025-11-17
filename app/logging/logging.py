@@ -129,7 +129,7 @@ class Logger:
             # Free memory after reading lines
             gc.collect()
             return recent_activity_array
-        
+
     def download_all_activity_logs(self):
         folder_path = os.path.join(os.path.dirname(self.filename))
         search_word = 'modification_activities'
