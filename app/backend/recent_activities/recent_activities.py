@@ -1,11 +1,11 @@
+import io
 import os
 import zipfile
-import io
 
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import FileResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import render
 
 from app.logging.logging import Logger
 
@@ -18,17 +18,17 @@ def recent_activities_list(request):
 
     recent_activities = logger.retrieve_recent_activity(5, True)
     paginator = Paginator(recent_activities, 25)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
 
     # Cant do int(None).
-    if (page_number):
+    if page_number:
         page_number = int(page_number)
 
     # If none or less than 1, make it 1.
     # If it's higher than total amount of pages we have, set it to last page.
-    if (not page_number or page_number < 1):
+    if not page_number or page_number < 1:
         page_number = 1
-    elif (page_number > paginator.num_pages):
+    elif page_number > paginator.num_pages:
         page_number = paginator.num_pages
 
     try:
@@ -54,9 +54,12 @@ def recent_activities_list(request):
 
     return render(request, "app/recent_activities_list.html", context)
 
+
 @login_required
 def download_all_activities(request):
-    logger.log(f"User {request.user} downloaded all activity logs from recent activities list page.")
+    logger.log(
+        f"User {request.user} downloaded all activity logs from recent activities list page."
+    )
 
     try:
         buffer = io.BytesIO()
@@ -64,14 +67,16 @@ def download_all_activities(request):
         mod_activity_logs = logger.download_all_activity_logs()
         print(mod_activity_logs)
 
-        with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
             for file_name in mod_activity_logs:
                 if os.path.exists(file_name):
                     zipf.write(file_name, arcname=file_name)
 
         buffer.seek(0)
 
-        response = FileResponse(buffer, as_attachment=True, filename='bulk_log_download.zip')
+        response = FileResponse(
+            buffer, as_attachment=True, filename="bulk_log_download.zip"
+        )
     except Exception as e:
         logger.log(f"Unexpected error during log file download: {e}")
         # response = redirect("recent_activities_list")

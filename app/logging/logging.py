@@ -1,7 +1,7 @@
 import datetime
 import gc
-import os
 import glob
+import os
 
 from memory_profiler import profile
 
@@ -132,9 +132,9 @@ class Logger:
 
     def download_all_activity_logs(self):
         folder_path = os.path.join(os.path.dirname(self.filename))
-        search_word = 'modification_activities'
+        search_word = "modification_activities"
 
-        search_pattern = os.path.join(folder_path, f'*{search_word}*.log')
+        search_pattern = os.path.join(folder_path, f"*{search_word}*.log")
         matching_files = glob.glob(search_pattern)
 
         return matching_files

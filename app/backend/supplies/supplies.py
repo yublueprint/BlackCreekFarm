@@ -1,8 +1,7 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from app.exceptions.supplies.exception import (SupplyCreationException,
                                                SupplyDeleteException,
@@ -16,19 +15,19 @@ logger = Logger("app/logging/app.log")
 
 @login_required
 def supplies_list(request):
-    supplies = Supplies.objects.all().order_by('-id')
+    supplies = Supplies.objects.all().order_by("-id")
     paginator = Paginator(supplies, 10)
-    page_number = request.GET.get('page')
+    page_number = request.GET.get("page")
 
     # Cant do int(None).
-    if (page_number):
+    if page_number:
         page_number = int(page_number)
 
     # If none or less than 1, make it 1.
     # If it's higher than total amount of pages we have, set it to last page.
-    if (not page_number or page_number < 1):
+    if not page_number or page_number < 1:
         page_number = 1
-    elif (page_number > paginator.num_pages):
+    elif page_number > paginator.num_pages:
         page_number = paginator.num_pages
 
     try:

@@ -5,9 +5,10 @@ pytestmark = pytest.mark.django_db
 
 
 def test_supplies_list_renders_all(client, user, mocker):
-    mock_supplies = [mocker.MagicMock(name="supply1"),
-                     mocker.MagicMock(name="supply2"),
-                     ]
+    mock_supplies = [
+        mocker.MagicMock(name="supply1"),
+        mocker.MagicMock(name="supply2"),
+    ]
     mock_queryset = mocker.MagicMock()
     mock_queryset.order_by.return_value = mock_supplies
 
