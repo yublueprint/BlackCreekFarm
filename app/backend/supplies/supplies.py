@@ -17,7 +17,7 @@ logger = Logger("app/logging/app.log")
 @login_required
 def supplies_list(request):
     supplies = Supplies.objects.all().order_by('-id')
-    paginator = Paginator(supplies, 2)
+    paginator = Paginator(supplies, 10)
     page_number = request.GET.get('page')
 
     # Cant do int(None).

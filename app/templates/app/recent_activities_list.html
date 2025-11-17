@@ -5,6 +5,19 @@
 {% block content %}
 <h2 class="text-3xl font-semibold mb-6">Recent Activities List</h2>
 
+<p id="downloadAllRecentActivity" class="mb-8">
+    <a href="{% url 'download_all_activities' %}"
+    class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 gap-2" 
+    style="background-color: #335D43;">Download all activity logs.</a>
+</p>
+
+<!-- Display Error Message if Error occurs-->
+{% if error %}
+<div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+    Error: {{ error }}
+</div>
+{% endif %}
+
 <!-- bg-white rounded-lg shadow-md overflow-x-auto -->
 <div class="bg-white rounded-lg shadow-md overflow-x-auto">
     <table class="min-w-full">
@@ -17,7 +30,7 @@
             </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-            {% for activity in recent_activity %}
+            {% for activity in page_obj %}
             <tr class="hover:bg-gray-50">
                 <td class="py-4 px-6 text-sm text-gray-900">{{ activity.activity }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ activity.location }}</td>
@@ -31,6 +44,51 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+<div class="mt-3">
+    <span>
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+</div>
+
+<div class="mt-3">
+    <nav>
+        <ul class="flex list-none">
+            <!-- First and Previous. -->
+            {% if page_obj.has_previous %}
+                <a href="?page=1" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>&laquo; First</li></a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>&lsaquo; Previous</li></a>
+            {% else %}    
+                <li class="border-l border-t border-b text-gray-600 px-4 py-2">&laquo; First</li>
+                <li class="border-l border-t border-b text-gray-600 px-4 py-2">&lsaquo; Previous</li>
+            {% endif %}
+
+            <!-- Going backward from current page. -->
+            {% for page_number in backward_pages %}
+                <a href="?page={{ page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>{{ page_number }}</li></a>
+            {% endfor %}
+                
+            <!-- Add current page number. -->
+            <a href="?page={{ page_obj.number }}" class="border-l border-t border-b bg-blue-600 text-white px-4 py-2"><li>{{ page_obj.number }}</li></a>
+            
+            
+            <!-- Going forward from current page. -->
+            {% for page_number in forward_pages %}
+                <a href="?page={{ page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>{{ page_number }}</li></a>
+            {% endfor %}
+
+
+            <!-- Next and Last. --> 
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>Next &rsaquo;</li></a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>Last &raquo;</li></a>
+            {% else %}
+                <li class="border-l border-t border-b text-gray-600 px-4 py-2">Next &rsaquo;</li>
+                <li class="border-l border-t border-b border-r text-gray-600 px-4 py-2">Last &raquo;</li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 
 <script>

@@ -6,7 +6,7 @@ from .backend.equipment.equipment import (add_equipment, delete_equipment,
                                           edit_equipment, equipment_list)
 from .backend.livestock.livestock import (add_livestock, delete_livestock,
                                           edit_livestock, livestock_list)
-from .backend.recent_activities.recent_activities import recent_activities_list
+from .backend.recent_activities.recent_activities import recent_activities_list, download_all_activities
 from .backend.reports.reports import reports
 from .backend.supplies.supplies import (add_supplies, delete_supplies,
                                         edit_supplies, supplies_list)
@@ -44,4 +44,5 @@ urlpatterns = [
     path("reports/", reports, name="reports"),
     # Recent activites URLs
     path("recent_activities/", recent_activities_list, name="recent_activities_list"),
+    path("recent_activities/download_logs", download_all_activities, name="download_all_activities"),
 ]

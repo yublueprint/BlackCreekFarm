@@ -1,8 +1,9 @@
 import datetime
 import gc
 import os
+import glob
 
-# from memory_profiler import profile
+from memory_profiler import profile
 
 
 class activityObject:
@@ -88,7 +89,7 @@ class Logger:
             with open(self.modifications_filename, "a") as f:
                 f.write(f"[{timestamp}] {message}\n")
 
-    # @profile
+    @profile
     def retrieve_recent_activity(self, amount_to_retrieve=5, get_all=False):
         """
         Memory and speed efficient way of retrieving recent activity.
@@ -128,3 +129,12 @@ class Logger:
             # Free memory after reading lines
             gc.collect()
             return recent_activity_array
+        
+    def download_all_activity_logs(self):
+        folder_path = os.path.join(os.path.dirname(self.filename))
+        search_word = 'modification_activities'
+
+        search_pattern = os.path.join(folder_path, f'*{search_word}*.log')
+        matching_files = glob.glob(search_pattern)
+
+        return matching_files
