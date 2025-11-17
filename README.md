@@ -36,6 +36,7 @@ make build
 make migrate
 make run
 make signup  # Create admin
+make test    # run test cases.
 ```
 
 </td>
