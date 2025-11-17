@@ -46,11 +46,6 @@ def supplies_list(request):
     forward_pages_end = min(paginator.num_pages, page_number+amount_to_go)
     forward_pages = range(page_number+1, forward_pages_end+1, 1)
 
-    # print(page_number)
-    # print(paginator.num_pages)
-    # print(backward_pages_end)
-    # print(forward_pages_end)
-
     logger.log(f"User {request.user} viewed supplies list.")
     context = {
         "supplies": supplies,
