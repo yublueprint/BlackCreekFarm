@@ -1,98 +1,104 @@
 # Blackcreek DBMS
 
-A Django-based database management system for managing and tracking records.
+Django-based database management system with PostgreSQL and pgAdmin.
 
-Repository: [https://github.com/yublueprint/blackcreek_dbms](https://github.com/yublueprint/blackcreek_dbms)
+[![Repository](https://img.shields.io/badge/GitHub-blackcreek__dbms-blue)](https://github.com/yublueprint/blackcreek_dbms)
 
 ---
 
-## Quickstart (MAC)
+## 📋 Table of Contents
 
-### 1. Clone the Repository from desktop
+- [Quick Start](#-quick-start)
+- [Database Setup](#-database-setup)
+- [Development Commands](#-development-commands)
+- [Troubleshooting](#-troubleshooting)
+- [Contributing](#-contributing)
+
+---
+
+## 🚀 Quick Start
+
+**Prerequisites:** Python 3.8+, Docker, Docker Compose, Git
+
+<table>
+<tr>
+<th width="50%">🍎 macOS/Linux</th>
+<th width="50%">🪟 Windows</th>
+</tr>
+<tr>
+<td valign="top">
 
 ```bash
 git clone https://github.com/yublueprint/blackcreek_dbms.git
 cd blackcreek_dbms
-```
 
-### 2. Build the Project
-
-```bash
 make build
-```
-
-- Creates a virtual environment (`venv`)
-- Installs dependencies from `requirements.txt`
-
-### 3. Migrate
-
-```bash
 make migrate
-```
-
-### 4. Run the Development Server
-
-```bash
 make run
+make signup  # Create admin
 ```
 
-### 5. Create an Admin/SignUp
-
-```bash
-make signup
-```
-
-### 6. Clean the Venv
-
-```bash
-make clean
-```
-
-### Local Development Server
-
-**[Open the app at http://127.0.0.1:8000](http://127.0.0.1:8000)**
-
----
-
-## Quickstart (Windows)
-
-### 1. Clone the Repository
+</td>
+<td valign="top">
 
 ```bat
 git clone https://github.com/yublueprint/blackcreek_dbms.git
 cd blackcreek_dbms
-```
 
-### 2. Create a Virtual Environment
-
-```bat
 python -m venv venv
-```
-
-### 3. Activate the Virtual Environment
-
-```bat
 venv\Scripts\activate
-```
-
-### 4. Install Dependencies
-
-```bat
-pip install --upgrade pip
 pip install -r requirements.txt
-```
-
-### 5. Apply Database Migrations
-
-```bat
 python manage.py migrate
-```
-
-### 6. Run the Development Server
-
-```bat
 python manage.py runserver
+python manage.py createsuperuser
 ```
 
-Visit: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+</td>
+</tr>
+</table>
 
+**Access:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+---
+
+## 🐘 Database Setup
+
+```bash
+docker compose up -d      # Start
+docker compose down       # Stop
+docker compose down -v    # Stop + delete data
+```
+
+| Service | URL | Credentials |
+|---------|-----|-------------|
+| Django App | [localhost:8000](http://127.0.0.1:8000) | Via signup |
+| pgAdmin | [localhost:5050](http://localhost:5050) | `admin@blackcreek.com` / `admin` |
+
+---
+
+**Environment Reset:**
+- macOS/Linux: `make clean && make build && make migrate`
+- Windows: Delete venv folder, recreate with `python -m venv venv`
+
+**Common Issues:**
+
+| Problem | Fix |
+|---------|-----|
+| Port 8000 in use | Kill process or change port |
+| Database error | Check `docker compose ps` |
+| Permission denied | Use `sudo` or add user to docker group |
+
+---
+
+## 🤝 Contributing
+
+```bash
+git checkout -b feature/your-feature
+git commit -m "Add feature" -m "Description"
+git push origin feature/your-feature
+# Open pull request
+```
+
+---
+
+**Questions?** [Open an issue](https://github.com/yublueprint/blackcreek_dbms/issues) | Part of Yu Blueprint initiative

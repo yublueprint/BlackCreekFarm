@@ -5,3 +5,12 @@ flake8
 black 
 autoflake 
 isort
+django-silk
+memory-profiler
+# Testing & coverage
+psycopg2-binary
+pytest>=8.0.0
+pytest-cov
+pytest-django>=4.9.0
+pytest-mock>=3.12.0
+coverage>=7.6.0

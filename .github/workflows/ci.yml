@@ -1,14 +1,32 @@
-name: CI
+name: "Ministry of Builds"
 
 on:
-  push:
-    branches: [ Prod ]
   pull_request:
-    branches: [ Prod ]
+    types: [opened, synchronize, reopened, closed]
 
 jobs:
-  build-test-lint:
+  test:
     runs-on: ubuntu-latest
+    env:
+      POSTGRES_DB: blackcreekfarm
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: user
+      DATABASE_URL: postgres://user:user@localhost:5432/blackcreekfarm
+
+    services:
+      postgres:
+        image: postgres:15
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: blackcreekfarm
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: user
+        options: >-
+          --health-cmd="pg_isready -U user -d blackcreekfarm"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout code
@@ -20,7 +38,74 @@ jobs:
           python-version: '3.10.6'
 
       - name: Install dependencies
-        run: make build
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Wait for Postgres
+        run: |
+          until pg_isready -h localhost -U user -d blackcreekfarm; do
+            echo "Waiting for database..."
+            sleep 2
+          done
+          echo "Database is ready!"
+
+      - name: Run migrations
+        run: |
+          source venv/bin/activate
+          python manage.py migrate --noinput
 
       - name: Run tests
-        run: make test
+        run: |
+          source venv/bin/activate
+          make test
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.6'
+
+      - name: Install dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run flake8 linter
+        run: |
+          source venv/bin/activate
+          flake8 app --max-line-length 99
+
+  notify:
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+    if: always()
+    steps:
+      - name: Notify Discord on success (Prod only)
+        if: ${{ needs.test.result == 'success' && needs.lint.result == 'success' && github.event.pull_request.merged == true && github.base_ref == 'Prod' }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d "{
+                 \"content\": \"✅ *\\\"${{ github.event.pull_request.title }}\\\"* passed all checks and was launched to **Production** by **${{ github.actor }}** 🚀 Someone call NASA — mission accomplished!\"
+               }" \
+               $DISCORD_WEBHOOK_URL
+
+      - name: Notify Discord on failure
+        if: ${{ needs.test.result != 'success' || needs.lint.result != 'success' }}
+        run: |
+          curl -H "Content-Type: application/json" \
+               -d "{
+                 \"content\": \"💀 *\\\"${{ github.event.pull_request.title }}\\\"* crashed and burned.\\n**${{ github.actor }}**, you broke the build again. Time to debug, legend. 🧩\\n📉 Build: *${{ needs.test.result }}*, Lint: *${{ needs.lint.result }}*\"
+               }" \
+               $DISCORD_WEBHOOK_URL

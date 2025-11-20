@@ -1,92 +1,130 @@
 import datetime
+import gc
 import os
+
+# from memory_profiler import profile
+
+
+class activityObject:
+    def __init__(self, activity, location, user, time):
+        self.activity = activity
+        self.location = location
+        self.user = user
+        self.time = time
+
+    def __str__(self):
+        return (
+            f"Activity: {self.activity}, Location: {self.location}, "
+            f"User: {self.user}, Time: {self.time}"
+        )
 
 
 class Logger:
-    def __init__(self, filename="app.log", max_bytes=1024 * 1024, backup_count=3):
+    def __init__(
+        self,
+        filename="app.log",
+        modifications_filename="modification_activities.log",
+        max_bytes=1024 * 1024,
+        first_backup_count=3,
+        second_backup_count=3,
+    ):
         self.filename = filename
+        # modification_activities.log file must be in same directory as app.log
+        self.modifications_filename = os.path.join(
+            os.path.dirname(filename), modifications_filename
+        )
         self.max_bytes = max_bytes
-        self.backup_count = backup_count
+        self.first_backup_count = first_backup_count
+        self.second_backup_count = second_backup_count
 
-    def log(self, message):
-        self._rotate_if_needed()
-        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        with open(self.filename, "a") as f:
-            f.write(f"[{timestamp}] {message}\n")
-
-    def _rotate_if_needed(self):
-        if (
-            os.path.exists(self.filename)
-            and os.path.getsize(self.filename) >= self.max_bytes
-        ):
-            for i in range(self.backup_count, 0, -1):
-                backup_file = f"{self.filename}.{i}"
-                prev_file = f"{self.filename}.{i-1}" if i > 1 else self.filename
+    @staticmethod
+    def __rotate_if_needed(filename, max_bytes, backup_count):
+        if os.path.exists(filename) and os.path.getsize(filename) >= max_bytes:
+            for i in range(backup_count, 0, -1):
+                backup_file = f"{filename}.{i}"
+                prev_file = f"{filename}.{i - 1}" if i > 1 else filename
                 if os.path.exists(prev_file):
                     os.rename(prev_file, backup_file)
 
-    def retrieve_recent_activity(self):
+    @staticmethod
+    def __formatLine(line_given):
+        """
+        Formats line for retrieve_recent_activities function in logging.py.
 
-        class activityObject:
-            # Examples for Location were North Paddock, East Fields, Barn 2, etc. We will need to dicuss this.
-            # Actually, location will just be the type of stock. So like they know where to go.
-            def __init__(self, activity, location, user, time):
-                self.activity = activity
-                self.location = location
-                self.user = user
-                self.time = time
+        LINE FORMAT TO GIVE
+        -------------------
+        Format: YEAR-MONTH-DAY HOUR:MINUTE:SECOND User {user name} {action} {location}: {object}
+        Example: "2025-11-02 16:09:38 User ryan deleted supply: Test Supply C"
+        """
+        chars_to_remove = ["[", "]"]
+        for char in chars_to_remove:
+            line_given = line_given.replace(char, "")
 
+        line_given = line_given.split()
+        the_activity = " ".join(line_given[2:])
+        the_location = (line_given[5].capitalize())[:-1]
+        the_user = line_given[3]
+        the_time = " ".join(line_given[0:2])
+
+        line_object = activityObject(the_activity, the_location, the_user, the_time)
+        return line_object
+
+    def log(self, message):
+        Logger.__rotate_if_needed(
+            self.filename, self.max_bytes, self.first_backup_count
+        )
+
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        with open(self.filename, "a") as f:
+            f.write(f"[{timestamp}] {message}\n")
+
+        if ("added" in message) or ("edited" in message) or ("deleted" in message):
+            Logger.__rotate_if_needed(
+                self.modifications_filename,
+                self.max_bytes,
+                self.second_backup_count,
+            )
+            with open(self.modifications_filename, "a") as f:
+                f.write(f"[{timestamp}] {message}\n")
+
+    # @profile
+    def retrieve_recent_activity(self, amount_to_retrieve=5, get_all=False):
+        """
+        Memory and speed efficient way of retrieving recent activity.
+
+        Parameters
+        ----------
+        amount_to_retrieve : int
+            Most recent number of activities to retrieve. Default is 5.
+        get_all : bool
+            Whether to retrieve all activities. Default is False.
+
+        Returns
+        -------
+        list
+            Array of recent activity objects.
+        """
         recent_activity_array = []
-        chars_to_remove = ["[","]"]
-        amount_to_retrieve = 3
-        count = 0
 
         try:
-            with open(self.filename, 'r') as file:
-                all_lines = file.readlines()
+            gc.collect()
 
-                # Starting by the most recent
-                for line in reversed(all_lines):
-                    # Resetting values each iteration
-                    the_activity = ''
-                    the_location = ''
-                    the_user = ''
-                    the_time = ''
+            with open(self.modifications_filename, "r") as f:
+                lines = f.readlines()
 
-                    # Only recent activity to include is add, edit, or deletion.
-                    if ("added" in line) or ("edited" in line) or ("deleted" in line):
-                        for char in chars_to_remove:
-                            line = line.replace(char, "")
-                        line = line.split()
-                        # print(line)
-
-                        the_activity = " ".join(line[2:])
-                        the_location = line[5].replace(":","")
-                        the_user = line[3]
-                        the_time = " ".join(line[0:2])
-
-                        # Keep for testing
-                        # print(the_activity)
-                        # print(the_location)
-                        # print(the_user)
-                        # print(the_time)
-                        
-                        line_object = activityObject(the_activity, the_location, the_user, the_time)
-
-                        # Keep for testing
-                        # print(line_object.activity)
-                        # print(line_object.location)
-                        # print(line_object.user)
-                        # print(line_object.time)
-
-                        recent_activity_array.append(line_object)
-                        count = count + 1
-
-                    if count >= amount_to_retrieve:
+                for line in reversed(lines):
+                    recent_activity_array.append(Logger.__formatLine(line))
+                    if not get_all and len(recent_activity_array) >= amount_to_retrieve:
                         break
 
+                del lines
+
         except Exception as e:
-            print("Error: " + e)
+            full_error_message = f"Error: {e}"
+            Logger.log(full_error_message)
 
         finally:
+            # Free memory after reading lines
+            gc.collect()
             return recent_activity_array

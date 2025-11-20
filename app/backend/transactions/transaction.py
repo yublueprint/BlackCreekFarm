@@ -1,16 +1,19 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 
 from app.logging.logging import Logger
+
 from ..models import Transaction
 
 logger = Logger("app/logging/app.log")
+
 
 @login_required
 def transaction_list(request):
     logger.log(f"User {request.user} viewed transaction list.")
     transactions = Transaction.objects.all()
     return render(request, "app/transaction_list.html", {"transactions": transactions})
+
 
 @login_required
 def add_transaction(request):
@@ -27,13 +30,21 @@ def add_transaction(request):
                 item_id=item_id,
                 transaction_type=transaction_type,
                 quantity=quantity,
-                date=date
+                date=date,
             )
             logger.log(f"User {request.user} added a transaction.")
             return redirect("transaction_list")
         except Exception as e:
             logger.log(f"Error adding transaction by user {request.user}: {e}")
-            return render(request, "app/transaction_list.html", {"transactions": Transaction.objects.all(), "error": "Failed to add transaction."})
+            return render(
+                request,
+                "app/transaction_list.html",
+                {
+                    "transactions": Transaction.objects.all(),
+                    "error": "Failed to add transaction.",
+                },
+            )
+
 
 @login_required
 def delete_transaction(request):
@@ -45,4 +56,11 @@ def delete_transaction(request):
             return redirect("transaction_list")
         except Exception as e:
             logger.log(f"Error deleting transaction by user {request.user}: {e}")
-            return render(request, "app/transaction_list.html", {"transactions": Transaction.objects.all(), "error": "Failed to delete transaction."})
+            return render(
+                request,
+                "app/transaction_list.html",
+                {
+                    "transactions": Transaction.objects.all(),
+                    "error": "Failed to delete transaction.",
+                },
+            )
