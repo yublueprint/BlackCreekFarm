@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Livestock | BlackCreek Sync{% endblock %}
 
@@ -151,10 +152,9 @@
 	</table>
 </div>
 
-<script src="{%static 'js/livestock_list.js' %}"></script>
-	/*Might make this into a javascript file later*/
 
-	//Logic for adding popup
+<script src="{% static 'js/livestock_list.js' %}"></script>
+	
 	
 
 {% endblock %}

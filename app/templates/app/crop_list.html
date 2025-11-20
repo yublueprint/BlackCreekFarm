@@ -191,17 +191,14 @@
                 <td class="py-4 px-6 text-sm text-gray-900">{{ crop.yield_estimate }}</td>
                 <td class="py-4 px-6 text-sm">
                     <div class="flex space-x-2">
-                        <button
-                            onclick="openEditPopup(
+                        <button onclick="openEditPopup(
                                 '{{ crop.id }}',
                                 '{{ crop.name }}',
-                                '{{ crop.planting_date|date:&quot;Y-m-d&quot; }}',
-                                '{{ crop.harvest_date|date:&quot;Y-m-d&quot; }}',
+                                '{{ crop.planting_date|date:'Y-m-d' }}',
+                                '{{ crop.harvest_date|date:'Y-m-d' }}',
                                 '{{ crop.yield_estimate }}'
-                            )"
-                            class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
-                            style="background-color: #0D65A0;"
-                        >
+                            )" class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
+                            style="background-color: #0D65A0;">
                             Edit
                         </button>
                         <button
@@ -223,5 +220,4 @@
 </div>
 
 <script src="{% static 'js/crop_list.js' %}"></script>
-
 {% endblock %}
