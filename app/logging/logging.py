@@ -3,9 +3,6 @@ import gc
 import glob
 import os
 
-from memory_profiler import profile
-
-
 class activityObject:
     def __init__(self, activity, location, user, time):
         self.activity = activity
@@ -18,7 +15,6 @@ class activityObject:
             f"Activity: {self.activity}, Location: {self.location}, "
             f"User: {self.user}, Time: {self.time}"
         )
-
 
 class Logger:
     def __init__(
@@ -89,7 +85,6 @@ class Logger:
             with open(self.modifications_filename, "a") as f:
                 f.write(f"[{timestamp}] {message}\n")
 
-    @profile
     def retrieve_recent_activity(self, amount_to_retrieve=5, get_all=False):
         """
         Memory and speed efficient way of retrieving recent activity.
