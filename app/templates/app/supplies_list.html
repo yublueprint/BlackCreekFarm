@@ -134,7 +134,7 @@
             </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-            {% for supply in supplies %}
+            {% for supply in page_obj %}
             <tr class="hover:bg-gray-50">
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.id }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.name }}</td>
@@ -163,6 +163,51 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
+
+<div class="mt-3">
+    <span>
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+    </span>
+</div>
+
+<div class="mt-3">
+    <nav>
+        <ul class="flex list-none">
+            <!-- First and Previous. -->
+            {% if page_obj.has_previous %}
+                <a href="?page=1" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>&laquo; First</li></a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>&lsaquo; Previous</li></a>
+            {% else %}    
+                <li class="border-l border-t border-b text-gray-600 px-4 py-2">&laquo; First</li>
+                <li class="border-l border-t border-b text-gray-600 px-4 py-2">&lsaquo; Previous</li>
+            {% endif %}
+
+            <!-- Going backward from current page. -->
+            {% for page_number in backward_pages %}
+                <a href="?page={{ page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>{{ page_number }}</li></a>
+            {% endfor %}
+                
+            <!-- Add current page number. -->
+            <a href="?page={{ page_obj.number }}" class="border-l border-t border-b bg-blue-600 text-white px-4 py-2"><li>{{ page_obj.number }}</li></a>
+            
+            
+            <!-- Going forward from current page. -->
+            {% for page_number in forward_pages %}
+                <a href="?page={{ page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>{{ page_number }}</li></a>
+            {% endfor %}
+
+
+            <!-- Next and Last. --> 
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>Next &rsaquo;</li></a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>Last &raquo;</li></a>
+            {% else %}
+                <li class="border-l border-t border-b text-gray-600 px-4 py-2">Next &rsaquo;</li>
+                <li class="border-l border-t border-b border-r text-gray-600 px-4 py-2">Last &raquo;</li>
+            {% endif %}
+        </ul>
+    </nav>
 </div>
 
 <script>
