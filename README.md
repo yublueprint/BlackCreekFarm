@@ -1,12 +1,12 @@
 # Blackcreek DBMS
 
-Django-based database management system with PostgreSQL and pgAdmin.
+Django-based database management system with PostgreSQL, Redis, pgAdmin, and Redis Commander.
 
 [![Repository](https://img.shields.io/badge/GitHub-blackcreek__dbms-blue)](https://github.com/yublueprint/blackcreek_dbms)
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Quick Start](#-quick-start)
 - [Database Setup](#-database-setup)
@@ -16,14 +16,14 @@ Django-based database management system with PostgreSQL and pgAdmin.
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 **Prerequisites:** Python 3.8+, Docker, Docker Compose, Git
 
 <table>
 <tr>
-<th width="50%">🍎 macOS/Linux</th>
-<th width="50%">🪟 Windows</th>
+<th width="50%">macOS/Linux</th>
+<th width="50%">Windows</th>
 </tr>
 <tr>
 <td valign="top">
@@ -35,8 +35,8 @@ cd blackcreek_dbms
 make build
 make migrate
 make run
-make signup  # Create admin
-make test    # run test cases.
+make signup
+make test
 ```
 
 </td>
@@ -62,7 +62,7 @@ python manage.py createsuperuser
 
 ---
 
-## 🐘 Database Setup
+## Database Setup
 
 ```bash
 docker compose up -d      # Start
@@ -70,12 +70,13 @@ docker compose down       # Stop
 docker compose down -v    # Stop + delete data
 ```
 
-| Service | URL | Credentials |
-|---------|-----|-------------|
-| Django App | [localhost:8000](http://127.0.0.1:8000) | Via signup |
-| pgAdmin | [localhost:5050](http://localhost:5050) | `admin@blackcreek.com` / `admin` |
-
----
+| Service | URL | Credentials | Purpose |
+|---------|-----|-------------|---------|
+| Django App | [localhost:8000](http://127.0.0.1:8000) | Via signup | Main application |
+| PostgreSQL | localhost:5433 | **user:** `user` <br> **password:** `user` | Primary database |
+| pgAdmin | [localhost:5050](http://localhost:5050) | **email:** `admin@blackcreek.com` <br> **password:** `admin` | Database management |
+| Redis | localhost:6379 | No authentication | Caching & sessions |
+| Redis Commander | [localhost:8081](http://localhost:8081) | No authentication | Redis monitoring |
 
 **Environment Reset:**
 - macOS/Linux: `make clean && make build && make migrate`
@@ -91,7 +92,7 @@ docker compose down -v    # Stop + delete data
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 ```bash
 git checkout -b feature/your-feature
@@ -102,4 +103,4 @@ git push origin feature/your-feature
 
 ---
 
-**Questions?** [Open an issue](https://github.com/yublueprint/blackcreek_dbms/issues) | Part of Yu Blueprint initiative
+**Questions?** [Open an issue](https://github.com/yublueprint/blackcreek_dbms/issues) | Part of YU Blueprint initiative
