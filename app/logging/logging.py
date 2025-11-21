@@ -3,6 +3,7 @@ import gc
 import glob
 import os
 
+
 class activityObject:
     def __init__(self, activity, location, user, time):
         self.activity = activity
@@ -15,6 +16,7 @@ class activityObject:
             f"Activity: {self.activity}, Location: {self.location}, "
             f"User: {self.user}, Time: {self.time}"
         )
+
 
 class Logger:
     def __init__(
