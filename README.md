@@ -78,6 +78,22 @@ docker compose down -v    # Stop + delete data
 | Redis | localhost:6379 | No authentication | Caching & sessions |
 | Redis Commander | [localhost:8081](http://localhost:8081) | No authentication | Redis monitoring |
 
+### Redis Configuration
+
+Redis is used for background tasks.
+
+**Test Redis connection:**
+```bash
+docker exec -it redis redis-cli ping
+# Should return "PONG"
+```
+
+**Trigger analytics manually:**
+```bash
+docker exec -it redis redis-cli lpush analytics_events '{ "event": "Hello, Black Creek Farm!" }'
+```
+
+---
 **Environment Reset:**
 - macOS/Linux: `make clean && make build && make migrate`
 - Windows: Delete venv folder, recreate with `python -m venv venv`
