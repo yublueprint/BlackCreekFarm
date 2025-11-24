@@ -87,7 +87,7 @@ jobs:
 
       # Notify Discord on failure (tests or lint)
       - name: Notify Discord on failure
-        if: ${{ failure() && github.event_name == 'pull_request' }}
+        if: ${{ failure() && github.base_ref == 'Prod'}}
         run: |
           curl -H "Content-Type: application/json" \
                -d "{
