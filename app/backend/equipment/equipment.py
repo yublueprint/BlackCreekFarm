@@ -48,8 +48,8 @@ def add_equipment(request):
 
             if not name or not category or not equipment_type or not purchase_date or not maintenance_due:
                 raise EquipmentCreationException(
-                    "Name, category, type, purchase and maintenance dates are required.")
-
+                    "Name, category, type, purchase and maintenance dates are required."
+                )
             Equipment.objects.create(
                 name=name,
                 category=category,
@@ -138,8 +138,8 @@ def edit_equipment(request):
                 or not equipment.maintenance_due
             ):
                 raise EquipmentEditException(
-                    "Name, category, type, purchase and maintenance dates are required to update equipment.")
-
+                    "Name, category, type, purchase and maintenance dates are required to update equipment."
+                )
             equipment.save()
 
             logger.log(f"User {request.user} edited equipment: {equipment.name}")
