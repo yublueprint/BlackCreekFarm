@@ -1,6 +1,6 @@
 # Blackcreek DBMS
 
-Django-based database management system with PostgreSQL, Redis, pgAdmin, and Redis Commander.
+Django & Spring Boot based database management system with PostgreSQL, Redis.
 
 [![Repository](https://img.shields.io/badge/GitHub-blackcreek__dbms-blue)](https://github.com/yublueprint/blackcreek_dbms)
 
@@ -84,13 +84,13 @@ Redis is used for background tasks.
 
 **Test Redis connection:**
 ```bash
-docker exec -it redis redis-cli ping
+redis-cli ping
 # Should return "PONG"
 ```
 
 **Trigger analytics manually:**
 ```bash
-docker exec -it redis redis-cli lpush analytics_events '{ "event": "Hello, Black Creek Farm!" }'
+redis-cli lpush analytics_events '{ "event": "Hello, Black Creek Farm!" }'
 ```
 
 ---
