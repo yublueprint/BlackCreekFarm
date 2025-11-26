@@ -102,7 +102,7 @@ jobs:
                $DISCORD_WEBHOOK_URL
 
       - name: Notify Discord on failure
-        if: ${{ (needs.test.result != 'success' || needs.lint.result != 'success') && github.base_ref == 'Prod' }}
+        if: ${{ failure() && github.base_ref == 'Prod' }}
         run: |
           curl -H "Content-Type: application/json" \
                -d "{
