@@ -34,9 +34,23 @@ class Crop(models.Model):
 
 class Equipment(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    category = models.CharField(max_length=50)
     type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     purchase_date = models.DateField()
     maintenance_due = models.DateField()
+    hours_used = models.FloatField(default=0)
+    condition = models.CharField(max_length=50, default="Good")
+    next_checkup = models.DateField(blank=True, null=True)
+    purchase_cost = models.FloatField(default=0)
+    notes = models.TextField(blank=True, null=True)
+    serial_number = models.CharField(max_length=100, blank=True, null=True)
+    location = models.CharField(max_length=100, blank=True, null=True)
+    warranty_expiry = models.DateField(blank=True, null=True)
+    supplier = models.CharField(max_length=100, blank=True, null=True)
+    maintenance_history = models.TextField(blank=True, null=True)
+    active = models.BooleanField(default=True)
+    last_service_by = models.CharField(max_length=100, blank=True, null=True)
+    service_interval_days = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
