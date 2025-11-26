@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.paginator import Paginator
 
 from app.exceptions.equipment.exception import (EquipmentCreationException,
                                                 EquipmentDeleteException,
@@ -46,7 +47,8 @@ def add_equipment(request):
             service_interval_days = request.POST.get("service_interval_days")
 
             if not name or not category or not equipment_type or not purchase_date or not maintenance_due:
-                raise EquipmentCreationException("Name, category, type, purchase and maintenance dates are required.")
+                raise EquipmentCreationException(
+                    "Name, category, type, purchase and maintenance dates are required.")
 
             Equipment.objects.create(
                 name=name,
@@ -135,7 +137,8 @@ def edit_equipment(request):
                 or not equipment.purchase_date
                 or not equipment.maintenance_due
             ):
-                raise EquipmentEditException("Name, category, type, purchase and maintenance dates are required to update equipment.")
+                raise EquipmentEditException(
+                    "Name, category, type, purchase and maintenance dates are required to update equipment.")
 
             equipment.save()
 
