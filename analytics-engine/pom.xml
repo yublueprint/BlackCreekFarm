@@ -13,9 +13,9 @@
     </parent>
 
     <groupId>com.blackcreekfarm</groupId>
-    <artifactId>analytics-consumer</artifactId>
+    <artifactId>analytics-engine</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>analytics-consumer</name>
+    <name>analytics-engine</name>
     <description>Analytics event consumer</description>
 
     <properties>
