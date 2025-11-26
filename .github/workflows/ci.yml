@@ -12,7 +12,7 @@ jobs:
       POSTGRES_DB: blackcreekfarm
       POSTGRES_USER: user
       POSTGRES_PASSWORD: user
-      DATABASE_URL: postgres://user:user@localhost:5432/blackcreekfarm
+      DATABASE_URL: postgres://user:user@localhost:5433/blackcreekfarm
 
     services:
       postgres:
