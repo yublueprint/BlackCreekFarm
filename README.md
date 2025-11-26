@@ -1,3 +1,32 @@
+# Architecture
+
+graph TB
+    subgraph "Client Layer"
+        Client[Client/Browser]
+    end
+    
+    subgraph "Application Layer"
+        Django[Django App<br/>Core Service & Producer<br/>Frontend + Backend]
+        Analytics[Analytics Engine<br/>Spring Boot<br/>Consumer Service]
+    end
+    
+    subgraph "Data Layer"
+        Redis[(Redis<br/>Message Queue/Cache)]
+        PostgreSQL[(PostgreSQL<br/>Database)]
+    end
+    
+    Client -->|HTTP Requests| Django
+    Django -->|Publish Events| Redis
+    Django -->|Read/Write| PostgreSQL
+    Redis -->|Consume Events| Analytics
+    Analytics -->|Read/Write| PostgreSQL
+    
+    style Django fill:#0c4b33,stroke:#333,stroke-width:2px,color:#fff
+    style Analytics fill:#2563eb,stroke:#333,stroke-width:2px,color:#fff
+    style Redis fill:#dc2626,stroke:#333,stroke-width:2px,color:#fff
+    style PostgreSQL fill:#336791,stroke:#333,stroke-width:2px,color:#fff
+    style Client fill:#64748b,stroke:#333,stroke-width:2px,color:#fff
+    
 # Blackcreek DBMS
 
 Django & Spring Boot based database management system with PostgreSQL, Redis.
