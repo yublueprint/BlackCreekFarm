@@ -1,5 +1,7 @@
 # Architecture
 
+## Architecture
+```mermaid
 graph TB
     subgraph "Client Layer"
         Client[Client/Browser]
@@ -7,7 +9,7 @@ graph TB
     
     subgraph "Application Layer"
         Django[Django App<br/>Core Service & Producer<br/>Frontend + Backend]
-        Analytics[Analytics Engine<br/>Spring Boot<br/>Consumer Service]
+        Analytics[Analytics Engine<br/>Consumer Service]
     end
     
     subgraph "Data Layer"
@@ -26,6 +28,7 @@ graph TB
     style Redis fill:#dc2626,stroke:#333,stroke-width:2px,color:#fff
     style PostgreSQL fill:#336791,stroke:#333,stroke-width:2px,color:#fff
     style Client fill:#64748b,stroke:#333,stroke-width:2px,color:#fff
+```
     
 # Blackcreek DBMS
 
