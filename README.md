@@ -1,6 +1,5 @@
 # Architecture
 
-## Architecture
 ```mermaid
 graph TB
     subgraph "Client Layer"
