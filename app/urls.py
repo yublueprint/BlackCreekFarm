@@ -45,9 +45,5 @@ urlpatterns = [
     path("reports/", reports, name="reports"),
     # Recent activites URLs
     path("recent_activities/", recent_activities_list, name="recent_activities_list"),
-    path(
-        "recent_activities/download_logs",
-        download_all_activities,
-        name="download_all_activities",
-    ),
+    path("recent_activities/download_logs", download_all_activities, name="download_all_activities"),
 ]

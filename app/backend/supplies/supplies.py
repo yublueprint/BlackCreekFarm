@@ -8,7 +8,10 @@ from app.exceptions.supplies.exception import (SupplyCreationException,
                                                SupplyEditException)
 from app.logging.logging import Logger
 
-from ..models import DEFAULT_TEXT_MAX_LENGTH, Supplies
+from ..models import (TEXTBOX_MAX_LENGTH,
+                      DEFAULT_TEXT_MAX_LENGTH,
+                      UNIT_INPUT_MAX_LENGTH,
+                      Supplies)
 
 logger = Logger("app/logging/app.log")
 
@@ -47,7 +50,9 @@ def supplies_list(request):
     logger.log(f"User {request.user} viewed supplies list.")
     context = {
         "supplies": supplies,
+        "max_textbox_length": TEXTBOX_MAX_LENGTH,
         "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
+        "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
         "page_obj": page_obj,
         "backward_pages": backward_pages,
         "forward_pages": forward_pages,
@@ -61,29 +66,56 @@ def add_supplies(request):
     if request.method == "POST":
         try:
             name = request.POST.get("name")
-            supply_type = request.POST.get("type")  # avoid shadowing builtin `type`
+            supply_category = request.POST.get("supply_category")
             quantity = request.POST.get("quantity")
             unit = request.POST.get("unit")
+            last_restocked = request.POST.get("last_restocked")
+            minimum_required = request.POST.get("minimum_required")
+            cost_per_unit = request.POST.get("cost_per_unit")
+            procurement_date = request.POST.get("procurement_date")
+            notes = request.POST.get("notes")
 
-            text_inputs_given = {
+            default_text_inputs_given = {
                 "name": name,
-                "type": supply_type,
+                "supply_category": supply_category,
+                "quantity": quantity,
+                "last_restocked": last_restocked,
+                "minimum_required": minimum_required,
+                "cost_per_unit": cost_per_unit,
+                "procurement_date": procurement_date,
+            }
+
+            unit_inputs_given = {
                 "unit": unit,
             }
 
-            for key, value in text_inputs_given.items():
-                if not value:
-                    raise SupplyCreationException(f"Missing {key} for supply.")
-                if len(value) > DEFAULT_TEXT_MAX_LENGTH:
-                    raise SupplyCreationException(
-                        f"Supply {key} input must be less than or equal to 100 characters."
-                    )
+            textbox_inputs_given = {
+                "notes": notes,
+            }
+
+            inputs_given_list = [
+                (default_text_inputs_given, DEFAULT_TEXT_MAX_LENGTH),
+                (unit_inputs_given, UNIT_INPUT_MAX_LENGTH),
+                (textbox_inputs_given, TEXTBOX_MAX_LENGTH),
+            ]
+
+            for input_given, max_length in inputs_given_list:
+                for key, value in input_given.items():
+                    if not value:
+                        raise SupplyCreationException(f"Missing {key} for supply.")
+                    if len(value) > max_length:
+                        raise SupplyCreationException(f"Supply {key} input must be less than or equal to {max_length} characters.")
 
             Supplies.objects.create(
                 name=name,
-                type=supply_type,
+                category=supply_category,
                 quantity=quantity,
                 unit=unit,
+                last_restocked=last_restocked,
+                minimum_required=minimum_required,
+                cost_per_unit=cost_per_unit,
+                procurement_date=procurement_date,
+                notes=notes,
             )
 
             logger.log(f"User {request.user} added supply: {name}")
@@ -120,24 +152,46 @@ def edit_supplies(request):
             except Http404:
                 raise SupplyEditException("Supply not found.")
 
-            supply.name = request.POST.get("name")
-            supply.type = request.POST.get("type")
-            supply.quantity = request.POST.get("quantity")
-            supply.unit = request.POST.get("unit")
+            name = request.POST.get("name")
+            supply_category = request.POST.get("supply_category")
+            quantity = request.POST.get("quantity")
+            unit = request.POST.get("unit")
+            last_restocked = request.POST.get("last_restocked")
+            minimum_required = request.POST.get("minimum_required")
+            cost_per_unit = request.POST.get("cost_per_unit")
+            procurement_date = request.POST.get("procurement_date")
+            notes = request.POST.get("notes")
 
-            text_inputs_given = {
-                "name": supply.name,
-                "type": supply.type,
-                "unit": supply.unit,
+            default_text_inputs_given = {
+                "name": name,
+                "supply_category": supply_category,
+                "quantity": quantity,
+                "last_restocked": last_restocked,
+                "minimum_required": minimum_required,
+                "cost_per_unit": cost_per_unit,
+                "procurement_date": procurement_date,
             }
 
-            for key, value in text_inputs_given.items():
-                if not value:
-                    raise SupplyEditException(f"Missing {key} for supply.")
-                if len(value) > DEFAULT_TEXT_MAX_LENGTH:
-                    raise SupplyEditException(
-                        f"Supply {key} input must be less than or equal to 100 characters."
-                    )
+            unit_inputs_given = {
+                "unit": unit,
+            }
+
+            textbox_inputs_given = {
+                "notes": notes,
+            }
+
+            inputs_given_list = [
+                (default_text_inputs_given, DEFAULT_TEXT_MAX_LENGTH),
+                (unit_inputs_given, UNIT_INPUT_MAX_LENGTH),
+                (textbox_inputs_given, TEXTBOX_MAX_LENGTH),
+            ]
+
+            for input_given, max_length in inputs_given_list:
+                for key, value in input_given.items():
+                    if not value:
+                        raise SupplyEditException(f"Missing {key} for supply.")
+                    if len(value) > max_length:
+                        raise SupplyEditException(f"Supply {key} input must be less than or equal to {max_length} characters.")
 
             supply.save()
 
