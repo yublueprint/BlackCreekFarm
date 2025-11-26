@@ -85,8 +85,8 @@ DATABASES = {
         'NAME': 'blackcreekfarm',
         'USER': 'user',
         'PASSWORD': 'user',
-        'HOST': 'localhost',
-        'PORT': '5432',   # match host port
+        'HOST': 'localhost',   # 👈 local connection to container
+        'PORT': '5432',
     }
 }
 
