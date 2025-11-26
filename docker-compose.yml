@@ -9,6 +9,7 @@ services:
       POSTGRES_DB: blackcreekfarm
       POSTGRES_USER: user
       POSTGRES_PASSWORD: user
+      DATABASE_URL: postgres://user:user@localhost:5433/blackcreekfarm
     ports:
       - "5433:5432"  # host 5433 → container 5432
     volumes:
