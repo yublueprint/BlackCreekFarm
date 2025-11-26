@@ -1,6 +1,7 @@
 import pytest
-from django.urls import reverse
 from django.http import Http404
+from django.urls import reverse
+
 from app.backend.models import Supplies
 
 pytestmark = pytest.mark.django_db
@@ -18,7 +19,9 @@ def test_delete_supplies_success(client, user, supply, mocker):
 
 def test_delete_supplies_not_found(client, user, mocker):
     mocker.patch("app.backend.supplies.supplies.get_object_or_404", side_effect=Http404)
-    mock_all = mocker.patch("app.backend.supplies.supplies.Supplies.objects.all", return_value=[])
+    mock_all = mocker.patch(
+        "app.backend.supplies.supplies.Supplies.objects.all", return_value=[]
+    )
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
     response = client.post(reverse("delete_supplies"), {"id": 999})
@@ -29,17 +32,21 @@ def test_delete_supplies_not_found(client, user, mocker):
 
 
 def test_delete_supplies_unexpected_exception(client, user, mocker):
-    mock_get = mocker.patch(
+    _ = mocker.patch(
         "app.backend.supplies.supplies.get_object_or_404",
         side_effect=Exception("Unexpected fail"),
     )
-    mock_all = mocker.patch("app.backend.supplies.supplies.Supplies.objects.all", return_value=[])
+    mock_all = mocker.patch(
+        "app.backend.supplies.supplies.Supplies.objects.all", return_value=[]
+    )
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
     response = client.post(reverse("delete_supplies"), {"id": 1})
     assert response.status_code == 200
     assert "unexpected" in response.context["error"].lower()
-    mock_logger.assert_any_call("Unexpected error during supply deletion: Unexpected fail")
+    mock_logger.assert_any_call(
+        "Unexpected error during supply deletion: Unexpected fail"
+    )
     mock_all.assert_called_once()
 
 

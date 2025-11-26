@@ -1,25 +1,58 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.supplies.exception import (
-    SupplyCreationException,
-    SupplyEditException,
-    SupplyDeleteException,
-)
+from app.exceptions.supplies.exception import (SupplyCreationException,
+                                               SupplyDeleteException,
+                                               SupplyEditException)
 from app.logging.logging import Logger
-from ..models import Supplies, DEFAULT_TEXT_MAX_LENGTH
+
+from ..models import DEFAULT_TEXT_MAX_LENGTH, Supplies
 
 logger = Logger("app/logging/app.log")
 
+
 @login_required
 def supplies_list(request):
-    supplies = Supplies.objects.all()
+    supplies = Supplies.objects.all().order_by("-id")
+    paginator = Paginator(supplies, 10)
+    page_number = request.GET.get("page")
+
+    # Cant do int(None).
+    if page_number:
+        page_number = int(page_number)
+
+    # If none or less than 1, make it 1.
+    # If it's higher than total amount of pages we have, set it to last page.
+    if not page_number or page_number < 1:
+        page_number = 1
+    elif page_number > paginator.num_pages:
+        page_number = paginator.num_pages
+
+    try:
+        page_obj = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+    amount_to_go = 5
+    backward_pages_end = max(1, page_number - amount_to_go)
+    backward_pages = reversed(range(page_number - 1, backward_pages_end - 1, -1))
+
+    forward_pages_end = min(paginator.num_pages, page_number + amount_to_go)
+    forward_pages = range(page_number + 1, forward_pages_end + 1, 1)
+
     logger.log(f"User {request.user} viewed supplies list.")
     context = {
-        "supplies":supplies,
+        "supplies": supplies,
         "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
+        "page_obj": page_obj,
+        "backward_pages": backward_pages,
+        "forward_pages": forward_pages,
     }
+
     return render(request, "app/supplies_list.html", context)
 
 
@@ -31,7 +64,7 @@ def add_supplies(request):
             supply_type = request.POST.get("type")  # avoid shadowing builtin `type`
             quantity = request.POST.get("quantity")
             unit = request.POST.get("unit")
-            
+
             text_inputs_given = {
                 "name": name,
                 "type": supply_type,
@@ -39,15 +72,16 @@ def add_supplies(request):
             }
 
             for key, value in text_inputs_given.items():
-                if (not value):
+                if not value:
                     raise SupplyCreationException(f"Missing {key} for supply.")
-                if (len(value) > DEFAULT_TEXT_MAX_LENGTH):
-                    raise SupplyCreationException(f"Supply {key} input must be less than or equal to 100 characters.")
-
+                if len(value) > DEFAULT_TEXT_MAX_LENGTH:
+                    raise SupplyCreationException(
+                        f"Supply {key} input must be less than or equal to 100 characters."
+                    )
 
             Supplies.objects.create(
                 name=name,
-                type=supply_type, 
+                type=supply_type,
                 quantity=quantity,
                 unit=unit,
             )
@@ -98,10 +132,12 @@ def edit_supplies(request):
             }
 
             for key, value in text_inputs_given.items():
-                if (not value):
+                if not value:
                     raise SupplyEditException(f"Missing {key} for supply.")
-                if (len(value) > DEFAULT_TEXT_MAX_LENGTH):
-                    raise SupplyEditException(f"Supply {key} input must be less than or equal to 100 characters.")
+                if len(value) > DEFAULT_TEXT_MAX_LENGTH:
+                    raise SupplyEditException(
+                        f"Supply {key} input must be less than or equal to 100 characters."
+                    )
 
             supply.save()
 

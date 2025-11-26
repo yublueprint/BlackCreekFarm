@@ -1,0 +1,27 @@
+import pytest
+from django.urls import reverse
+
+pytestmark = pytest.mark.django_db
+
+
+def test_add_livestock_success(client, user, mocker):
+    mock_create = mocker.patch(
+        "app.backend.livestock.livestock.Livestock.objects.create"
+    )
+    mock_logger = mocker.patch("app.backend.livestock.livestock.logger.log")
+
+    response = client.post(
+        reverse("add_livestock"),
+        {"name": "Wooly", "breed": "Merino", "age": "3", "health_status": "Healthy"},
+    )
+
+    assert response.status_code == 302
+    assert response.url == reverse("livestock_list")
+    mock_create.assert_called_once()
+    mock_logger.assert_any_call(f"User {user} added livestock: Wooly")
+
+
+def test_add_livestock_redirect_on_get(client, user):
+    response = client.get(reverse("add_livestock"))
+    assert response.status_code == 302
+    assert response.url == reverse("livestock_list")

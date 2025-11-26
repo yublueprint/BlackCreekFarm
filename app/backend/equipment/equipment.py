@@ -1,14 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
 from django.http import Http404
-from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.equipment.exception import (
-    EquipmentCreationException,
-    EquipmentEditException,
-    EquipmentDeleteException,
-)
+from app.exceptions.equipment.exception import (EquipmentCreationException,
+                                                EquipmentDeleteException,
+                                                EquipmentEditException)
 from app.logging.logging import Logger
+
 from ..models import Equipment
 
 logger = Logger("app/logging/app.log")

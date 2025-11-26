@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-hp!vq%%2cpsg4ulu)b116c(vf52jhg7=3xq(vm-j^f=(h+wuwj
 DEBUG = False
 ENABLE_SILK = False
 if (DEBUG):
-    ENABLE_SILK = True
+    ENABLE_SILK = False
 
 ALLOWED_HOSTS = ["*", "0.0.0.0", "localhost", "127.0.0.1"]
 
