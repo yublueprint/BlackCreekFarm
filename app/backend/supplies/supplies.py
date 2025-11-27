@@ -152,32 +152,32 @@ def edit_supplies(request):
             except Http404:
                 raise SupplyEditException("Supply not found.")
 
-            name = request.POST.get("name")
-            supply_category = request.POST.get("supply_category")
-            quantity = request.POST.get("quantity")
-            unit = request.POST.get("unit")
-            last_restocked = request.POST.get("last_restocked")
-            minimum_required = request.POST.get("minimum_required")
-            cost_per_unit = request.POST.get("cost_per_unit")
-            procurement_date = request.POST.get("procurement_date")
-            notes = request.POST.get("notes")
+            supply.name = request.POST.get("name")
+            supply.category = request.POST.get("supply_category")
+            supply.quantity = request.POST.get("quantity")
+            supply.unit = request.POST.get("unit")
+            supply.last_restocked = request.POST.get("last_restocked")
+            supply.minimum_required = request.POST.get("minimum_required")
+            supply.cost_per_unit = request.POST.get("cost_per_unit")
+            supply.procurement_date = request.POST.get("procurement_date")
+            supply.notes = request.POST.get("notes")
 
             default_text_inputs_given = {
-                "name": name,
-                "supply_category": supply_category,
-                "quantity": quantity,
-                "last_restocked": last_restocked,
-                "minimum_required": minimum_required,
-                "cost_per_unit": cost_per_unit,
-                "procurement_date": procurement_date,
+                "name": supply.name,
+                "supply_category": supply.category,
+                "quantity": supply.quantity,
+                "last_restocked": supply.last_restocked,
+                "minimum_required": supply.minimum_required,
+                "cost_per_unit": supply.cost_per_unit,
+                "procurement_date":supply.procurement_date,
             }
 
             unit_inputs_given = {
-                "unit": unit,
+                "unit": supply.unit,
             }
 
             textbox_inputs_given = {
-                "notes": notes,
+                "notes": supply.notes,
             }
 
             inputs_given_list = [

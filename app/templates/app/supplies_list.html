@@ -206,10 +206,10 @@
                                 '{{ supply.category }}',
                                 '{{ supply.quantity }}',
                                 '{{ supply.unit }}',
-                                '{{ supply.last_restocked }}',
+                                '{{ supply.last_restocked|date:'Y-m-d' }}',
                                 '{{ supply.minimum_required }}',
                                 '{{ supply.cost_per_unit }}',
-                                '{{ supply.procurement_date }}',
+                                '{{ supply.procurement_date|date:'Y-m-d' }}',
                                 '{{ supply.notes }}')"
                             class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
                             style="background-color: #0D65A0;">

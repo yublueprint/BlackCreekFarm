@@ -67,7 +67,6 @@ make build
 make migrate
 make run
 make signup
-make test
 ```
 
 </td>
@@ -136,11 +135,18 @@ redis-cli lpush analytics_events '{ "event": "Hello, Black Creek Farm!" }'
 | Port 8000 in use | Kill process or change port |
 | Database error | Check `docker compose ps` |
 | Permission denied | Use `sudo` or add user to docker group |
+| Staticfiles not updating. | make clean && make build |
 
 ---
 
 ## Contributing
-
+### Before pushing changes
+```bash
+make test
+make lint-fix
+make lint
+```
+### Push changes
 ```bash
 git checkout -b feature/your-feature
 git commit -m "Add feature" -m "Description"
