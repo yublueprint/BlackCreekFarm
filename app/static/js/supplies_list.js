@@ -15,8 +15,8 @@ closeNotesButton.addEventListener("click", () => {
 
 // Function for it.
 function openNotesPopup(notesToShow) {
-    console.log(notesToShow);
-    outputNotes.value = notesToShow;
+    // console.log(notesToShow);
+    outputNotes.value = `${notesToShow}`;
     notesPopup.classList.remove("hidden");
 }
 

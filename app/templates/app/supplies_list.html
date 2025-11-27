@@ -168,7 +168,7 @@
 
 <!-- Notes popup for a supply. -->
 <div id="notesPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md flex flex-col">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl flex flex-col">
         <!-- Header -->
         <h3 class="text-xl font-bold mb-4">Notes of Supply</h3>
         <textarea name="notesOfSupply" id="notesOfSupplyOutput" rows="30" disabled class="overflow-y-auto border-2 border-gray-200 rounded"></textarea>
@@ -214,7 +214,7 @@
                     <div class="flex space-x-2">
                         <button
                             onclick="openNotesPopup(
-                                '{{ supply.notes }}')"
+                                `{{ supply.notes }}`)"
                             class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
                             style="background-color: #0D65A0;">
                             Open Notes
@@ -235,7 +235,7 @@
                                 '{{ supply.minimum_required }}',
                                 '{{ supply.cost_per_unit }}',
                                 '{{ supply.procurement_date|date:'Y-m-d' }}',
-                                '{{ supply.notes }}')"
+                                `{{ supply.notes }}`)"
                             class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
                             style="background-color: #0D65A0;">
                             Edit
