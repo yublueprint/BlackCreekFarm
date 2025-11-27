@@ -121,7 +121,7 @@ redis-cli ping
 
 **Trigger analytics manually:**
 ```bash
-redis-cli lpush analytics_events '{ "event": "Hello, Black Creek Farm!" }'
+redis-cli XADD farm-events "*" action "harvest" crop "tomato" qty "50"
 ```
 
 ---
