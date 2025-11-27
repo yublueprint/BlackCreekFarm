@@ -2,6 +2,26 @@ const addButton = document.getElementById("addButton");
 const popupForm = document.getElementById("popupForm");
 const closeButton = document.getElementById("closeButton");
 
+/*
+Opening notes of a supply.
+*/
+const notesPopup = document.getElementById("notesPopup");
+const closeNotesButton = document.getElementById("closeNotesButton");
+const outputNotes = document.getElementById("notesOfSupplyOutput");
+// Button for it.
+closeNotesButton.addEventListener("click", () => {
+    notesPopup.classList.add("hidden");
+});
+
+// Function for it.
+function openNotesPopup(notesToShow) {
+    console.log(notesToShow);
+    outputNotes.value = notesToShow;
+    notesPopup.classList.remove("hidden");
+}
+
+
+
 
 addButton.addEventListener("click", () => {
     popupForm.classList.remove("hidden");
