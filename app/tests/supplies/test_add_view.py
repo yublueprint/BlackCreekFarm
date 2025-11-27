@@ -4,13 +4,13 @@ from django.urls import reverse
 pytestmark = pytest.mark.django_db
 
 
-def test_add_supplies_success(client, user, mocker):
+def test_add_supplies_success(client, user, mocker, valid_supply_dict):
     mock_create = mocker.patch("app.backend.supplies.supplies.Supplies.objects.create")
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
     response = client.post(
         reverse("add_supplies"),
-        {"name": "Fertilizer", "type": "Nutrient", "quantity": 3, "unit": "kg"},
+        valid_supply_dict,
     )
 
     assert response.status_code == 302
@@ -34,7 +34,7 @@ def test_add_supplies_missing_fields(client, user, mocker):
     mock_all.assert_called_once()
 
 
-def test_add_supplies_unexpected_exception(client, user, mocker):
+def test_add_supplies_unexpected_exception(client, user, mocker, valid_supply_dict):
     mocker.patch(
         "app.backend.supplies.supplies.Supplies.objects.create",
         side_effect=Exception("DB Error"),
@@ -46,7 +46,7 @@ def test_add_supplies_unexpected_exception(client, user, mocker):
 
     response = client.post(
         reverse("add_supplies"),
-        {"name": "Water", "type": "Liquid", "quantity": 1, "unit": "L"},
+        valid_supply_dict,
     )
     assert response.status_code == 200
     assert "unexpected" in response.context["error"].lower()

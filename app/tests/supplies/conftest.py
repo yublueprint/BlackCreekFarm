@@ -16,5 +16,27 @@ def user(client):
 @pytest.fixture
 def supply():
     return Supplies.objects.create(
-        name="Fertilizer", type="Nutrient", quantity=3, unit="kg"
+        name="Fertilizer",
+        category="Nutrient",
+        quantity=3,
+        unit="kg",
+        last_restocked="2025-11-27",
+        minimum_required=4,
+        cost_per_unit=3,
+        procurement_date="2025-11-28",
+        notes="Some note.\nCan have line break too. :)"
     )
+
+@pytest.fixture
+def valid_supply_dict():
+    return {
+        "name": "Fertilizer",
+        "supply_category": "Nutrient",
+        "quantity": 15,
+        "unit": "kg",
+        "last_restocked": "2025-11-27",
+        "minimum_required": 4,
+        "cost_per_unit": 3,
+        "procurement_date": "2025-11-28",
+        "notes":"Some note.\nCan have line break too. :)",
+    }

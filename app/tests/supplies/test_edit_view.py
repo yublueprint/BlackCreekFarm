@@ -13,9 +13,14 @@ def test_edit_supplies_success(client, user, supply, mocker):
         {
             "id": supply.id,
             "name": "Updated",
-            "type": "NewType",
+            "supply_category": "NewType",
             "quantity": 5,
             "unit": "Liters",
+            "last_restocked": "2025-11-27",
+            "minimum_required": 4,
+            "cost_per_unit": 3,
+            "procurement_date": "2025-11-28",
+            "notes":"Some note.\nCan have line break too. :)",
         },
     )
 
@@ -30,7 +35,18 @@ def test_edit_supplies_missing_fields(client, user, supply, mocker):
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
     response = client.post(
         reverse("edit_supplies"),
-        {"id": supply.id, "name": "", "type": "", "quantity": 2, "unit": "g"},
+        {
+            "id": supply.id,
+            "name": "",
+            "supply_category": "",
+            "quantity": 2,
+            "unit": "g",
+            "last_restocked": "2025-11-27",
+            "minimum_required": 4,
+            "cost_per_unit": 3,
+            "procurement_date": "2025-11-28",
+            "notes":"Some note.\nCan have line break too. :)",
+            },
     )
     assert response.status_code == 200
     assert "error" in response.context
