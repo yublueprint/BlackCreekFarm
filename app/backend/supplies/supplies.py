@@ -103,7 +103,7 @@ def add_supplies(request):
                         raise SupplyCreationException(f"Missing {key} for supply.")
                     if len(value) > max_length:
                         raise SupplyCreationException(
-                            f"Supply {key} input must be less than or equal to {max_length} characters."
+                            f"Supply {key} input must be less or equal to {max_length} characters."
                         )
 
             Supplies.objects.create(
@@ -192,7 +192,7 @@ def edit_supplies(request):
                         raise SupplyEditException(f"Missing {key} for supply.")
                     if len(value) > max_length:
                         raise SupplyEditException(
-                            f"Supply {key} input must be less than or equal to {max_length} characters."
+                            f"Supply {key} input must be less or equal to {max_length} characters."
                         )
 
             supply.save()
