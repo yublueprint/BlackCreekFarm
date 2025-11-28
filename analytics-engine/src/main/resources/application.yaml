@@ -3,3 +3,9 @@ spring:
     redis:
       host: localhost
       port: 6379
+
+analytics:
+  redis:
+    stream-name: farm-events
+    consumer-group: analytics-group
+    consumer-name: engine-1
