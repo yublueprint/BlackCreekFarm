@@ -8,10 +8,8 @@ from app.exceptions.supplies.exception import (SupplyCreationException,
                                                SupplyEditException)
 from app.logging.logging import Logger
 
-from ..models import (TEXTBOX_MAX_LENGTH,
-                      DEFAULT_TEXT_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH,
-                      Supplies)
+from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+                      UNIT_INPUT_MAX_LENGTH, Supplies)
 
 logger = Logger("app/logging/app.log")
 
@@ -104,7 +102,9 @@ def add_supplies(request):
                     if not value:
                         raise SupplyCreationException(f"Missing {key} for supply.")
                     if len(value) > max_length:
-                        raise SupplyCreationException(f"Supply {key} input must be less than or equal to {max_length} characters.")
+                        raise SupplyCreationException(
+                            f"Supply {key} input must be less than or equal to {max_length} characters."
+                        )
 
             Supplies.objects.create(
                 name=name,
@@ -169,7 +169,7 @@ def edit_supplies(request):
                 "last_restocked": supply.last_restocked,
                 "minimum_required": supply.minimum_required,
                 "cost_per_unit": supply.cost_per_unit,
-                "procurement_date":supply.procurement_date,
+                "procurement_date": supply.procurement_date,
             }
 
             unit_inputs_given = {
@@ -191,7 +191,9 @@ def edit_supplies(request):
                     if not value:
                         raise SupplyEditException(f"Missing {key} for supply.")
                     if len(value) > max_length:
-                        raise SupplyEditException(f"Supply {key} input must be less than or equal to {max_length} characters.")
+                        raise SupplyEditException(
+                            f"Supply {key} input must be less than or equal to {max_length} characters."
+                        )
 
             supply.save()
 

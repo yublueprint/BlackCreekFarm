@@ -10,6 +10,7 @@ pytestmark = pytest.mark.django_db
 def test_delete_supplies_success(client, user, supply, mocker):
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
+    assert Supplies.objects.count() == 1
     response = client.post(reverse("delete_supplies"), {"id": supply.id})
     assert response.status_code == 302
     assert response.url == reverse("supplies_list")

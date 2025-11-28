@@ -20,7 +20,7 @@ def test_edit_supplies_success(client, user, supply, mocker):
             "minimum_required": 4,
             "cost_per_unit": 3,
             "procurement_date": "2025-11-28",
-            "notes":"Some note.\nCan have line break too. :)",
+            "notes": "Some note.\nCan have line break too. :)",
         },
     )
 
@@ -45,8 +45,8 @@ def test_edit_supplies_missing_fields(client, user, supply, mocker):
             "minimum_required": 4,
             "cost_per_unit": 3,
             "procurement_date": "2025-11-28",
-            "notes":"Some note.\nCan have line break too. :)",
-            },
+            "notes": "Some note.\nCan have line break too. :)",
+        },
     )
     assert response.status_code == 200
     assert "error" in response.context

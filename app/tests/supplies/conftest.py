@@ -24,8 +24,9 @@ def supply():
         minimum_required=4,
         cost_per_unit=3,
         procurement_date="2025-11-28",
-        notes="Some note.\nCan have line break too. :)"
+        notes="Some note.\nCan have line break too. :)",
     )
+
 
 @pytest.fixture
 def valid_supply_dict():
@@ -38,5 +39,5 @@ def valid_supply_dict():
         "minimum_required": 4,
         "cost_per_unit": 3,
         "procurement_date": "2025-11-28",
-        "notes":"Some note.\nCan have line break too. :)",
+        "notes": "Some note.\nCan have line break too. :)",
     }
