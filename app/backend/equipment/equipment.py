@@ -138,7 +138,8 @@ def edit_equipment(request):
                 or not equipment.maintenance_due
             ):
                 raise EquipmentEditException(
-                    "Name, category, type, purchase and maintenance dates are required to update equipment."
+                    "Name, category, type, purchase and maintenance dates are required to "
+                    "update equipment."
                 )
             equipment.save()
 
