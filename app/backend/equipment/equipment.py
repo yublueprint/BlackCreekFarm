@@ -45,7 +45,6 @@ def add_equipment(request):
             active = request.POST.get("active") == "on"
             last_service_by = request.POST.get("last_service_by")
             service_interval_days = request.POST.get("service_interval_days")
-
             if not name or not category or not equipment_type or not purchase_date or not maintenance_due:
                 raise EquipmentCreationException(
                     "Name, category, type, purchase and maintenance dates are required."
