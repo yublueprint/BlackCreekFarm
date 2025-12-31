@@ -30,14 +30,32 @@
             <label class="block mb-2">Name:</label>
             <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
 
+            <label class="block mb-2">Crop Type:</label>
+            <input type="text" name="crop_type" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+
             <label class="block mb-2">Planting Date:</label>
             <input type="date" name="planting_date" class="w-full border rounded px-3 py-2 mb-4" required />
 
             <label class="block mb-2">Harvest Date:</label>
-            <input type="date" name="harvest_date" class="w-full border rounded px-3 py-2 mb-4" required />
+            <input type="date" name="harvest_date" class="w-full border rounded px-3 py-2 mb-4" />
 
-            <label class="block mb-2">Yield Estimate:</label>
-            <input type="number" name="yield_estimate" class="w-full border rounded px-3 py-2 mb-4" required />
+            <label class="block mb-2">Expected Yield:</label>
+            <input type="number" step="0.01" name="expected_yield" class="w-full border rounded px-3 py-2 mb-4" required />
+
+            <label class="block mb-2">Yield Efficiency (%):</label>
+            <input type="number" step="0.01" name="yield_efficiency" class="w-full border rounded px-3 py-2 mb-4" value="0" />
+
+            <label class="block mb-2">Water Usage (Liters):</label>
+            <input type="number" step="0.01" name="water_usage_liters" class="w-full border rounded px-3 py-2 mb-4" value="0" />
+
+            <label class="block mb-2">Next Checkup:</label>
+            <input type="date" name="next_checkup" class="w-full border rounded px-3 py-2 mb-4" />
+
+            <label class="block mb-2">Region:</label>
+            <input type="text" name="region" class="w-full border rounded px-3 py-2 mb-4" maxlength="50" />
+
+            <label class="block mb-2">Notes:</label>
+            <textarea name="notes" class="w-full border rounded px-3 py-2 mb-4" rows="3"></textarea>
 
             <button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
                 style="background-color: #335D43;">
@@ -61,17 +79,39 @@
             <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" maxlength="100"
                 required />
 
+            <label class="block mb-2">Crop Type:</label>
+            <input type="text" name="crop_type" id="editCropType" class="w-full border rounded px-3 py-2 mb-4" maxlength="100"
+                required />
+
             <label class="block mb-2">Planting Date:</label>
             <input type="date" name="planting_date" id="editPlantingDate" class="w-full border rounded px-3 py-2 mb-4"
                 required />
 
             <label class="block mb-2">Harvest Date:</label>
             <input type="date" name="harvest_date" id="editHarvestDate" class="w-full border rounded px-3 py-2 mb-4"
-                required />
+                />
 
-            <label class="block mb-2">Yield Estimate:</label>
-            <input type="number" name="yield_estimate" id="editYieldEstimate"
+            <label class="block mb-2">Expected Yield:</label>
+            <input type="number" step="0.01" name="expected_yield" id="editExpectedYield"
                 class="w-full border rounded px-3 py-2 mb-4" required />
+
+            <label class="block mb-2">Yield Efficiency (%):</label>
+            <input type="number" step="0.01" name="yield_efficiency" id="editYieldEfficiency"
+                class="w-full border rounded px-3 py-2 mb-4" />
+
+            <label class="block mb-2">Water Usage (Liters):</label>
+            <input type="number" step="0.01" name="water_usage_liters" id="editWaterUsageLiters"
+                class="w-full border rounded px-3 py-2 mb-4" />
+
+            <label class="block mb-2">Next Checkup:</label>
+            <input type="date" name="next_checkup" id="editNextCheckup" class="w-full border rounded px-3 py-2 mb-4"
+                />
+
+            <label class="block mb-2">Region:</label>
+            <input type="text" name="region" id="editRegion" class="w-full border rounded px-3 py-2 mb-4" maxlength="50" />
+
+            <label class="block mb-2">Notes:</label>
+            <textarea name="notes" id="editNotes" class="w-full border rounded px-3 py-2 mb-4" rows="3"></textarea>
 
             <button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
                 style="background-color: #335D43;">
@@ -115,12 +155,14 @@
             <tr>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Planting Date
-                </th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Harvest Date
-                </th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Yield
-                    Estimate</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Crop Type</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Planting Date</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Harvest Date</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Expected Yield</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Yield Efficiency</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Water Usage</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Next Checkup</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Region</th>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
             </tr>
         </thead>
@@ -129,22 +171,33 @@
             <tr class="hover:bg-gray-50">
                 <td class="py-4 px-6 text-sm text-gray-900">{{ crop.id }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ crop.name }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.crop_type }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ crop.planting_date }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.harvest_date }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.yield_estimate }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.harvest_date|default:"-" }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.expected_yield }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.yield_efficiency|default:"0" }}%</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.water_usage_liters|default:"0" }}L</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.next_checkup|default:"-" }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.region|default:"-" }}</td>
                 <td class="py-4 px-6 text-sm">
                     <div class="flex space-x-2">
-                        <button onclick="openEditPopup(
-                                '{{ crop.id }}',
-                                '{{ crop.name }}',
-                                '{{ crop.planting_date|date:'Y-m-d' }}',
-                                '{{ crop.harvest_date|date:'Y-m-d' }}',
-                                '{{ crop.yield_estimate }}'
-                            )" class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
+                        <button onclick='openEditPopup(
+                                "{{ crop.id }}",
+                                "{{ crop.name|escapejs }}",
+                                "{{ crop.crop_type|escapejs }}",
+                                "{{ crop.planting_date|date:'Y-m-d' }}",
+                                {% if crop.harvest_date %}"{{ crop.harvest_date|date:'Y-m-d' }}"{% else %}null{% endif %},
+                                "{{ crop.expected_yield }}",
+                                "{{ crop.yield_efficiency|default:"0" }}",
+                                "{{ crop.water_usage_liters|default:"0" }}",
+                                {% if crop.next_checkup %}"{{ crop.next_checkup|date:'Y-m-d' }}"{% else %}null{% endif %},
+                                "{{ crop.region|default:""|escapejs }}",
+                                "{{ crop.notes|default:""|escapejs }}"
+                            )' class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
                             style="background-color: #0D65A0;">
                             Edit
                         </button>
-                        <button onclick="openDeletePopup('{{ crop.id }}', '{{ crop.name }}')"
+                        <button onclick='openDeletePopup("{{ crop.id }}", "{{ crop.name|escapejs }}")'
                             class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
                             Delete
                         </button>
@@ -153,12 +206,48 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6" class="py-8 px-6 text-center text-gray-500">No crop records found</td>
+                <td colspan="11" class="py-8 px-6 text-center text-gray-500">No crop records found</td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 </div>
+
+<!-- Pagination -->
+{% if crops.has_other_pages %}
+<div class="mt-6 flex justify-center">
+    <nav class="flex items-center space-x-2">
+        {% if crops.has_previous %}
+        <a href="?page={{ crops.previous_page_number }}" 
+           class="px-3 py-2 border rounded text-sm hover:bg-gray-100">
+            Previous
+        </a>
+        {% endif %}
+        
+        {% for num in crops.paginator.page_range %}
+            {% if crops.number == num %}
+            <span class="px-3 py-2 border rounded text-sm bg-gray-200">{{ num }}</span>
+            {% elif num > crops.number|add:'-3' and num < crops.number|add:'3' %}
+            <a href="?page={{ num }}" 
+               class="px-3 py-2 border rounded text-sm hover:bg-gray-100">
+                {{ num }}
+            </a>
+            {% endif %}
+        {% endfor %}
+        
+        {% if crops.has_next %}
+        <a href="?page={{ crops.next_page_number }}" 
+           class="px-3 py-2 border rounded text-sm hover:bg-gray-100">
+            Next
+        </a>
+        {% endif %}
+        
+        <span class="text-sm text-gray-600 ml-4">
+            Page {{ crops.number }} of {{ crops.paginator.num_pages }}
+        </span>
+    </nav>
+</div>
+{% endif %} 
 
 <script src="{% static 'js/crop_list.js' %}"></script>
 {% endblock %}
