@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404, redirect, render
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from app.exceptions.crop.exception import (CropCreationException,
                                            CropDeleteException,
@@ -14,19 +14,19 @@ logger = Logger("app/logging/app.log")
 
 @login_required
 def crop_list(request):
-    crops_list = Crop.objects.all().order_by('-planting_date')
+    crops_list = Crop.objects.all().order_by("-planting_date")
 
     # Pagination
-    page = request.GET.get('page', 1)
+    page = request.GET.get("page", 1)
     paginator = Paginator(crops_list, 10)
-    
+
     try:
         crops = paginator.page(page)
     except PageNotAnInteger:
         crops = paginator.page(1)
     except EmptyPage:
         crops = paginator.page(paginator.num_pages)
-    
+
     logger.log(f"User {request.user} viewed crop list (page {page}).")
     return render(request, "app/crop_list.html", {"crops": crops})
 
@@ -47,11 +47,11 @@ def add_crop(request):
             region = request.POST.get("region")
             notes = request.POST.get("notes")
 
-            
             if not name or not crop_type or not planting_date or not expected_yield:
-                raise CropCreationException("Name, crop type, planting date, and expected yield are required.")
+                raise CropCreationException(
+                    "Name, crop type, planting date, and expected yield are required."
+                )
 
-            
             crop = Crop.objects.create(
                 name=name,
                 crop_type=crop_type,
@@ -59,23 +59,24 @@ def add_crop(request):
                 harvest_date=harvest_date if harvest_date else None,
                 expected_yield=float(expected_yield) if expected_yield else 0,
                 yield_efficiency=float(yield_efficiency) if yield_efficiency else 0,
-                water_usage_liters=float(water_usage_liters) if water_usage_liters else 0,
+                water_usage_liters=(
+                    float(water_usage_liters) if water_usage_liters else 0
+                ),
                 next_checkup=next_checkup if next_checkup else None,
                 region=region,
                 notes=notes,
             )
-            
+
             logger.log(f"User {request.user} added crop: {name} (ID: {crop.id})")
             return redirect("crop_list")
 
         except CropCreationException as e:
             logger.log(f"Crop creation error by {request.user}: {e}")
-            
-            
-            crops_list = Crop.objects.all().order_by('-planting_date')
+
+            crops_list = Crop.objects.all().order_by("-planting_date")
             paginator = Paginator(crops_list, 10)
             crops = paginator.page(1)
-            
+
             return render(
                 request,
                 "app/crop_list.html",
@@ -83,11 +84,11 @@ def add_crop(request):
             )
         except ValueError as e:
             logger.log(f"Value error during crop creation by {request.user}: {e}")
-            
-            crops_list = Crop.objects.all().order_by('-planting_date')
+
+            crops_list = Crop.objects.all().order_by("-planting_date")
             paginator = Paginator(crops_list, 10)
             crops = paginator.page(1)
-            
+
             return render(
                 request,
                 "app/crop_list.html",
@@ -98,11 +99,11 @@ def add_crop(request):
             )
         except Exception as e:
             logger.log(f"Unexpected error during crop creation: {e}")
-            
-            crops_list = Crop.objects.all().order_by('-planting_date')
+
+            crops_list = Crop.objects.all().order_by("-planting_date")
             paginator = Paginator(crops_list, 10)
             crops = paginator.page(1)
-            
+
             return render(
                 request,
                 "app/crop_list.html",
@@ -111,8 +112,7 @@ def add_crop(request):
                     "error": "An unexpected error occurred while adding the crop.",
                 },
             )
-    
-    
+
     return redirect("crop_list")
 
 
@@ -123,11 +123,10 @@ def edit_crop(request):
             crop_id = request.POST.get("id")
             if not crop_id:
                 raise CropEditException("Crop ID is required.")
-                
+
             crop = get_object_or_404(Crop, id=crop_id)
             old_name = crop.name
-            
-            
+
             crop.name = request.POST.get("name")
             crop.crop_type = request.POST.get("crop_type")
             crop.planting_date = request.POST.get("planting_date")
@@ -139,11 +138,11 @@ def edit_crop(request):
             crop.region = request.POST.get("region")
             crop.notes = request.POST.get("notes")
 
-            
             if not crop.name or not crop.crop_type or not crop.planting_date:
-                raise CropEditException("Name, crop type, and planting date are required.")
+                raise CropEditException(
+                    "Name, crop type, and planting date are required."
+                )
 
-            
             try:
                 if crop.expected_yield:
                     crop.expected_yield = float(crop.expected_yield)
@@ -152,9 +151,10 @@ def edit_crop(request):
                 if crop.water_usage_liters:
                     crop.water_usage_liters = float(crop.water_usage_liters)
             except ValueError:
-                raise CropEditException("Invalid numeric values in yield or water usage fields.")
+                raise CropEditException(
+                    "Invalid numeric values in yield or water usage fields."
+                )
 
-            
             crop.harvest_date = crop.harvest_date if crop.harvest_date else None
             crop.next_checkup = crop.next_checkup if crop.next_checkup else None
 
@@ -164,11 +164,11 @@ def edit_crop(request):
 
         except CropEditException as e:
             logger.log(f"Crop edit error by {request.user}: {e}")
-            
-            crops_list = Crop.objects.all().order_by('-planting_date')
+
+            crops_list = Crop.objects.all().order_by("-planting_date")
             paginator = Paginator(crops_list, 10)
             crops = paginator.page(1)
-            
+
             return render(
                 request,
                 "app/crop_list.html",
@@ -176,11 +176,11 @@ def edit_crop(request):
             )
         except Exception as e:
             logger.log(f"Unexpected error during crop edit: {e}")
-            
-            crops_list = Crop.objects.all().order_by('-planting_date')
+
+            crops_list = Crop.objects.all().order_by("-planting_date")
             paginator = Paginator(crops_list, 10)
             crops = paginator.page(1)
-            
+
             return render(
                 request,
                 "app/crop_list.html",
@@ -198,7 +198,7 @@ def delete_crop(request):
             crop_id = request.POST.get("id")
             if not crop_id:
                 raise CropDeleteException("Crop ID is required.")
-                
+
             crop = get_object_or_404(Crop, id=crop_id)
 
             crop_name = crop.name
@@ -208,11 +208,11 @@ def delete_crop(request):
 
         except CropDeleteException as e:
             logger.log(f"Crop delete error by {request.user}: {e}")
-            
-            crops_list = Crop.objects.all().order_by('-planting_date')
+
+            crops_list = Crop.objects.all().order_by("-planting_date")
             paginator = Paginator(crops_list, 10)
             crops = paginator.page(1)
-            
+
             return render(
                 request,
                 "app/crop_list.html",
@@ -220,11 +220,11 @@ def delete_crop(request):
             )
         except Exception as e:
             logger.log(f"Unexpected error during crop deletion: {e}")
-            
-            crops_list = Crop.objects.all().order_by('-planting_date')
+
+            crops_list = Crop.objects.all().order_by("-planting_date")
             paginator = Paginator(crops_list, 10)
             crops = paginator.page(1)
-            
+
             return render(
                 request,
                 "app/crop_list.html",

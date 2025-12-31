@@ -25,15 +25,15 @@ class Livestock(models.Model):
 
 class Crop(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    crop_type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)  
+    crop_type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     planting_date = models.DateField()
-    harvest_date = models.DateField(blank=True, null=True)  
-    expected_yield = models.FloatField(default=0)  
-    yield_efficiency = models.FloatField(default=0)  
-    water_usage_liters = models.FloatField(default=0)  
-    next_checkup = models.DateField(blank=True, null=True)  
-    region = models.CharField(max_length=50, blank=True, null=True)  
-    notes = models.TextField(blank=True, null=True)  
+    harvest_date = models.DateField(blank=True, null=True)
+    expected_yield = models.FloatField(default=0)
+    yield_efficiency = models.FloatField(default=0)
+    water_usage_liters = models.FloatField(default=0)
+    next_checkup = models.DateField(blank=True, null=True)
+    region = models.CharField(max_length=50, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
