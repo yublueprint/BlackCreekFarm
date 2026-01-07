@@ -13,7 +13,6 @@ class Record(models.Model):
         return self.name
 
 
-    
 class Livestock(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     breed = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
@@ -27,7 +26,6 @@ class Livestock(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.breed}"
-
 
 
 class Crop(models.Model):

@@ -6,38 +6,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('app', '0001_initial'),
+        ("app", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='livestock',
-            name='current_value',
+            model_name="livestock",
+            name="current_value",
             field=models.FloatField(default=0),
         ),
         migrations.AddField(
-            model_name='livestock',
-            name='next_vaccination_date',
+            model_name="livestock",
+            name="next_vaccination_date",
             field=models.DateField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='livestock',
-            name='notes',
+            model_name="livestock",
+            name="notes",
             field=models.TextField(blank=True, null=True),
         ),
         migrations.AddField(
-            model_name='livestock',
-            name='purchase_price',
+            model_name="livestock",
+            name="purchase_price",
             field=models.FloatField(default=0),
         ),
         migrations.AddField(
-            model_name='livestock',
-            name='weight',
+            model_name="livestock",
+            name="weight",
             field=models.FloatField(blank=True, null=True),
         ),
         migrations.AlterField(
-            model_name='livestock',
-            name='health_status',
+            model_name="livestock",
+            name="health_status",
             field=models.CharField(max_length=50),
         ),
     ]

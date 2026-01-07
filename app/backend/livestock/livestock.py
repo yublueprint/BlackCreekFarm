@@ -2,11 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.livestock.exception import (
-    LivestockCreationException,
-    LivestockDeleteException,
-    LivestockEditException,
-)
+from app.exceptions.livestock.exception import (LivestockCreationException,
+                                                LivestockDeleteException,
+                                                LivestockEditException)
 from app.logging.logging import Logger
 
 from ..models import Livestock
@@ -89,9 +87,15 @@ def edit_livestock(request):
             animal.breed = request.POST.get("breed", animal.breed)
             animal.age = request.POST.get("age", animal.age)
             animal.weight = request.POST.get("weight", animal.weight)
-            animal.health_status = request.POST.get("health_status", animal.health_status)
-            animal.purchase_price = request.POST.get("purchase_price", animal.purchase_price)
-            animal.current_value = request.POST.get("current_value", animal.current_value)
+            animal.health_status = request.POST.get(
+                "health_status", animal.health_status
+            )
+            animal.purchase_price = request.POST.get(
+                "purchase_price", animal.purchase_price
+            )
+            animal.current_value = request.POST.get(
+                "current_value", animal.current_value
+            )
             animal.next_vaccination_date = request.POST.get(
                 "next_vaccination_date", animal.next_vaccination_date
             )

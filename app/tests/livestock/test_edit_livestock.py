@@ -34,16 +34,21 @@ def test_edit_livestock_success(client, user, livestock, mocker):
 def test_edit_livestock_missing_required_fields(client, user, livestock, mocker):
     mock_logger = mocker.patch("app.backend.livestock.livestock.logger.log")
 
-    response = client.post(reverse("edit_livestock"), {"id": livestock.id, "name": "", "breed": ""})
+    response = client.post(
+        reverse("edit_livestock"), {"id": livestock.id, "name": "", "breed": ""}
+    )
     assert response.status_code == 200
     assert "error" in response.context
-    mock_logger.assert_any_call(f"Livestock edit error by {user}: Name and breed are required to update livestock.")
+    mock_logger.assert_any_call(
+        f"Livestock edit error by {user}: Name and breed are required to update livestock."
+    )
 
 
 def test_edit_livestock_redirect_on_get(client, user):
     response = client.get(reverse("edit_livestock"))
     assert response.status_code == 302
     assert response.url == reverse("livestock_list")
+
 
 def test_edit_livestock_not_found(client, user):
     response = client.post(
