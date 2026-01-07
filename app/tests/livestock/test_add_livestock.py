@@ -5,14 +5,22 @@ pytestmark = pytest.mark.django_db
 
 
 def test_add_livestock_success(client, user, mocker):
-    mock_create = mocker.patch(
-        "app.backend.livestock.livestock.Livestock.objects.create"
-    )
+    mock_create = mocker.patch("app.backend.livestock.livestock.Livestock.objects.create")
     mock_logger = mocker.patch("app.backend.livestock.livestock.logger.log")
 
     response = client.post(
         reverse("add_livestock"),
-        {"name": "Wooly", "breed": "Merino", "age": "3", "health_status": "Healthy"},
+        {
+            "name": "Wooly",
+            "breed": "Merino",
+            "age": "3",
+            "weight": "120.5",
+            "health_status": "Healthy",
+            "purchase_price": "400",
+            "current_value": "600",
+            "next_vaccination_date": "2026-03-10",
+            "notes": "Healthy and vaccinated",
+        },
     )
 
     assert response.status_code == 302
@@ -21,7 +29,22 @@ def test_add_livestock_success(client, user, mocker):
     mock_logger.assert_any_call(f"User {user} added livestock: Wooly")
 
 
+def test_add_livestock_missing_required_fields(client, user, mocker):
+    mock_logger = mocker.patch("app.backend.livestock.livestock.logger.log")
+
+    response = client.post(reverse("add_livestock"), {"age": "2", "breed": ""})
+    assert response.status_code == 200
+    assert "error" in response.context
+    mock_logger.assert_any_call(f"Livestock creation error by {user}: Both name and breed are required.")
+
+
 def test_add_livestock_redirect_on_get(client, user):
     response = client.get(reverse("add_livestock"))
     assert response.status_code == 302
     assert response.url == reverse("livestock_list")
+
+def test_add_livestock_missing_required_fields(client, user):
+    response = client.post(reverse("add_livestock"), {"name": "", "breed": ""})
+    assert response.status_code == 200
+    assert "error" in response.context
+    assert "required" in response.context["error"].lower()

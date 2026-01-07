@@ -2,9 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.livestock.exception import (LivestockCreationException,
-                                                LivestockDeleteException,
-                                                LivestockEditException)
+from app.exceptions.livestock.exception import (
+    LivestockCreationException,
+    LivestockDeleteException,
+    LivestockEditException,
+)
 from app.logging.logging import Logger
 
 from ..models import Livestock
@@ -26,7 +28,12 @@ def add_livestock(request):
             name = request.POST.get("name")
             breed = request.POST.get("breed")
             age = request.POST.get("age")
+            weight = request.POST.get("weight")
             health_status = request.POST.get("health_status")
+            purchase_price = request.POST.get("purchase_price")
+            current_value = request.POST.get("current_value")
+            next_vaccination_date = request.POST.get("next_vaccination_date")
+            notes = request.POST.get("notes")
 
             if not name or not breed:
                 raise LivestockCreationException("Both name and breed are required.")
@@ -34,8 +41,13 @@ def add_livestock(request):
             Livestock.objects.create(
                 name=name,
                 breed=breed,
-                age=age,
-                health_status=health_status,
+                age=age or 0,
+                weight=weight or None,
+                health_status=health_status or "Unknown",
+                purchase_price=purchase_price or 0,
+                current_value=current_value or 0,
+                next_vaccination_date=next_vaccination_date or None,
+                notes=notes or "",
             )
 
             logger.log(f"User {request.user} added livestock: {name}")
@@ -72,10 +84,18 @@ def edit_livestock(request):
             except Http404:
                 raise LivestockEditException("Livestock not found.")
 
-            animal.name = request.POST.get("name")
-            animal.breed = request.POST.get("breed")
-            animal.age = request.POST.get("age")
-            animal.health_status = request.POST.get("health_status")
+            # ✅ Safe updates: preserve existing values if keys are missing
+            animal.name = request.POST.get("name", animal.name)
+            animal.breed = request.POST.get("breed", animal.breed)
+            animal.age = request.POST.get("age", animal.age)
+            animal.weight = request.POST.get("weight", animal.weight)
+            animal.health_status = request.POST.get("health_status", animal.health_status)
+            animal.purchase_price = request.POST.get("purchase_price", animal.purchase_price)
+            animal.current_value = request.POST.get("current_value", animal.current_value)
+            animal.next_vaccination_date = request.POST.get(
+                "next_vaccination_date", animal.next_vaccination_date
+            )
+            animal.notes = request.POST.get("notes", animal.notes)
 
             if not animal.name or not animal.breed:
                 raise LivestockEditException(
