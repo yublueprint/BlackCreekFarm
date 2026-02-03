@@ -14,12 +14,18 @@ closeButton.addEventListener("click", () => {
 const editPopup = document.getElementById("editPopup");
 const closeEditButton = document.getElementById("closeEditButton");
 
-function openEditPopup(id, name, planting, harvest, yieldValue) {
+function openEditPopup(id, name, crop_type, planting, harvest, yieldValue, yieldEfficiency, waterUsage, nextCheckup, region, notes) {
     document.getElementById("editId").value = id;
     document.getElementById("editName").value = name;
+    document.getElementById("editCropType").value = crop_type;
     document.getElementById("editPlantingDate").value = planting;
     document.getElementById("editHarvestDate").value = harvest;
-    document.getElementById("editYieldEstimate").value = yieldValue;
+    document.getElementById("editExpectedYield").value = yieldValue;
+    document.getElementById("editYieldEfficiency").value = yieldEfficiency;
+    document.getElementById("editWaterUsageLiters").value = waterUsage;
+    document.getElementById("editNextCheckup").value = nextCheckup;
+    document.getElementById("editRegion").value = region;
+    document.getElementById("editNotes").value = notes;
     editPopup.classList.remove("hidden");
 }
 
