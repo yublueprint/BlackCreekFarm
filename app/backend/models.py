@@ -17,17 +17,28 @@ class Livestock(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     breed = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     age = models.IntegerField()
-    health_status = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    weight = models.FloatField(blank=True, null=True)
+    health_status = models.CharField(max_length=50)
+    purchase_price = models.FloatField(default=0)
+    current_value = models.FloatField(default=0)
+    next_vaccination_date = models.DateField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.breed}"
 
 
 class Crop(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    crop_type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH, default='unknown')
     planting_date = models.DateField()
-    harvest_date = models.DateField()
-    yield_estimate = models.FloatField()
+    harvest_date = models.DateField(blank=True, null=True)
+    expected_yield = models.FloatField(default=0)
+    yield_efficiency = models.FloatField(default=0)
+    water_usage_liters = models.FloatField(default=0)
+    next_checkup = models.DateField(blank=True, null=True)
+    region = models.CharField(max_length=50, blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return self.name
