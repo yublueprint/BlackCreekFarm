@@ -4,7 +4,7 @@ from django.urls import reverse
 from app.backend.models import Livestock
 
 # pytestmark = pytest.mark.django_db
-pytestmark = pytest.mark.skip("Will come back to later.")
+pytestmark = pytest.mark.skip("We will get back to these soon.")
 
 
 def test_delete_livestock_success(client, user, livestock, mocker):

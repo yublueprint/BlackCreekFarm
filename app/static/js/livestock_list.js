@@ -14,12 +14,17 @@ closeButton.addEventListener("click", () => {
 const editPopup = document.getElementById("editPopup");
 const closeEditButton = document.getElementById("closeEditButton");
 
-function openEditPopup(id, name, breed, age, healthStatus) {
+function openEditPopup(id, name, breed, age, weight, healthStatus, purchasePrice, currentValue, vaccinationDate, notes) {
     document.getElementById("editId").value = id;
     document.getElementById("editName").value = name;
     document.getElementById("editBreed").value = breed;
     document.getElementById("editAge").value = age;
+    document.getElementById("editWeight").value = weight;
     document.getElementById("editHealthStatus").value = healthStatus;
+    document.getElementById("editPurchasePrice").value = purchasePrice;
+    document.getElementById("editCurrentValue").value = currentValue;
+    document.getElementById("editNextVaccinationDate").value = vaccinationDate;
+    document.getElementById("editNotes").value = notes;
     editPopup.classList.remove("hidden");
 }
 
