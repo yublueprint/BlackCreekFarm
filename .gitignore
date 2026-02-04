@@ -25,3 +25,4 @@ env/
 .idea/
 
 app/logging/app.log
+app/logging/modification_activities.log

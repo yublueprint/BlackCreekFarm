@@ -22,43 +22,93 @@
 
 <!-- Add Button Popup Form -->
 <div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
         <h3 class="text-xl font-bold mb-4">Add Supply</h3>
         <form method="post" id="addSupplyForm" action="{% url 'add_supplies' %}">
             {% csrf_token %}
-            <!-- Name of the Supply -->
-            <label class="block mb-2">Name:</label>
-            <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2">
+                    <!-- Name of the Supply -->
+                    <label class="block mb-2">Name:</label>
+                    <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4"
+                        maxlength="{{ max_input_text_length }}" required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Category of the Supply -->
+                    <label class="block mb-2">Category:</label>
+                    <input type="text" name="supply_category" class="w-full border rounded px-3 py-2 mb-4"
+                        maxlength="{{ max_input_text_length }}" required />
+                </div>
+    
+            </div>
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2">
+                    <!-- Quantity of the Supply -->
+                    <label class="block mb-2">Quantity:</label>
+                    <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Type of Unit of Quantity of the Supply -->
+                    <label class="block mb-2">Unit:</label>
+                    <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4"
+                    maxlength="{{ max_input_unit_length }}" required />
+                </div>
+                
+            </div>
+            <div class="flex space-x-2">
+                <div class="w-1/2">
+                    <!-- Minimum required amount of the Supply -->
+                    <label class="block mb-2">Minimum required:</label>
+                    <input type="number" name="minimum_required" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Cost per unit of the Supply -->
+                    <label class="block mb-2">Cost per unit:</label>
+                    <input type="number" name="cost_per_unit" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+            </div>
+            
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2">
+                    <!-- Last Restocking Date of the Supply -->
+                    <label class="block mb-2">Last restocked:</label>
+                    <input type="date" name="last_restocked" class="w-full border rounded px-3 py-2 mb-4"
+                    required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Procurement date of the Supply -->
+                    <label class="block mb-2">Procurement date:</label>
+                    <input type="date" name="procurement_date" class="w-full border rounded px-3 py-2 mb-4"
+                        required />
+                </div>
+            </div>
 
-            <!-- Type of the Supply -->
-            <label class="block mb-2">Type:</label>
-            <input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
+            <!-- Notes for the Supply -->
+            <label class="block mb-2">Notes:</label>
+            <textarea name="notes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
+            maxlength="{{ max_textbox_length }}" required></textarea>
 
-            <!-- Quantity of the Supply -->
-            <label class="block mb-2">Quantity:</label>
-            <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4" required />
+            <div class="flex space-x-2 w-full">
+                <div>
+                    <!-- Submit Information Button -->
+                    <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+                        Save
+                    </button>
+                </div>
+                <div>
+                    <button id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+                        Cancel
+                    </button>
+                </div>
+            </div>
 
-            <!-- Type of Unit of Quantity of the Supply -->
-            <label class="block mb-2">Unit:</label>
-            <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
-
-            <!-- Submit Information Button -->
-            <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-                Save
-            </button>
         </form>
-        <button id="closeButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-            Cancel
-        </button>
     </div>
 </div>
 
 <!-- Edit Popup -->
 <div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
         <h3 class="text-xl font-bold mb-4">Edit Supply</h3>
         <form method="post" id="editSupplyForm" action="{% url 'edit_supplies' %}">
             {% csrf_token %}
@@ -66,34 +116,80 @@
             <!-- ID (ignore, just copied from crop list html)-->
             <input type="hidden" name="id" id="editId">
 
-            <!-- Name of the Supply -->
-            <label class="block mb-2">Name:</label>
-            <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
+            <div class="w-full flex justify-between space-x-2">
+                <div class="w-1/2">
+                    <!-- Name of the Supply -->
+                    <label class="block mb-2">Name:</label>
+                    <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4"
+                        maxlength="{{ max_input_text_length }}" required />
+                        
+                </div>
+                <div class="w-1/2">
+                    <!-- Category of the Supply -->
+                    <label class="block mb-2">Category:</label>
+                    <input type="text" name="supply_category" id="editCategory" class="w-full border rounded px-3 py-2 mb-4"
+                        maxlength="{{ max_input_text_length }}" required />
+                </div>
+            </div>
+            <div class="w-full flex justify-between space-x-2">
+                <div class="w-1/2">
+                    <!-- Quantity of the Supply -->
+                    <label class="block mb-2">Quantity:</label>
+                    <input type="number" name="quantity" id="editQuantity" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Type of Unit of Quantity of the Supply -->
+                    <label class="block mb-2">Unit:</label>
+                    <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4"
+                    maxlength="{{ max_input_unit_length }}" required />
+                </div>
+            </div>
+            <div class="w-full flex justify-between space-x-2">
+                <div class="w-1/2">
+                    <!-- Last Restocking Date of the Supply -->
+                    <label class="block mb-2">Last restocked:</label>
+                    <input type="date" name="last_restocked" id="editLastRestocked" class="w-full border rounded px-3 py-2 mb-4"
+                    required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Procurement date of the Supply -->
+                    <label class="block mb-2">Procurement date:</label>
+                    <input type="date" name="procurement_date" id="editProcurementDate" class="w-full border rounded px-3 py-2 mb-4"
+                        required />
+                </div>
+            </div>
+            <div class="w-full flex justify-between space-x-2">
+                <div class="w-1/2">
+                    <!-- Minimum required amount of the Supply -->
+                    <label class="block mb-2">Minimum required:</label>
+                    <input type="number" name="minimum_required" id="editMinimumRequired" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Cost per unit of the Supply -->
+                    <label class="block mb-2">Cost per unit:</label>
+                    <input type="number" name="cost_per_unit" id="editCostPerUnit" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+            </div>
 
-            <!-- Type of the Supply -->
-            <label class="block mb-2">Type:</label>
-            <input type="text" name="type" id="editType" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
+            <!-- Notes for the Supply -->
+            <label class="block mb-2">Notes:</label>
+            <textarea name="notes" id="editNotes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
+            maxlength="{{ max_textbox_length }}" required></textarea>
 
-            <!-- Quantity of the Supply -->
-            <label class="block mb-2">Quantity:</label>
-            <input type="number" name="quantity" id="editQuantity" class="w-full border rounded px-3 py-2 mb-4"
-                required />
-
-            <!-- Type of Unit of Quantity of the Supply -->
-            <label class="block mb-2">Unit:</label>
-            <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
-
-            <!-- Save Changes -->
-            <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-                Save Changes
-            </button>
+            <div class="w-full flex space-x-2">
+                <div>
+                    <!-- Save Changes -->
+                    <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+                        Save Changes
+                    </button>
+                </div>
+                <div>
+                    <button id="closeEditButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+                        Cancel
+                    </button>
+                </div>
+            </div>
         </form>
-        <button id="closeEditButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-            Cancel
-        </button>
     </div>
 </div>
 
@@ -121,6 +217,19 @@
     </div>
 </div>
 
+<!-- Notes popup for a supply. -->
+<div id="notesPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl flex flex-col">
+        <!-- Header -->
+        <h3 class="text-xl font-bold mb-4">Notes of Supply</h3>
+        <textarea name="notesOfSupply" id="notesOfSupplyOutput" rows="30" disabled class="w-full px-3 py-2 mb-4 overflow-y-auto border rounded resize-none"></textarea>
+        <!-- Close popup button. -->
+        <button type="button" id="closeNotesButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+            Close
+        </button>
+    </div>
+</div>
+
 <!-- Table -->
 <div class="bg-white rounded-lg shadow-md overflow-x-auto">
     <table class="min-w-full">
@@ -128,9 +237,14 @@
             <tr>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Type</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Category</th>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Quantity</th>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Unit</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Last Restocked</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Minimum Required</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Cost Per Unit</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Procurement Date</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
             </tr>
         </thead>
@@ -139,13 +253,40 @@
             <tr class="hover:bg-gray-50">
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.id }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.name }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.type }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.category }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.quantity }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.unit }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.last_restocked }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.minimum_required }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.cost_per_unit }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.procurement_date }}</td>
+                <!-- <td class="py-4 px-6 text-sm text-gray-900">{{ supply.notes }}</td> -->
                 <td class="py-4 px-6 text-sm">
                     <div class="flex space-x-2">
                         <button
-                            onclick="openEditPopup('{{ supply.id }}', '{{ supply.name }}', '{{ supply.type }}', '{{ supply.quantity }}', '{{ supply.unit }}')"
+                            onclick="openNotesPopup(
+                                `{{ supply.notes }}`)"
+                            class="text-white py-1 px-3 rounded text-sm hover:bg-amber-900"
+                            style="background-color: #b49494;">
+                            Open Notes
+                        </button>
+                    </div>
+                </td>
+                
+                <td class="py-4 px-6 text-sm">
+                    <div class="flex space-x-2">
+                        <button
+                            onclick="openEditPopup(
+                                '{{ supply.id }}',
+                                '{{ supply.name }}',
+                                '{{ supply.category }}',
+                                '{{ supply.quantity }}',
+                                '{{ supply.unit }}',
+                                '{{ supply.last_restocked|date:'Y-m-d' }}',
+                                '{{ supply.minimum_required }}',
+                                '{{ supply.cost_per_unit }}',
+                                '{{ supply.procurement_date|date:'Y-m-d' }}',
+                                `{{ supply.notes }}`)"
                             class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
                             style="background-color: #0D65A0;">
                             Edit
@@ -159,7 +300,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6" class="py-8 px-6 text-center text-gray-500">No supply records found</td>
+                <td colspan="11" class="py-8 px-6 text-center text-gray-500">No supply records found</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -209,6 +350,7 @@
         </ul>
     </nav>
 </div>
+
 <script src="{% static 'js/supplies_list.js' %}"></script>
 
 {% endblock %}

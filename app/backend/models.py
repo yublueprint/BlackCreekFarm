@@ -1,7 +1,9 @@
 from django.db import models
 
 # Max text length for a Char field.
+TEXTBOX_MAX_LENGTH = 2000
 DEFAULT_TEXT_MAX_LENGTH = 100
+UNIT_INPUT_MAX_LENGTH = 20
 
 
 class Record(models.Model):
@@ -70,12 +72,17 @@ class Equipment(models.Model):
 
 class Supplies(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    quantity = models.IntegerField()
-    unit = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    category = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    quantity = models.FloatField()
+    unit = models.CharField(max_length=UNIT_INPUT_MAX_LENGTH)
+    last_restocked = models.DateField(blank=True, null=True)
+    minimum_required = models.FloatField(default=0)
+    cost_per_unit = models.FloatField(default=0)
+    procurement_date = models.DateField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True, max_length=TEXTBOX_MAX_LENGTH)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.category})"
 
 
 class Transaction(models.Model):
