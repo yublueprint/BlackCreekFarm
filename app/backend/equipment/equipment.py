@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
-from django.core.paginator import Paginator
 
 from app.exceptions.equipment.exception import (EquipmentCreationException,
                                                 EquipmentDeleteException,
@@ -30,23 +30,27 @@ def add_equipment(request):
             name = request.POST.get("name")
             category = request.POST.get("category")
             equipment_type = request.POST.get("type")
+            serial_number = request.POST.get("serial_number")
             purchase_date = request.POST.get("purchase_date")
             maintenance_due = request.POST.get("maintenance_due")
+            next_checkup = request.POST.get("next_checkup")
+            warranty_expiry = request.POST.get("warranty_expiry")
+            location = request.POST.get("location")
+            supplier = request.POST.get("supplier")
             hours_used = request.POST.get("hours_used")
             condition = request.POST.get("condition")
-            next_checkup = request.POST.get("next_checkup")
             purchase_cost = request.POST.get("purchase_cost")
-            notes = request.POST.get("notes")
-            serial_number = request.POST.get("serial_number")
-            location = request.POST.get("location")
-            warranty_expiry = request.POST.get("warranty_expiry")
-            supplier = request.POST.get("supplier")
-            maintenance_history = request.POST.get("maintenance_history")
             active = request.POST.get("active") == "on"
             last_service_by = request.POST.get("last_service_by")
             service_interval_days = request.POST.get("service_interval_days")
+            maintenance_history = request.POST.get("maintenance_history")
+            notes = request.POST.get("notes")
             required_fields = [
-                name, category, equipment_type, purchase_date, maintenance_due
+                name,
+                category,
+                equipment_type,
+                purchase_date,
+                maintenance_due,
             ]
             if not all(required_fields):
                 raise EquipmentCreationException(
@@ -131,7 +135,9 @@ def edit_equipment(request):
             equipment.maintenance_history = request.POST.get("maintenance_history")
             equipment.active = request.POST.get("active") == "on"
             equipment.last_service_by = request.POST.get("last_service_by")
-            equipment.service_interval_days = int(request.POST.get("service_interval_days") or 0)
+            equipment.service_interval_days = int(
+                request.POST.get("service_interval_days") or 0
+            )
 
             if (
                 not equipment.name

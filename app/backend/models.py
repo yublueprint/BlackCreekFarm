@@ -35,7 +35,7 @@ class Crop(models.Model):
 
 class Equipment(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    category = models.CharField(max_length=50)
+    category = models.CharField(max_length=50, default="N/A")
     type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     purchase_date = models.DateField()
     maintenance_due = models.DateField()
