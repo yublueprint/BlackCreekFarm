@@ -19,41 +19,148 @@
 </button>
 
 <!-- Add Button Popup Form -->
-<div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-	<div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+<div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
+	<div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
 		<h3 class="text-xl font-bold mb-4">Add Equipment</h3>
 		<form method="post" id="addEquipmentForm" action="{% url 'add_equipment' %}">
 			{% csrf_token %}
-			<!-- Name of the Equipment -->
-			<label class="block mb-2">Name:</label>
-			<input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" required />
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Name of the Equipment -->
+					<label class="block mb-2">Name:</label>
+					<input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" required />
+				</div>
+				<div class="w-1/2">
+					<!-- Category -->
+					<label class="block mb-2">Category:</label>
+					<input type="text" name="category" class="w-full border rounded px-3 py-2 mb-4" required />
+				</div>
+			</div>
 
-			<!-- Type of the Equipment -->
-			<label class="block mb-2">Type:</label>
-			<input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4" required />
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Type of the Equipment -->
+					<label class="block mb-2">Type:</label>
+					<input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4" required />
+				</div>
+				<div class="w-1/2">
+					<!-- Serial Number -->
+					<label class="block mb-2">Serial Number:</label>
+					<input type="text" name="serial_number" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+			</div>
 
-			<!-- Purchase date of the Equipment -->
-			<label class="block mb-2">Purchase Date:</label>
-			<input type="date" name="purchase_date" class="w-full border rounded px-3 py-2 mb-4" required />
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Purchase date of the Equipment -->
+					<label class="block mb-2">Purchase Date:</label>
+					<input type="date" name="purchase_date" class="w-full border rounded px-3 py-2 mb-4" required />
+				</div>
+				<div class="w-1/2">
+					<!-- Maintenance due date of the Equipment -->
+					<label class="block mb-2">Maintenance Date:</label>
+					<input type="date" name="maintenance_due" class="w-full border rounded px-3 py-2 mb-4" required />
+				</div>
+			</div>
+			
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Next Checkup -->
+					<label class="block mb-2">Next Checkup:</label>
+					<input type="date" name="next_checkup" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+				<div class="w-1/2">
+					<!-- Warranty Expiry -->
+					<label class="block mb-2">Warranty Expiry:</label>
+					<input type="date" name="warranty_expiry" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+			</div>
 
-			<!-- Maintenance due date of the Equipment -->
-			<label class="block mb-2">Maintenance Date:</label>
-			<input type="date" name="maintenance_due" class="w-full border rounded px-3 py-2 mb-4" required />
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Location -->
+					<label class="block mb-2">Location:</label>
+					<input type="text" name="location" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+				<div class="w-1/2">
+					<!-- Supplier -->
+					<label class="block mb-2">Supplier:</label>
+					<input type="text" name="supplier" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+			</div>
 
-			<!-- Submit Information Button -->
-			<button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-				Save
-			</button>
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Hours Used -->
+					<label class="block mb-2">Hours Used:</label>
+					<input type="number" step="0.1" name="hours_used" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+				<div class="w-1/2">
+					<!-- Condition -->
+					<label class="block mb-2">Condition:</label>
+					<input type="text" name="condition" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+			</div>
+
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Purchase Cost -->
+					<label class="block mb-2">Purchase Cost:</label>
+					<input type="number" step="0.01" name="purchase_cost" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+				<div class="w-1/2">
+					<!-- Active -->
+					<label class="block mb-2">Active:</label>
+					<input type="checkbox" name="active" checked />
+				</div>
+			</div>
+
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Last Service By -->
+					<label class="block mb-2">Last Service By:</label>
+					<input type="text" name="last_service_by" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+				<div class="w-1/2">
+					<!-- Service Interval (days) -->
+					<label class="block mb-2">Service Interval (days):</label>
+					<input type="number" name="service_interval_days" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+			</div>
+
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Maintenance History -->
+					<label class="block mb-2">Maintenance History:</label>
+					<textarea name="maintenance_history" rows="6" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"></textarea>
+				</div>
+				<div class="w-1/2">
+					<!-- Notes -->
+					<label class="block mb-2">Notes:</label>
+					<textarea name="notes" rows="6" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"></textarea>
+				</div>
+			</div>
+
+			<div class="flex space-x-2 justify-between w-full">
+				<div>
+					<!-- Submit Information Button -->
+					<button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+						Save
+					</button>
+				</div>
+				<div>
+					<button id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+						Cancel
+					</button>
+				</div>
+			</div>
 		</form>
-		<button id="closeButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-			Cancel
-		</button>
 	</div>
 </div>
 
 <!-- Edit Popup -->
-<div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-	<div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+<div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
+	<div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
 		<h3 class="text-xl font-bold mb-4">Edit Equipment</h3>
 		<form method="post" id="editEquipmentForm" action="{% url 'edit_equipment' %}">
 			{% csrf_token %}
@@ -61,32 +168,138 @@
 			<!-- ID (ignore, just copied from crop list html)-->
 			<input type="hidden" name="id" id="editId">
 
-			<!-- Name of the Equipment -->
-			<label class="block mb-2">Name:</label>
-			<input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" required />
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Name of the Equipment -->
+					<label class="block mb-2">Name:</label>
+					<input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" required />
+				</div>
+				<div class="w-1/2">
+					<!-- Category -->
+					<label class="block mb-2">Category:</label>
+					<input type="text" name="category" id="editCategory" class="w-full border rounded px-3 py-2 mb-4" required />
+				</div>
+			</div>
 
-			<!-- Type of the Equipment -->
-			<label class="block mb-2">Type:</label>
-			<input type="text" name="type" id="editType" class="w-full border rounded px-3 py-2 mb-4" required />
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Type of the Equipment -->
+					<label class="block mb-2">Type:</label>
+					<input type="text" name="type" id="editType" class="w-full border rounded px-3 py-2 mb-4" required />
+				</div>
+				<div class="w-1/2">
+					<!-- Serial Number -->
+					<label class="block mb-2">Serial Number:</label>
+					<input type="text" name="serial_number" id="editSerialNumber" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+			</div>
 
-			<!-- Purchase date of the Equipment -->
-			<label class="block mb-2">Purchase Date:</label>
-			<input type="date" name="purchase_date" id="editPurchaseDate" class="w-full border rounded px-3 py-2 mb-4"
-				required />
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Purchase date of the Equipment -->
+					<label class="block mb-2">Purchase Date:</label>
+					<input type="date" name="purchase_date" id="editPurchaseDate" class="w-full border rounded px-3 py-2 mb-4" required />
+				</div>
+				<div class="w-1/2">
+					<!-- Maintenance due date of the Equipment -->
+					<label class="block mb-2">Maintenance Date:</label>
+					<input type="date" name="maintenance_due" id="editMaintenanceDate" class="w-full border rounded px-3 py-2 mb-4" required />
+				</div>
+			</div>
+			
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Next Checkup -->
+					<label class="block mb-2">Next Checkup:</label>
+					<input type="date" name="next_checkup" id="editNextCheckup" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+				<div class="w-1/2">
+					<!-- Warranty Expiry -->
+					<label class="block mb-2">Warranty Expiry:</label>
+					<input type="date" name="warranty_expiry" id="editWarrantyExpiry" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+			</div>
 
-			<!-- Maintenance due date of the Equipment -->
-			<label class="block mb-2">Maintenance Date:</label>
-			<input type="date" name="maintenance_due" id="editMaintenanceDate"
-				class="w-full border rounded px-3 py-2 mb-4" required />
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Location -->
+					<label class="block mb-2">Location:</label>
+					<input type="text" name="location" id="editLocation" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+				<div class="w-1/2">
+					<!-- Supplier -->
+					<label class="block mb-2">Supplier:</label>
+					<input type="text" name="supplier" id="editSupplier" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+			</div>
 
-			<!-- Save Changes -->
-			<button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-				Save Changes
-			</button>
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Hours Used -->
+					<label class="block mb-2">Hours Used:</label>
+					<input type="number" step="0.1" name="hours_used" id="editHoursUsed" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+				<div class="w-1/2">
+					<!-- Condition -->
+					<label class="block mb-2">Condition:</label>
+					<input type="text" name="condition" id="editCondition" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+			</div>
+
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Purchase Cost -->
+					<label class="block mb-2">Purchase Cost:</label>
+					<input type="number" step="0.01" name="purchase_cost" id="editPurchaseCost" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+				<div class="w-1/2">
+					<!-- Active -->
+					<label class="block mb-2">Active:</label>
+					<input type="checkbox" name="active" id="editActive"/>
+				</div>
+			</div>
+
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Last Service By -->
+					<label class="block mb-2">Last Service By:</label>
+					<input type="text" name="last_service_by" id="editLastServiceBy" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+				<div class="w-1/2">
+					<!-- Service Interval (days) -->
+					<label class="block mb-2">Service Interval (days):</label>
+					<input type="number" name="service_interval_days" id="editServiceInterval" class="w-full border rounded px-3 py-2 mb-4" />
+				</div>
+			</div>
+
+			<div class="flex space-x-2 justify-between w-full">
+				<div class="w-1/2">
+					<!-- Maintenance History -->
+					<label class="block mb-2">Maintenance History:</label>
+					<textarea name="maintenance_history" id="editMaintenanceHistory" rows="6" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"></textarea>
+				</div>
+				<div class="w-1/2">
+					<!-- Notes -->
+					<label class="block mb-2">Notes:</label>
+					<textarea name="notes" id="editNotes" rows="6" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"></textarea>
+				</div>
+			</div>
+
+			<div class="flex space-x-2 justify-between w-full">
+				<div>
+					<!-- Submit Information Button -->
+					<button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+						Save Changes
+					</button>
+				</div>
+				<div>
+					<!-- Cancel Changes Button -->
+					<div id="closeEditButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+						Cancel
+					</div>
+				</div>
+			</div>
 		</form>
-		<button id="closeEditButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-			Cancel
-		</button>
 	</div>
 </div>
 
@@ -121,11 +334,23 @@
 			<tr>
 				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
 				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Category</th>
 				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Type</th>
-				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Purchase Date
-				</th>
-				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Maintenance
-					Due</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Serial #</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Purchase Date</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Maintenance Due</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Next Checkup</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Warranty Expiry</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Location</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Supplier</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Hours Used</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Condition</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Purchase Cost</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Active</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Last Service By</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Service Interval</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Maintenance History</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
 				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
 			</tr>
 		</thead>
@@ -134,13 +359,27 @@
 			<tr class="hover:bg-gray-50">
 				<td class="py-4 px-6 text-sm text-gray-900">{{ item.id }}</td>
 				<td class="py-4 px-6 text-sm text-gray-900">{{ item.name }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.category }}</td>
 				<td class="py-4 px-6 text-sm text-gray-900">{{ item.type }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.serial_number }}</td>
 				<td class="py-4 px-6 text-sm text-gray-900">{{ item.purchase_date }}</td>
 				<td class="py-4 px-6 text-sm text-gray-900">{{ item.maintenance_due }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.next_checkup }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.warranty_expiry }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.location }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.supplier }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.hours_used }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.condition }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.purchase_cost }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.active|yesno:"Yes,No" }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.last_service_by }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.service_interval_days }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.maintenance_history }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.notes }}</td>
 				<td class="py-4 px-6 text-sm">
 					<div class="flex space-x-2">
 						<button
-							onclick="openEditPopup('{{ item.id }}', '{{ item.name }}', '{{ item.type }}', '{{ item.purchase_date }}', '{{ item.maintenance_due }}')"
+							onclick="openEditPopup('{{ item.id }}', '{{ item.name }}', '{{ item.category }}', '{{ item.type }}', '{{ item.serial_number }}', '{{ item.purchase_date|date:'Y-m-d' }}', '{{ item.maintenance_due|date:'Y-m-d' }}', '{{ item.next_checkup|date:'Y-m-d' }}', '{{ item.warranty_expiry|date:'Y-m-d' }}', '{{ item.location }}', '{{ item.supplier }}', '{{ item.hours_used }}', '{{ item.condition }}', '{{ item.purchase_cost }}', '{{ item.active }}', '{{ item.last_service_by }}', '{{ item.service_interval_days }}', '{{ item.notes|escapejs }}', '{{ item.maintenance_history|escapejs }}')"
 							class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
 							style="background-color: #0D65A0;">
 							Edit
@@ -154,12 +393,30 @@
 			</tr>
 			{% empty %}
 			<tr>
-				<td colspan="6" class="py-8 px-6 text-center text-gray-500">No equipment records found</td>
+				<td colspan="21" class="py-8 px-6 text-center text-gray-500">No equipment records found</td>
 			</tr>
 			{% endfor %}
 		</tbody>
 	</table>
+
+<!-- Pagination -->
+{% if equipment.has_other_pages %}
+<div class="mt-4 flex items-center justify-center gap-2">
+	{% if equipment.has_previous %}
+	<a href="?page={{ equipment.previous_page_number }}" class="px-3 py-1 bg-gray-200 rounded">Previous</a>
+	{% endif %}
+	{% for num in equipment.paginator.page_range %}
+		{% if num == equipment.number %}
+			<span class="px-3 py-1 bg-blue-600 text-white rounded">{{ num }}</span>
+		{% else %}
+			<a href="?page={{ num }}" class="px-3 py-1 bg-gray-100 rounded">{{ num }}</a>
+		{% endif %}
+	{% endfor %}
+	{% if equipment.has_next %}
+	<a href="?page={{ equipment.next_page_number }}" class="px-3 py-1 bg-gray-200 rounded">Next</a>
+	{% endif %}
 </div>
+{% endif %}
 
 <script src="{% static 'js/equipment_list.js' %}"></script>
 
