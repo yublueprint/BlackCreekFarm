@@ -8,158 +8,165 @@
 
 {% if error %}
 <div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-	{{ error }}
+    {{ error }}
 </div>
 {% endif %}
 
-
-<!-- Add Button with icon -->
+<!-- Add Button -->
 <button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
-	style="background-color: #335D43;">
-	<i class="fas fa-plus"></i>
-	Add Livestock
+    style="background-color: #335D43;">
+    <i class="fas fa-plus"></i>
+    Add Livestock
 </button>
 
-<!-- Add Button Popup Form -->
+<!-- Add Livestock Popup -->
 <div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-	<div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-		<h3 class="text-xl font-bold mb-4">Add Livestock</h3>
-		<form method="post" id="addLivestockForm" action="{% url 'add_livestock' %}">
-			{% csrf_token %}
-			<label class="block mb-2">Name:</label>
-			<input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h3 class="text-xl font-bold mb-4">Add Livestock</h3>
+        <form method="post" id="addLivestockForm" action="{% url 'add_livestock' %}">
+            {% csrf_token %}
+            <label class="block mb-2">Name:</label>
+            <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
 
-			<label class="block mb-2">Breed:</label>
-			<input type="text" name="breed" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+            <label class="block mb-2">Breed:</label>
+            <input type="text" name="breed" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
 
-			<label class="block mb-2">Age:</label>
-			<input type="number" name="age" class="w-full border rounded px-3 py-2 mb-4" min="0" max="100" required
-				oninvalid="this.setCustomValidity('Please enter a positive number greater than 0')"
-				oninput="this.setCustomValidity('')" />
+            <label class="block mb-2">Age:</label>
+            <input type="number" name="age" class="w-full border rounded px-3 py-2 mb-4" min="0" required />
 
-			<label class="block mb-2">Health Status:</label>
-			<input type="text" name="health_status" class="w-full border rounded px-3 py-2 mb-4" maxlength="100"
-				required />
+            <label class="block mb-2">Weight (kg):</label>
+            <input type="number" name="weight" class="w-full border rounded px-3 py-2 mb-4" step="0.1" />
 
-			<button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
-				style="background-color: #335D43;">
-				Save
-			</button>
-		</form>
-		<button id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 mt-4">
-			Cancel
-		</button>
-	</div>
+            <label class="block mb-2">Health Status:</label>
+            <input type="text" name="health_status" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+
+            <label class="block mb-2">Purchase Price ($):</label>
+            <input type="number" name="purchase_price" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
+
+            <label class="block mb-2">Current Value ($):</label>
+            <input type="number" name="current_value" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
+
+            <label class="block mb-2">Next Vaccination Date:</label>
+            <input type="date" name="next_vaccination_date" class="w-full border rounded px-3 py-2 mb-4" />
+
+            <label class="block mb-2">Notes:</label>
+            <textarea name="notes" class="w-full border rounded px-3 py-2 mb-4"></textarea>
+
+            <button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
+                style="background-color: #335D43;">Save</button>
+        </form>
+        <button id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 mt-4">Cancel</button>
+    </div>
 </div>
 
-<!-- Edit Popup -->
+<!-- Edit Livestock Popup -->
 <div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-	<div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-		<h3 class="text-xl font-bold mb-4">Edit Livestock</h3>
-		<form method="post" id="editLivestockForm" action="{% url 'edit_livestock' %}">
-			{% csrf_token %}
-			<input type="hidden" name="id" id="editId" />
-			<label class="block mb-2">Name:</label>
-			<input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" maxlength="100"
-				required />
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h3 class="text-xl font-bold mb-4">Edit Livestock</h3>
+        <form method="post" id="editLivestockForm" action="{% url 'edit_livestock' %}">
+            {% csrf_token %}
+            <input type="hidden" name="id" id="editId" />
 
-			<label class="block mb-2">Breed:</label>
-			<input type="text" name="breed" id="editBreed" class="w-full border rounded px-3 py-2 mb-4" maxlength="100"
-				required />
+            <label class="block mb-2">Name:</label>
+            <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" required />
 
-			<label class="block mb-2">Age:</label>
-			<input type="number" name="age" id="editAge" class="w-full border rounded px-3 py-2 mb-4" min="1" required
-				oninvalid="this.setCustomValidity('Please enter a positive number greater than 0')"
-				oninput="this.setCustomValidity('')" />
+            <label class="block mb-2">Breed:</label>
+            <input type="text" name="breed" id="editBreed" class="w-full border rounded px-3 py-2 mb-4" required />
 
-			<label class="block mb-2">Health Status:</label>
-			<input type="text" name="health_status" id="editHealthStatus" class="w-full border rounded px-3 py-2 mb-4"
-				maxlength="100" required />
+            <label class="block mb-2">Age:</label>
+            <input type="number" name="age" id="editAge" class="w-full border rounded px-3 py-2 mb-4" min="0" required />
 
-			<button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
-				style="background-color: #335D43;">
-				Save Changes
-			</button>
-		</form>
-		<button id="closeEditButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-			Cancel
-		</button>
-	</div>
+            <label class="block mb-2">Weight (kg):</label>
+            <input type="number" name="weight" id="editWeight" class="w-full border rounded px-3 py-2 mb-4" step="0.1" />
+
+            <label class="block mb-2">Health Status:</label>
+            <input type="text" name="health_status" id="editHealthStatus" class="w-full border rounded px-3 py-2 mb-4" required />
+
+            <label class="block mb-2">Purchase Price ($):</label>
+            <input type="number" name="purchase_price" id="editPurchasePrice" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
+
+            <label class="block mb-2">Current Value ($):</label>
+            <input type="number" name="current_value" id="editCurrentValue" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
+
+            <label class="block mb-2">Next Vaccination Date:</label>
+            <input type="date" name="next_vaccination_date" id="editNextVaccinationDate" class="w-full border rounded px-3 py-2 mb-4" />
+
+            <label class="block mb-2">Notes:</label>
+            <textarea name="notes" id="editNotes" class="w-full border rounded px-3 py-2 mb-4"></textarea>
+
+            <button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
+                style="background-color: #335D43;">Save Changes</button>
+        </form>
+        <button id="closeEditButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">Cancel</button>
+    </div>
 </div>
 
 <!-- Delete Popup -->
 <div id="deletePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-	<div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-		<h3 class="text-xl font-bold mb-4">Delete Livestock</h3>
-		<p class="text-lg mb-4">
-			Are you sure you want to delete the livestock record for
-			<strong id="deleteName"></strong>?
-		</p>
-		<form method="post" id="deleteLivestockForm" action="{% url 'delete_livestock' %}">
-			{% csrf_token %}
-			<input type="hidden" name="id" id="deleteId" />
-			<div class="flex justify-center gap-x-4">
-				<button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
-					Delete
-				</button>
-				<button type="button" id="closeDeleteButton"
-					class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">
-					Cancel
-				</button>
-			</div>
-		</form>
-	</div>
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+        <h3 class="text-xl font-bold mb-4">Delete Livestock</h3>
+        <p class="text-lg mb-4">
+            Are you sure you want to delete the livestock record for <strong id="deleteName"></strong>?
+        </p>
+        <form method="post" id="deleteLivestockForm" action="{% url 'delete_livestock' %}">
+            {% csrf_token %}
+            <input type="hidden" name="id" id="deleteId" />
+            <div class="flex justify-center gap-x-4">
+                <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">Delete</button>
+                <button type="button" id="closeDeleteButton" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">Cancel</button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- Table -->
 <div class="bg-white rounded-lg shadow-md overflow-x-auto">
-	<table class="min-w-full">
-		<thead class="bg-gray-50 border-b border-gray-200">
-			<tr>
-				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
-				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
-				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Breed</th>
-				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Age</th>
-				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Health Status
-				</th>
-				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
-			</tr>
-		</thead>
-		<tbody class="bg-white divide-y divide-gray-200">
-			{% for animal in livestock %}
-			<tr class="hover:bg-gray-50">
-				<td class="py-4 px-6 text-sm text-gray-900">{{ animal.id }}</td>
-				<td class="py-4 px-6 text-sm text-gray-900">{{ animal.name }}</td>
-				<td class="py-4 px-6 text-sm text-gray-900">{{ animal.breed }}</td>
-				<td class="py-4 px-6 text-sm text-gray-900">{{ animal.age }}</td>
-				<td class="py-4 px-6 text-sm text-gray-900">{{ animal.health_status }}</td>
-				<td class="py-4 px-6 text-sm">
-					<div class="flex space-x-2">
-						<button
-							onclick="openEditPopup('{{ animal.id }}', '{{ animal.name }}', '{{ animal.breed }}', '{{ animal.age }}', '{{ animal.health_status }}')"
-							class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
-							style="background-color: #0D65A0;">
-							Edit
-						</button>
-						<button onclick="openDeletePopup('{{ animal.id }}', '{{ animal.name }}')"
-							class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
-							Delete
-						</button>
-					</div>
-				</td>
-			</tr>
-			{% empty %}
-			<tr>
-				<td colspan="6" class="py-8 px-6 text-center text-gray-500">No livestock records found</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
+    <table class="min-w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Breed</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Age</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Weight (kg)</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Health</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Value ($)</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Next Vaccination</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for animal in livestock %}
+            <tr class="hover:bg-gray-50">
+                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.id }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.name }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.breed }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.age }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.weight }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.health_status }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.current_value }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.next_vaccination_date}}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.notes|default:"—" }}</td>
+                <td class="py-4 px-6 text-sm">
+                    <div class="flex space-x-2">
+                        <button
+                            onclick="openEditPopup('{{ animal.id }}', '{{ animal.name }}', '{{ animal.breed }}', '{{ animal.age }}', '{{ animal.weight }}', '{{ animal.health_status }}', '{{ animal.purchase_price }}', '{{ animal.current_value }}', '{{ animal.next_vaccination_date|date:'Y-m-d' }}', '{{ animal.notes }}')"
+                            class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
+                            style="background-color: #0D65A0;">Edit</button>
+                        <button onclick="openDeletePopup('{{ animal.id }}', '{{ animal.name }}')"
+                            class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">Delete</button>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="10" class="py-8 px-6 text-center text-gray-500">No livestock records found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
-
 <script src="{% static 'js/livestock_list.js' %}"></script>
-	
-	
-
 {% endblock %}
