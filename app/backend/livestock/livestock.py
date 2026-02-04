@@ -99,9 +99,13 @@ def edit_livestock(request):
             animal.next_vaccination_date = request.POST.get(
                 "next_vaccination_date", animal.next_vaccination_date
             )
-            #print(f"DO YOU SEE THIS?: {len(str(animal.next_vaccination_date))}")
-            #print(f"IS IT TRUE?: {animal.next_vaccination_date == ''}")
-            if ((len(str(animal.next_vaccination_date)) == 0) or (animal.next_vaccination_date == '')):
+            # print(f"DO YOU SEE THIS?: {len(str(animal.next_vaccination_date))}")
+            # print(f"IS IT TRUE?: {animal.next_vaccination_date == ''}")
+            if (len(str(animal.weight)) == 0) or (animal.weight == ""):
+                animal.weight = None
+            if (len(str(animal.next_vaccination_date)) == 0) or (
+                animal.next_vaccination_date == ""
+            ):
                 animal.next_vaccination_date = None
             animal.notes = request.POST.get("notes", animal.notes)
 
