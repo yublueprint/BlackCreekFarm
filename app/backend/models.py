@@ -17,10 +17,15 @@ class Livestock(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     breed = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     age = models.IntegerField()
-    health_status = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    weight = models.FloatField(blank=True, null=True)
+    health_status = models.CharField(max_length=50)
+    purchase_price = models.FloatField(default=0)
+    current_value = models.FloatField(default=0)
+    next_vaccination_date = models.DateField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} - {self.breed}"
 
 
 class Crop(models.Model):
