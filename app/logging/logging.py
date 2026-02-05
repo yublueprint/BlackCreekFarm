@@ -27,11 +27,15 @@ class Logger:
         first_backup_count=3,
         second_backup_count=3,
     ):
-        self.filename = filename
-        # modification_activities.log file must be in same directory as app.log
-        self.modifications_filename = os.path.join(
-            os.path.dirname(filename), modifications_filename
+        # Might need to use os path here.
+        # self.filename = filename
+        # print(f"MUST READ: {self.filename}")
+        self.logging_directory = "app/logging/"
+        self.modification_logs_directory = self.logging_directory + "modification_logs"
+        self.modifications_filename = (
+            self.modification_logs_directory + "/" + modifications_filename
         )
+        self.filename = self.logging_directory + "app_logs/" + "app.log"
         self.max_bytes = max_bytes
         self.first_backup_count = first_backup_count
         self.second_backup_count = second_backup_count
@@ -128,7 +132,7 @@ class Logger:
             return recent_activity_array
 
     def download_all_activity_logs(self):
-        folder_path = os.path.join(os.path.dirname(self.filename))
+        folder_path = self.modification_logs_directory
         search_word = "modification_activities"
 
         search_pattern = os.path.join(folder_path, f"*{search_word}*.log")

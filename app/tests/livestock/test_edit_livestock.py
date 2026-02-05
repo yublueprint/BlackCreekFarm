@@ -1,8 +1,7 @@
 import pytest
 from django.urls import reverse
 
-# pytestmark = pytest.mark.django_db
-pytestmark = pytest.mark.skip("We will get back to these soon.")
+pytestmark = pytest.mark.django_db
 
 
 def test_edit_livestock_success(client, user, livestock, mocker):

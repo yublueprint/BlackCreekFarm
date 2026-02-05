@@ -38,7 +38,7 @@ def recent_activities_list(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    amount_to_go = 5
+    amount_to_go = 3
     backward_pages_end = max(1, page_number - amount_to_go)
     backward_pages = reversed(range(page_number - 1, backward_pages_end - 1, -1))
 
@@ -65,7 +65,7 @@ def download_all_activities(request):
         buffer = io.BytesIO()
 
         mod_activity_logs = logger.download_all_activity_logs()
-        print(mod_activity_logs)
+        # print(mod_activity_logs)
 
         with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
             for file_name in mod_activity_logs:
