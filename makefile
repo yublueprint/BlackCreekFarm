@@ -61,7 +61,7 @@ signup:
 	$(PYTHON) manage.py createsuperuser
 
 run:
-	$(PYTHON) manage.py collectstatic
+# 	$(PYTHON) manage.py collectstatic
 	$(PYTHON) manage.py runserver
 
 test:
