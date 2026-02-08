@@ -321,14 +321,14 @@
 
 <div class="mt-3">
     <nav>
-        <ul class="flex space-x-1 list-none">
+        <ul class="flex space-x-1 list-none text-sm">
             <!-- First and Previous. -->
             {% if page_obj.has_previous %}
                 <a href="?page=1" class="border rounded-md bg-white font-medium text-black px-4 py-2"><li>&laquo; First</li></a>
                 <a href="?page={{ page_obj.previous_page_number }}" class="border rounded-md bg-white font-medium text-md text-black px-4 py-2"><li><<</li></a>
             {% else %}    
-                <li class="border rounded-md bg-white text-gray-600 px-4 py-2">&laquo; First</li>
-                <li class="border rounded-md bg-white text-md text-gray-600 px-4 py-2"><<</li>
+                <li class="border rounded-md bg-gray-200 text-gray-700 px-4 py-2">&laquo; First</li>
+                <li class="border rounded-md bg-gray-200 text-md text-gray-700 px-4 py-2"><<</li>
             {% endif %}
 
             <!-- Going backward from current page. -->
@@ -337,7 +337,7 @@
             {% endfor %}
                 
             <!-- Add current page number. -->
-            <a href="?page={{ page_obj.number }}" class="border bg-green-600 rounded-md font-medium text-white px-4 py-2"><li>{{ page_obj.number }}</li></a>
+            <a href="?page={{ page_obj.number }}" class="border bg-green-700 rounded-md font-medium text-white px-4 py-2"><li>{{ page_obj.number }}</li></a>
             
             
             <!-- Going forward from current page. -->
@@ -351,8 +351,8 @@
                 <a href="?page={{ page_obj.next_page_number }}" class="border bg-white rounded-md font-medium text-md text-black px-4 py-2"><li>>></li></a>
                 <a href="?page={{ page_obj.paginator.num_pages }}" class="border bg-white rounded-md font-medium text-black px-4 py-2"><li>Last &raquo;</li></a>
             {% else %}
-                <li class="border rounded-md bg-white text-md text-gray-600 px-4 py-2">>></li>
-                <li class="border rounded-md bg-white text-gray-600 px-4 py-2">Last &raquo;</li>
+                <li class="border rounded-md bg-gray-200 text-md text-gray-700 px-4 py-2">>></li>
+                <li class="border rounded-md bg-gray-200 text-gray-700 px-4 py-2">Last &raquo;</li>
             {% endif %}
 
             <div>
