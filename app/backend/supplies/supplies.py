@@ -17,6 +17,12 @@ logger = Logger("app/logging/app.log")
 @login_required
 def supplies_list(request):
     supplies = Supplies.objects.all().order_by("-id")
+
+    nameToSearch = request.GET.get("nameSearch")
+
+    if nameToSearch:
+        supplies = Supplies.objects.filter(name__icontains=nameToSearch)
+
     paginator = Paginator(supplies, 10)
     page_number = request.GET.get("page")
 
@@ -38,7 +44,7 @@ def supplies_list(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    amount_to_go = 5
+    amount_to_go = 3
     backward_pages_end = max(1, page_number - amount_to_go)
     backward_pages = reversed(range(page_number - 1, backward_pages_end - 1, -1))
 

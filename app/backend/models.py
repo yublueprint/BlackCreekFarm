@@ -32,7 +32,7 @@ class Livestock(models.Model):
 
 class Crop(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    crop_type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH, default='unknown')
+    crop_type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH, default="unknown")
     planting_date = models.DateField()
     harvest_date = models.DateField(blank=True, null=True)
     expected_yield = models.FloatField(default=0)

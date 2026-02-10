@@ -10,7 +10,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Importing Theme Stylesheet -->
-    <link rel="stylesheet" href="../static/css/styles.css">
+    <!-- <link rel="stylesheet" href="../static/css/styles.css"> -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css'%}">
 
     <!-- Google Fonts for Open Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
