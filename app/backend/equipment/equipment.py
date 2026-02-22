@@ -23,24 +23,25 @@ def equipment_list(request):
 def add_equipment(request):
     if request.method == "POST":
         try:
-            name = request.POST.get("name")
-            equipment_type = request.POST.get("type")  # avoid shadowing builtin `type`
-            purchase_date = request.POST.get("purchase_date")
-            maintenance_due = request.POST.get("maintenance_due")
+            name = (request.POST.get("name") or "").strip()
+            category = (request.POST.get("category") or "").strip()
+            equipment_type = (request.POST.get("type") or "").strip()  # avoid shadowing builtin `type`
 
-            if (
-                not name
-                or not equipment_type
-                or not purchase_date
-                or not maintenance_due
-            ):
-                raise EquipmentCreationException("All fields are required.")
+            # Optional fields: convert "" -> None
+            purchase_date = (request.POST.get("purchase_date") or "").strip() or None
+            maintenance_due = (request.POST.get("maintenance_due") or "").strip() or None
+            notes = (request.POST.get("notes") or "").strip() or None
+
+            if not name or not category or not equipment_type:
+                raise EquipmentCreationException("Name, Category, and Type are required.")
 
             Equipment.objects.create(
                 name=name,
+                category=category,
                 type=equipment_type,
                 purchase_date=purchase_date,
                 maintenance_due=maintenance_due,
+                notes=notes,
             )
 
             logger.log(f"User {request.user} added equipment: {name}")
@@ -77,20 +78,24 @@ def edit_equipment(request):
             except Http404:
                 raise EquipmentEditException("Equipment not found.")
 
-            equipment.name = request.POST.get("name")
-            equipment.type = request.POST.get("type")
-            equipment.purchase_date = request.POST.get("purchase_date")
-            equipment.maintenance_due = request.POST.get("maintenance_due")
+            name = (request.POST.get("name") or "").strip()
+            category = (request.POST.get("category") or "").strip()
+            equipment_type = (request.POST.get("type") or "").strip()
 
-            if (
-                not equipment.name
-                or not equipment.type
-                or not equipment.purchase_date
-                or not equipment.maintenance_due
-            ):
-                raise EquipmentEditException(
-                    "All fields are required to update equipment."
-                )
+            # Optional fields: convert "" -> None
+            purchase_date = (request.POST.get("purchase_date") or "").strip() or None
+            maintenance_due = (request.POST.get("maintenance_due") or "").strip() or None
+            notes = (request.POST.get("notes") or "").strip() or None
+
+            if not name or not category or not equipment_type:
+                raise EquipmentEditException("Name, Category, and Type are required.")
+
+            equipment.name = name
+            equipment.category = category
+            equipment.type = equipment_type
+            equipment.purchase_date = purchase_date
+            equipment.maintenance_due = maintenance_due
+            equipment.notes = notes
 
             equipment.save()
 
@@ -117,7 +122,6 @@ def edit_equipment(request):
                 },
             )
     return redirect("equipment_list")
-
 
 @login_required
 def delete_equipment(request):

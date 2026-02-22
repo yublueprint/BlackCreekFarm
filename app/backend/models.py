@@ -35,12 +35,16 @@ class Crop(models.Model):
 
 class Equipment(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    category = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH, null=True, blank=True)
     type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    purchase_date = models.DateField()
-    maintenance_due = models.DateField()
+
+    purchase_date = models.DateField(null=True, blank=True)
+    maintenance_due = models.DateField(null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return self.name
+
 
 
 class Supplies(models.Model):

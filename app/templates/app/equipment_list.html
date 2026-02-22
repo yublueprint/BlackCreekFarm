@@ -12,7 +12,7 @@
 {% endif %}
 
 <!-- Add Button with icon -->
-<button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
+<button type="button" id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
 	style="background-color: #335D43;">
 	<i class="fas fa-plus"></i>
 	Add Equipment
@@ -20,32 +20,59 @@
 
 <!-- Add Button Popup Form -->
 <div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-	<div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+	<div class="bg-white p-6 rounded shadow-md w-full max-w-2xl">
 		<h3 class="text-xl font-bold mb-4">Add Equipment</h3>
 		<form method="post" id="addEquipmentForm" action="{% url 'add_equipment' %}">
 			{% csrf_token %}
-			<!-- Name of the Equipment -->
-			<label class="block mb-2">Name:</label>
-			<input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" required />
 
-			<!-- Type of the Equipment -->
-			<label class="block mb-2">Type:</label>
-			<input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4" required />
+			<div class="grid grid-cols-2 gap-x-6 gap-y-4">
+				<div>
+					<!-- Name of the Equipment -->
+					<label class="block mb-2">Name:</label>
+					<input type="text" name="name" class="w-full border rounded px-3 py-2" required />
+				</div>
 
-			<!-- Purchase date of the Equipment -->
-			<label class="block mb-2">Purchase Date:</label>
-			<input type="date" name="purchase_date" class="w-full border rounded px-3 py-2 mb-4" required />
+				<div>
+					<!--Category of the Equipment-->
+					<label class="block mb-2">Category:</label>
+					<input type="text" name="category" class="w-full border rounded px-3 py-2" required />
+				</div>
 
-			<!-- Maintenance due date of the Equipment -->
-			<label class="block mb-2">Maintenance Date:</label>
-			<input type="date" name="maintenance_due" class="w-full border rounded px-3 py-2 mb-4" required />
+				<div>
+					<!-- Type of the Equipment -->
+					<label class="block mb-2">Type:</label>
+					<input type="text" name="type" class="w-full border rounded px-3 py-2" required />
+				</div>
 
-			<!-- Submit Information Button -->
-			<button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-				Save
-			</button>
+				<div>
+					<!-- Purchase date of the Equipment -->
+					<label class="block mb-2">Purchase Date:</label>
+					<input type="date" name="purchase_date" class="w-full border rounded px-3 py-2" />
+				</div>
+
+				<div>
+					<!-- Maintenance due date of the Equipment -->
+					<label class="block mb-2">Maintenance Date:</label>
+					<input type="date" name="maintenance_due" class="w-full border rounded px-3 py-2" />
+				</div>
+
+				<div class="col-span-2">
+					<!--Notes-->
+					<label class="block mb-2">Notes:</label>
+					<textarea name="notes" rows="3" class="w-full border rounded px-3 py-2"></textarea>
+				</div>
+			</div>
+
+			<div class="mt-5">
+				<!-- Submit Information Button -->
+				<button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+					Save
+				</button>
+			</div>
 		</form>
-		<button id="closeButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+
+		<button type="button" id="closeButton"
+			class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
 			Cancel
 		</button>
 	</div>
@@ -53,7 +80,7 @@
 
 <!-- Edit Popup -->
 <div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-	<div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+	<div class="bg-white p-6 rounded shadow-md w-full max-w-2xl">
 		<h3 class="text-xl font-bold mb-4">Edit Equipment</h3>
 		<form method="post" id="editEquipmentForm" action="{% url 'edit_equipment' %}">
 			{% csrf_token %}
@@ -61,37 +88,90 @@
 			<!-- ID (ignore, just copied from crop list html)-->
 			<input type="hidden" name="id" id="editId">
 
-			<!-- Name of the Equipment -->
-			<label class="block mb-2">Name:</label>
-			<input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" required />
+			<div class="grid grid-cols-2 gap-x-6 gap-y-4">
+				<div>
+					<!-- Name of the Equipment -->
+					<label class="block mb-2">Name:</label>
+					<input type="text" name="name" id="editName"
+						class="w-full border rounded px-3 py-2" required />
+				</div>
 
-			<!-- Type of the Equipment -->
-			<label class="block mb-2">Type:</label>
-			<input type="text" name="type" id="editType" class="w-full border rounded px-3 py-2 mb-4" required />
+				<div>
+					<!--Edit Category-->
+					<label class="block mb-2">Category:</label>
+					<input type="text" name="category" id="editCategory"
+						class="w-full border rounded px-3 py-2" required />
+				</div>
 
-			<!-- Purchase date of the Equipment -->
-			<label class="block mb-2">Purchase Date:</label>
-			<input type="date" name="purchase_date" id="editPurchaseDate" class="w-full border rounded px-3 py-2 mb-4"
-				required />
+				<div>
+					<!-- Type of the Equipment -->
+					<label class="block mb-2">Type:</label>
+					<input type="text" name="type" id="editType"
+						class="w-full border rounded px-3 py-2" required />
+				</div>
 
-			<!-- Maintenance due date of the Equipment -->
-			<label class="block mb-2">Maintenance Date:</label>
-			<input type="date" name="maintenance_due" id="editMaintenanceDate"
-				class="w-full border rounded px-3 py-2 mb-4" required />
+				<div>
+					<!-- Purchase date of the Equipment -->
+					<label class="block mb-2">Purchase Date:</label>
+					<input type="date" name="purchase_date" id="editPurchaseDate"
+						class="w-full border rounded px-3 py-2" />
+				</div>
 
-			<!-- Save Changes -->
-			<button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-				Save Changes
-			</button>
+				<div>
+					<!-- Maintenance due date of the Equipment -->
+					<label class="block mb-2">Maintenance Date:</label>
+					<input type="date" name="maintenance_due" id="editMaintenanceDate"
+						class="w-full border rounded px-3 py-2" />
+				</div>
+
+				<div class="col-span-2">
+					<!--Notes-->
+					<label class="block mb-2">Notes:</label>
+					<textarea name="notes" id="editNotes"
+						rows="3"
+						class="w-full border rounded px-3 py-2"></textarea>
+				</div>
+			</div>
+
+			<div class="mt-5">
+				<!-- Save Changes -->
+				<button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+					Save Changes
+				</button>
+			</div>
 		</form>
-		<button id="closeEditButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+
+		<button type="button" id="closeEditButton"
+			class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
 			Cancel
 		</button>
 	</div>
 </div>
 
+<!-- Notes View Popup (Read-only) -->
+<div id="notesPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+	<div class="bg-white p-6 rounded shadow-md w-full max-w-lg">
+		<h3 class="text-xl font-bold mb-4">Notes</h3>
+
+		<div class="mb-2 text-sm text-gray-600">
+			<span class="font-semibold">Equipment:</span> <span id="notesEquipmentName"></span>
+		</div>
+
+		<div id="notesContent"
+			class="border rounded px-3 py-2 bg-gray-50 text-gray-900 whitespace-pre-wrap"></div>
+
+		<div class="mt-5 flex justify-end">
+			<button type="button" id="closeNotesButton"
+				class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+				Close
+			</button>
+		</div>
+	</div>
+</div>
+
 <!-- Delete Popup -->
-<div id="deletePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+<div id="deletePopup"
+	class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
 	<div class="bg-white p-6 rounded shadow-md w-full max-w-md">
 		<h3 class="text-xl font-bold mb-4">Delete Equipment</h3>
 		<p class="mb-4">
@@ -102,7 +182,8 @@
 			{% csrf_token %}
 			<input type="hidden" name="id" id="deleteId" />
 			<div class="flex justify-center gap-x-4">
-				<button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
+				<button type="submit"
+					class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
 					Delete
 				</button>
 				<button type="button" id="closeDeleteButton"
@@ -121,11 +202,11 @@
 			<tr>
 				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
 				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Category</th>
 				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Type</th>
-				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Purchase Date
-				</th>
-				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Maintenance
-					Due</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Purchase Date</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Maintenance Due</th>
+				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
 				<th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
 			</tr>
 		</thead>
@@ -134,18 +215,40 @@
 			<tr class="hover:bg-gray-50">
 				<td class="py-4 px-6 text-sm text-gray-900">{{ item.id }}</td>
 				<td class="py-4 px-6 text-sm text-gray-900">{{ item.name }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.category|default:"—" }}</td>
 				<td class="py-4 px-6 text-sm text-gray-900">{{ item.type }}</td>
-				<td class="py-4 px-6 text-sm text-gray-900">{{ item.purchase_date }}</td>
-				<td class="py-4 px-6 text-sm text-gray-900">{{ item.maintenance_due }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.purchase_date|default:"—" }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">{{ item.maintenance_due|default:"—" }}</td>
+				<td class="py-4 px-6 text-sm text-gray-900">
+					{% if item.notes %}
+					<button type="button"
+						class="text-white py-1 px-3 rounded text-sm hover:bg-gray-800"
+						style="background-color:#4B5563;"
+						onclick="openNotesPopup('{{ item.name|escapejs }}', '{{ item.notes|escapejs }}')">
+						View
+					</button>
+					{% else %}
+					<span class="text-gray-500">—</span>
+					{% endif %}
+				</td>
 				<td class="py-4 px-6 text-sm">
 					<div class="flex space-x-2">
 						<button
-							onclick="openEditPopup('{{ item.id }}', '{{ item.name }}', '{{ item.type }}', '{{ item.purchase_date }}', '{{ item.maintenance_due }}')"
+							type="button"
 							class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
-							style="background-color: #0D65A0;">
+							style="background-color: #0D65A0;"
+							data-id="{{ item.id }}"
+							data-name="{{ item.name|escapejs }}"
+							data-category="{{ item.category|default_if_none:''|escapejs }}"
+							data-type="{{ item.type|escapejs }}"
+							data-purchase="{{ item.purchase_date|default_if_none:'' }}"
+							data-maintenance="{{ item.maintenance_due|default_if_none:'' }}"
+							data-notes="{{ item.notes|default_if_none:''|escapejs }}"
+							onclick="handleEditClick(this)">
 							Edit
 						</button>
-						<button onclick="openDeletePopup('{{ item.id }}', '{{ item.name }}')"
+						<button type="button"
+							onclick='openDeletePopup("{{ item.id }}", "{{ item.name|escapejs }}")'
 							class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
 							Delete
 						</button>
@@ -154,7 +257,7 @@
 			</tr>
 			{% empty %}
 			<tr>
-				<td colspan="6" class="py-8 px-6 text-center text-gray-500">No equipment records found</td>
+				<td colspan="8" class="py-8 px-6 text-center text-gray-500">No equipment records found</td>
 			</tr>
 			{% endfor %}
 		</tbody>
