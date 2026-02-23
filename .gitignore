@@ -24,4 +24,5 @@ env/
 # Pycharm
 .idea/
 
-app/logging/app.log
+app/logging/app_logs/app.log
+app/logging/modification_logs/modification_activities.log

@@ -13,6 +13,13 @@
     Add Supply
 </button>
 
+<div class="mb-4">
+    <form action="{% url 'supplies_list' %}" method="get">
+        <input type="text" name="nameSearch" placeholder="Search by name... 🔎" value="{{ request.GET.nameSearch }}" class="border rounded-md p-2">
+        <button type="submit" class="ml-1">Search</button>
+    </form>
+</div>
+
 <!-- Display Error Message if Error occurs-->
 {% if error %}
 <div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
@@ -22,43 +29,93 @@
 
 <!-- Add Button Popup Form -->
 <div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
         <h3 class="text-xl font-bold mb-4">Add Supply</h3>
         <form method="post" id="addSupplyForm" action="{% url 'add_supplies' %}">
             {% csrf_token %}
-            <!-- Name of the Supply -->
-            <label class="block mb-2">Name:</label>
-            <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2">
+                    <!-- Name of the Supply -->
+                    <label class="block mb-2">Name:</label>
+                    <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4"
+                        maxlength="{{ max_input_text_length }}" required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Category of the Supply -->
+                    <label class="block mb-2">Category:</label>
+                    <input type="text" name="supply_category" class="w-full border rounded px-3 py-2 mb-4"
+                        maxlength="{{ max_input_text_length }}" required />
+                </div>
+    
+            </div>
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2">
+                    <!-- Quantity of the Supply -->
+                    <label class="block mb-2">Quantity:</label>
+                    <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Type of Unit of Quantity of the Supply -->
+                    <label class="block mb-2">Unit:</label>
+                    <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4"
+                    maxlength="{{ max_input_unit_length }}" required />
+                </div>
+                
+            </div>
+            <div class="flex space-x-2">
+                <div class="w-1/2">
+                    <!-- Minimum required amount of the Supply -->
+                    <label class="block mb-2">Minimum required:</label>
+                    <input type="number" name="minimum_required" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Cost per unit of the Supply -->
+                    <label class="block mb-2">Cost per unit:</label>
+                    <input type="number" name="cost_per_unit" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+            </div>
+            
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2">
+                    <!-- Last Restocking Date of the Supply -->
+                    <label class="block mb-2">Last restocked:</label>
+                    <input type="date" name="last_restocked" class="w-full border rounded px-3 py-2 mb-4"
+                    required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Procurement date of the Supply -->
+                    <label class="block mb-2">Procurement date:</label>
+                    <input type="date" name="procurement_date" class="w-full border rounded px-3 py-2 mb-4"
+                        required />
+                </div>
+            </div>
 
-            <!-- Type of the Supply -->
-            <label class="block mb-2">Type:</label>
-            <input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
+            <!-- Notes for the Supply -->
+            <label class="block mb-2">Notes:</label>
+            <textarea name="notes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
+            maxlength="{{ max_textbox_length }}" required></textarea>
 
-            <!-- Quantity of the Supply -->
-            <label class="block mb-2">Quantity:</label>
-            <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4" required />
+            <div class="flex space-x-2 justify-between w-full">
+                <div>
+                    <!-- Submit Information Button -->
+                    <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+                        Save
+                    </button>
+                </div>
+                <div>
+                    <div id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+                        Cancel
+                    </div>
+                </div>
+            </div>
 
-            <!-- Type of Unit of Quantity of the Supply -->
-            <label class="block mb-2">Unit:</label>
-            <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
-
-            <!-- Submit Information Button -->
-            <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-                Save
-            </button>
         </form>
-        <button id="closeButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-            Cancel
-        </button>
     </div>
 </div>
 
 <!-- Edit Popup -->
 <div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
         <h3 class="text-xl font-bold mb-4">Edit Supply</h3>
         <form method="post" id="editSupplyForm" action="{% url 'edit_supplies' %}">
             {% csrf_token %}
@@ -66,34 +123,80 @@
             <!-- ID (ignore, just copied from crop list html)-->
             <input type="hidden" name="id" id="editId">
 
-            <!-- Name of the Supply -->
-            <label class="block mb-2">Name:</label>
-            <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
+            <div class="w-full flex justify-between space-x-2">
+                <div class="w-1/2">
+                    <!-- Name of the Supply -->
+                    <label class="block mb-2">Name:</label>
+                    <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4"
+                        maxlength="{{ max_input_text_length }}" required />
+                        
+                </div>
+                <div class="w-1/2">
+                    <!-- Category of the Supply -->
+                    <label class="block mb-2">Category:</label>
+                    <input type="text" name="supply_category" id="editCategory" class="w-full border rounded px-3 py-2 mb-4"
+                        maxlength="{{ max_input_text_length }}" required />
+                </div>
+            </div>
+            <div class="w-full flex justify-between space-x-2">
+                <div class="w-1/2">
+                    <!-- Quantity of the Supply -->
+                    <label class="block mb-2">Quantity:</label>
+                    <input type="number" name="quantity" id="editQuantity" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Type of Unit of Quantity of the Supply -->
+                    <label class="block mb-2">Unit:</label>
+                    <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4"
+                    maxlength="{{ max_input_unit_length }}" required />
+                </div>
+            </div>
+            <div class="w-full flex justify-between space-x-2">
+                <div class="w-1/2">
+                    <!-- Last Restocking Date of the Supply -->
+                    <label class="block mb-2">Last restocked:</label>
+                    <input type="date" name="last_restocked" id="editLastRestocked" class="w-full border rounded px-3 py-2 mb-4"
+                    required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Procurement date of the Supply -->
+                    <label class="block mb-2">Procurement date:</label>
+                    <input type="date" name="procurement_date" id="editProcurementDate" class="w-full border rounded px-3 py-2 mb-4"
+                        required />
+                </div>
+            </div>
+            <div class="w-full flex justify-between space-x-2">
+                <div class="w-1/2">
+                    <!-- Minimum required amount of the Supply -->
+                    <label class="block mb-2">Minimum required:</label>
+                    <input type="number" name="minimum_required" id="editMinimumRequired" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+                <div class="w-1/2">
+                    <!-- Cost per unit of the Supply -->
+                    <label class="block mb-2">Cost per unit:</label>
+                    <input type="number" name="cost_per_unit" id="editCostPerUnit" class="w-full border rounded px-3 py-2 mb-4" required />
+                </div>
+            </div>
 
-            <!-- Type of the Supply -->
-            <label class="block mb-2">Type:</label>
-            <input type="text" name="type" id="editType" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
+            <!-- Notes for the Supply -->
+            <label class="block mb-2">Notes:</label>
+            <textarea name="notes" id="editNotes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
+            maxlength="{{ max_textbox_length }}" required></textarea>
 
-            <!-- Quantity of the Supply -->
-            <label class="block mb-2">Quantity:</label>
-            <input type="number" name="quantity" id="editQuantity" class="w-full border rounded px-3 py-2 mb-4"
-                required />
-
-            <!-- Type of Unit of Quantity of the Supply -->
-            <label class="block mb-2">Unit:</label>
-            <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
-
-            <!-- Save Changes -->
-            <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-                Save Changes
-            </button>
+            <div class="w-full flex justify-between space-x-2">
+                <div>
+                    <!-- Save Changes -->
+                    <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
+                        Save Changes
+                    </button>
+                </div>
+                <div>
+                    <div id="closeEditButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+                        Cancel
+                    </div>
+                </div>
+            </div>
         </form>
-        <button id="closeEditButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-            Cancel
-        </button>
     </div>
 </div>
 
@@ -121,6 +224,19 @@
     </div>
 </div>
 
+<!-- Notes popup for a supply. -->
+<div id="notesPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl flex flex-col">
+        <!-- Header -->
+        <h3 class="text-xl font-bold mb-4">Notes of Supply</h3>
+        <textarea name="notesOfSupply" id="notesOfSupplyOutput" rows="30" disabled class="w-full px-3 py-2 mb-4 overflow-y-auto border rounded resize-none"></textarea>
+        <!-- Close popup button. -->
+        <button type="button" id="closeNotesButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+            Close
+        </button>
+    </div>
+</div>
+
 <!-- Table -->
 <div class="bg-white rounded-lg shadow-md overflow-x-auto">
     <table class="min-w-full">
@@ -128,9 +244,14 @@
             <tr>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Type</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Category</th>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Quantity</th>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Unit</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Last Restocked</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Minimum Required</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Cost Per Unit</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Procurement Date</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
                 <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
             </tr>
         </thead>
@@ -139,13 +260,40 @@
             <tr class="hover:bg-gray-50">
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.id }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.name }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.type }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.category }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.quantity }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.unit }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.last_restocked }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.minimum_required }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.cost_per_unit }}</td>
+                <td class="py-4 px-6 text-sm text-gray-900">{{ supply.procurement_date }}</td>
+                <!-- <td class="py-4 px-6 text-sm text-gray-900">{{ supply.notes }}</td> -->
                 <td class="py-4 px-6 text-sm">
                     <div class="flex space-x-2">
                         <button
-                            onclick="openEditPopup('{{ supply.id }}', '{{ supply.name }}', '{{ supply.type }}', '{{ supply.quantity }}', '{{ supply.unit }}')"
+                            onclick="openNotesPopup(
+                                `{{ supply.notes }}`)"
+                            class="text-white py-1 px-3 rounded text-sm hover:bg-amber-900"
+                            style="background-color: #b49494;">
+                            Open Notes
+                        </button>
+                    </div>
+                </td>
+                
+                <td class="py-4 px-6 text-sm">
+                    <div class="flex space-x-2">
+                        <button
+                            onclick="openEditPopup(
+                                '{{ supply.id }}',
+                                '{{ supply.name }}',
+                                '{{ supply.category }}',
+                                '{{ supply.quantity }}',
+                                '{{ supply.unit }}',
+                                '{{ supply.last_restocked|date:'Y-m-d' }}',
+                                '{{ supply.minimum_required }}',
+                                '{{ supply.cost_per_unit }}',
+                                '{{ supply.procurement_date|date:'Y-m-d' }}',
+                                `{{ supply.notes }}`)"
                             class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
                             style="background-color: #0D65A0;">
                             Edit
@@ -159,7 +307,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="6" class="py-8 px-6 text-center text-gray-500">No supply records found</td>
+                <td colspan="11" class="py-8 px-6 text-center text-gray-500">No supply records found</td>
             </tr>
             {% endfor %}
         </tbody>
@@ -173,42 +321,50 @@
 
 <div class="mt-3">
     <nav>
-        <ul class="flex list-none">
+        <ul class="flex space-x-1 list-none text-sm">
             <!-- First and Previous. -->
             {% if page_obj.has_previous %}
-                <a href="?page=1" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>&laquo; First</li></a>
-                <a href="?page={{ page_obj.previous_page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>&lsaquo; Previous</li></a>
+                <a href="?page=1" class="border rounded-md bg-white font-medium text-black px-4 py-2"><li>&laquo; First</li></a>
+                <a href="?page={{ page_obj.previous_page_number }}" class="border rounded-md bg-white font-medium text-md text-black px-4 py-2"><li><<</li></a>
             {% else %}    
-                <li class="border-l border-t border-b text-gray-600 px-4 py-2">&laquo; First</li>
-                <li class="border-l border-t border-b text-gray-600 px-4 py-2">&lsaquo; Previous</li>
+                <li class="border rounded-md bg-gray-200 text-gray-700 px-4 py-2">&laquo; First</li>
+                <li class="border rounded-md bg-gray-200 text-md text-gray-700 px-4 py-2"><<</li>
             {% endif %}
 
             <!-- Going backward from current page. -->
             {% for page_number in backward_pages %}
-                <a href="?page={{ page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>{{ page_number }}</li></a>
+                <a href="?page={{ page_number }}" class="border bg-white rounded-md font-medium text-black px-4 py-2"><li>{{ page_number }}</li></a>
             {% endfor %}
                 
             <!-- Add current page number. -->
-            <a href="?page={{ page_obj.number }}" class="border-l border-t border-b bg-blue-600 text-white px-4 py-2"><li>{{ page_obj.number }}</li></a>
+            <a href="?page={{ page_obj.number }}" class="border bg-green-700 rounded-md font-medium text-white px-4 py-2"><li>{{ page_obj.number }}</li></a>
             
             
             <!-- Going forward from current page. -->
             {% for page_number in forward_pages %}
-                <a href="?page={{ page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>{{ page_number }}</li></a>
+                <a href="?page={{ page_number }}" class="border bg-white rounded-md font-medium text-black px-4 py-2"><li>{{ page_number }}</li></a>
             {% endfor %}
 
 
             <!-- Next and Last. --> 
             {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>Next &rsaquo;</li></a>
-                <a href="?page={{ page_obj.paginator.num_pages }}" class="border-l border-t border-b text-blue-600 px-4 py-2"><li>Last &raquo;</li></a>
+                <a href="?page={{ page_obj.next_page_number }}" class="border bg-white rounded-md font-medium text-md text-black px-4 py-2"><li>>></li></a>
+                <a href="?page={{ page_obj.paginator.num_pages }}" class="border bg-white rounded-md font-medium text-black px-4 py-2"><li>Last &raquo;</li></a>
             {% else %}
-                <li class="border-l border-t border-b text-gray-600 px-4 py-2">Next &rsaquo;</li>
-                <li class="border-l border-t border-b border-r text-gray-600 px-4 py-2">Last &raquo;</li>
+                <li class="border rounded-md bg-gray-200 text-md text-gray-700 px-4 py-2">>></li>
+                <li class="border rounded-md bg-gray-200 text-gray-700 px-4 py-2">Last &raquo;</li>
             {% endif %}
+
+            <div>
+                <form action="" method="GET">
+                    <input type="number" name="page" id="searchPageNumberID" class="border bg-white rounded-md font-medium text-md text-black px-2 py-2 w-1/3">
+                    <button type="submit" class="text-md ml-1">Go &raquo;</button>
+                </form>
+            </div>
         </ul>
     </nav>
 </div>
+
 <script src="{% static 'js/supplies_list.js' %}"></script>
 
 {% endblock %}

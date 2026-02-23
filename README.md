@@ -21,6 +21,15 @@ Django & Spring Boot based database management system with PostgreSQL, Redis.
 
 **Prerequisites:** Python 3.8+, Docker, Docker Compose, Git
 
+> **Static files note (important):**
+> When running `make run`, if prompted to collect static files, enter **`yes`**.
+> When `DEBUG = False` in `settings.py`, Django **does not automatically serve static files** (it assumes a web server like **NGINX** will handle them). This is something we still need to investigate/standardize.
+>
+> **Migration note:**
+> If you see any migration warnings, run migrations before continuing:
+> - macOS/Linux: `make migrate`
+> - Windows: `python manage.py migrate`
+
 <table>
 <tr>
 <th width="50%">macOS/Linux</th>
@@ -53,6 +62,7 @@ python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
 python manage.py migrate
+python manage.py collectstatic
 python manage.py runserver
 python manage.py createsuperuser
 ```
@@ -115,11 +125,18 @@ redis-cli lpush analytics_events '{ "event": "Hello, Black Creek Farm!" }'
 | Port 8000 in use | Kill process or change port: `sudo lsof -i :8000` → `sudo kill -9 PID` |
 | Database error | Check `docker compose ps` |
 | Permission denied | Use `sudo` or add user to docker group |
+| Staticfiles not updating. | make clean && make build |
 
 ---
 
 ## Contributing
-
+### Before pushing changes
+```bash
+make test
+make lint-fix
+make lint
+```
+### Push changes
 ```bash
 git checkout -b feature/your-feature
 git commit -m "Add feature" -m "Description"
