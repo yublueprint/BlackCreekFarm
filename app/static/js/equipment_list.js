@@ -1,4 +1,4 @@
-
+// ---------- Add Popup ----------
 const addButton = document.getElementById("addButton");
 const popupForm = document.getElementById("popupForm");
 const closeButton = document.getElementById("closeButton");
@@ -21,46 +21,30 @@ if (closeButton && popupForm) {
 const editPopup = document.getElementById("editPopup");
 const closeEditButton = document.getElementById("closeEditButton");
 
-<<<<<<< HEAD
-// NEW signature includes category + notes
-function openEditPopup(id, name, category, type, purchase_date, maintenance_due, notes) {
-  document.getElementById("editId").value = id;
-  document.getElementById("editName").value = name;
-  document.getElementById("editCategory").value = category;
-  document.getElementById("editType").value = type;
+function handleEditClick(btn) {
+  // pull values from data-* attributes
+  const id = btn.dataset.id || "";
+  const name = btn.dataset.name || "";
+  const category = btn.dataset.category || "";
+  const type = btn.dataset.type || "";
+  const purchase = btn.dataset.purchase || "";
+  const maintenance = btn.dataset.maintenance || "";
+  const notes = btn.dataset.notes || "";
 
-  // Dates can be null/empty now
-  document.getElementById("editPurchaseDate").value = purchase_date || "";
-  document.getElementById("editMaintenanceDate").value = maintenance_due || "";
+  const setVal = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+  };
 
-  // Notes optional
-  const notesEl = document.getElementById("editNotes");
-  if (notesEl) notesEl.value = notes || "";
+  setVal("editId", id);
+  setVal("editName", name);
+  setVal("editCategory", category);
+  setVal("editType", type);
+  setVal("editPurchaseDate", purchase);
+  setVal("editMaintenanceDate", maintenance);
+  setVal("editNotes", notes);
 
   if (editPopup) editPopup.classList.remove("hidden");
-=======
-function openEditPopup(id, name, category, type, serial_number, purchase_date, maintenance_due, next_checkup, warranty_expiry, location, supplier, hours_used, condition, purchase_cost, active, last_service_by, service_interval_days, maintenance_history, notes) {
-    document.getElementById("editId").value = id;
-    document.getElementById("editName").value = name;
-    document.getElementById("editCategory").value = category;
-    document.getElementById("editType").value = type;
-    document.getElementById("editSerialNumber").value = serial_number;
-    document.getElementById("editPurchaseDate").value = purchase_date;
-    document.getElementById("editMaintenanceDate").value = maintenance_due;
-    document.getElementById("editNextCheckup").value = next_checkup;
-    document.getElementById("editWarrantyExpiry").value = warranty_expiry;
-    document.getElementById("editLocation").value = location;
-    document.getElementById("editSupplier").value = supplier;
-    document.getElementById("editHoursUsed").value = hours_used;
-    document.getElementById("editCondition").value = condition;
-    document.getElementById("editPurchaseCost").value = purchase_cost;
-    document.getElementById("editActive").value = active;
-    document.getElementById("editLastServiceBy").value = last_service_by;
-    document.getElementById("editServiceInterval").value = service_interval_days;
-    document.getElementById("editMaintenanceHistory").value = maintenance_history;
-    document.getElementById("editNotes").value = notes;
-    editPopup.classList.remove("hidden");
->>>>>>> origin/prod
 }
 
 if (closeEditButton && editPopup) {
@@ -75,8 +59,12 @@ const deletePopup = document.getElementById("deletePopup");
 const closeDeleteButton = document.getElementById("closeDeleteButton");
 
 function openDeletePopup(id, name) {
-  document.getElementById("deleteId").value = id;
-  document.getElementById("deleteEquipmentName").textContent = name;
+  const idEl = document.getElementById("deleteId");
+  const nameEl = document.getElementById("deleteEquipmentName");
+
+  if (idEl) idEl.value = id;
+  if (nameEl) nameEl.textContent = name;
+
   if (deletePopup) deletePopup.classList.remove("hidden");
 }
 
@@ -108,7 +96,7 @@ if (closeNotesButton && notesPopup) {
   });
 }
 
-// Optional: close popups when clicking the dark overlay
+// ---------- Optional: close popups when clicking the dark overlay ----------
 [popupForm, editPopup, deletePopup, notesPopup].forEach((popup) => {
   if (!popup) return;
   popup.addEventListener("click", (e) => {
