@@ -72,21 +72,24 @@ def add_supplies(request):
             name = request.POST.get("name")
             supply_category = request.POST.get("supply_category")
             quantity = request.POST.get("quantity")
-            unit = request.POST.get("unit")
-            last_restocked = request.POST.get("last_restocked")
-            minimum_required = request.POST.get("minimum_required")
-            cost_per_unit = request.POST.get("cost_per_unit")
-            procurement_date = request.POST.get("procurement_date")
-            notes = request.POST.get("notes")
+            # Optional fields
+            unit = request.POST.get("unit") or None
+            last_restocked = request.POST.get("last_restocked") or None
+            minimum_required = request.POST.get("minimum_required") or None
+            cost_per_unit = request.POST.get("cost_per_unit") or None
+            procurement_date = request.POST.get("procurement_date") or None
+            notes = request.POST.get("notes") or None
+
+            # Mandatory fields.
+            required_inputs = {
+                "name": name,
+                "supply_category": supply_category,
+                "quantity": quantity,
+            }
 
             default_text_inputs_given = {
                 "name": name,
                 "supply_category": supply_category,
-                "quantity": quantity,
-                "last_restocked": last_restocked,
-                "minimum_required": minimum_required,
-                "cost_per_unit": cost_per_unit,
-                "procurement_date": procurement_date,
             }
 
             unit_inputs_given = {
@@ -97,17 +100,21 @@ def add_supplies(request):
                 "notes": notes,
             }
 
+            # Raise an error if mandatory fields are missing.
+            for key, value in required_inputs.items():
+                if not value:
+                    raise SupplyCreationException(f"Missing {key} for supply.")
+
             inputs_given_list = [
                 (default_text_inputs_given, DEFAULT_TEXT_MAX_LENGTH),
                 (unit_inputs_given, UNIT_INPUT_MAX_LENGTH),
                 (textbox_inputs_given, TEXTBOX_MAX_LENGTH),
             ]
 
+            # check length if the optional field was actually provided.
             for input_given, max_length in inputs_given_list:
                 for key, value in input_given.items():
-                    if not value:
-                        raise SupplyCreationException(f"Missing {key} for supply.")
-                    if len(value) > max_length:
+                    if value and len(value) > max_length:
                         raise SupplyCreationException(
                             f"Supply {key} input must be less or equal to {max_length} characters."
                         )
@@ -161,21 +168,24 @@ def edit_supplies(request):
             supply.name = request.POST.get("name")
             supply.category = request.POST.get("supply_category")
             supply.quantity = request.POST.get("quantity")
-            supply.unit = request.POST.get("unit")
-            supply.last_restocked = request.POST.get("last_restocked")
-            supply.minimum_required = request.POST.get("minimum_required")
-            supply.cost_per_unit = request.POST.get("cost_per_unit")
-            supply.procurement_date = request.POST.get("procurement_date")
-            supply.notes = request.POST.get("notes")
+            # Optional fields
+            supply.unit = request.POST.get("unit") or None
+            supply.last_restocked = request.POST.get("last_restocked") or None
+            supply.minimum_required = request.POST.get("minimum_required") or None
+            supply.cost_per_unit = request.POST.get("cost_per_unit") or None
+            supply.procurement_date = request.POST.get("procurement_date") or None
+            supply.notes = request.POST.get("notes") or None
+
+            # Mandatory fields.
+            required_inputs = {
+                "name": supply.name,
+                "supply_category": supply.category,
+                "quantity": supply.quantity,
+            }
 
             default_text_inputs_given = {
                 "name": supply.name,
                 "supply_category": supply.category,
-                "quantity": supply.quantity,
-                "last_restocked": supply.last_restocked,
-                "minimum_required": supply.minimum_required,
-                "cost_per_unit": supply.cost_per_unit,
-                "procurement_date": supply.procurement_date,
             }
 
             unit_inputs_given = {
@@ -186,17 +196,21 @@ def edit_supplies(request):
                 "notes": supply.notes,
             }
 
+            # Raise an error if mandatory field is missing.
+            for key, value in required_inputs.items():
+                if not value:
+                    raise SupplyEditException(f"Missing {key} for supply.")
+
             inputs_given_list = [
                 (default_text_inputs_given, DEFAULT_TEXT_MAX_LENGTH),
                 (unit_inputs_given, UNIT_INPUT_MAX_LENGTH),
                 (textbox_inputs_given, TEXTBOX_MAX_LENGTH),
             ]
 
+            # check length if the optional field was actually provided.
             for input_given, max_length in inputs_given_list:
                 for key, value in input_given.items():
-                    if not value:
-                        raise SupplyEditException(f"Missing {key} for supply.")
-                    if len(value) > max_length:
+                    if value and len(value) > max_length:
                         raise SupplyEditException(
                             f"Supply {key} input must be less or equal to {max_length} characters."
                         )

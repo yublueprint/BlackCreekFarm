@@ -35,14 +35,14 @@
             {% csrf_token %}
             <div class="flex space-x-2 justify-between w-full">
                 <div class="w-1/2">
-                    <!-- Name of the Supply -->
-                    <label class="block mb-2">Name:</label>
+                    <!-- Name of the Supply (required) -->
+                    <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
                     <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4"
                         maxlength="{{ max_input_text_length }}" required />
                 </div>
                 <div class="w-1/2">
-                    <!-- Category of the Supply -->
-                    <label class="block mb-2">Category:</label>
+                    <!-- Category of the Supply (required) -->
+                    <label class="block mb-2">Category: <span class="text-red-500">*</span></label>
                     <input type="text" name="supply_category" class="w-full border rounded px-3 py-2 mb-4"
                         maxlength="{{ max_input_text_length }}" required />
                 </div>
@@ -50,50 +50,48 @@
             </div>
             <div class="flex space-x-2 justify-between w-full">
                 <div class="w-1/2">
-                    <!-- Quantity of the Supply -->
-                    <label class="block mb-2">Quantity:</label>
+                    <!-- Quantity of the Supply (required) -->
+                    <label class="block mb-2">Quantity: <span class="text-red-500">*</span></label>
                     <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4" required />
                 </div>
                 <div class="w-1/2">
-                    <!-- Type of Unit of Quantity of the Supply -->
+                    <!-- Type of Unit of Quantity of the Supply (optional) -->
                     <label class="block mb-2">Unit:</label>
                     <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4"
-                    maxlength="{{ max_input_unit_length }}" required />
+                    maxlength="{{ max_input_unit_length }}" />
                 </div>
                 
             </div>
             <div class="flex space-x-2">
                 <div class="w-1/2">
-                    <!-- Minimum required amount of the Supply -->
+                    <!-- Minimum required amount of the Supply (optional) -->
                     <label class="block mb-2">Minimum required:</label>
-                    <input type="number" name="minimum_required" class="w-full border rounded px-3 py-2 mb-4" required />
+                    <input type="number" name="minimum_required" class="w-full border rounded px-3 py-2 mb-4" />
                 </div>
                 <div class="w-1/2">
-                    <!-- Cost per unit of the Supply -->
+                    <!-- Cost per unit of the Supply (optional) -->
                     <label class="block mb-2">Cost per unit:</label>
-                    <input type="number" name="cost_per_unit" class="w-full border rounded px-3 py-2 mb-4" required />
+                    <input type="number" name="cost_per_unit" class="w-full border rounded px-3 py-2 mb-4" />
                 </div>
             </div>
             
             <div class="flex space-x-2 justify-between w-full">
                 <div class="w-1/2">
-                    <!-- Last Restocking Date of the Supply -->
+                    <!-- Last Restocking Date of the Supply (optional) -->
                     <label class="block mb-2">Last restocked:</label>
-                    <input type="date" name="last_restocked" class="w-full border rounded px-3 py-2 mb-4"
-                    required />
+                    <input type="date" name="last_restocked" class="w-full border rounded px-3 py-2 mb-4" />
                 </div>
                 <div class="w-1/2">
-                    <!-- Procurement date of the Supply -->
+                    <!-- Procurement date of the Supply (optional) -->
                     <label class="block mb-2">Procurement date:</label>
-                    <input type="date" name="procurement_date" class="w-full border rounded px-3 py-2 mb-4"
-                        required />
+                    <input type="date" name="procurement_date" class="w-full border rounded px-3 py-2 mb-4" />
                 </div>
             </div>
 
-            <!-- Notes for the Supply -->
+            <!-- Notes for the Supply (optional) -->
             <label class="block mb-2">Notes:</label>
             <textarea name="notes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
-            maxlength="{{ max_textbox_length }}" required></textarea>
+            maxlength="{{ max_textbox_length }}"></textarea>
 
             <div class="flex space-x-2 justify-between w-full">
                 <div>
@@ -103,7 +101,7 @@
                     </button>
                 </div>
                 <div>
-                    <div id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+                    <div id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 cursor-pointer">
                         Cancel
                     </div>
                 </div>
@@ -125,63 +123,61 @@
 
             <div class="w-full flex justify-between space-x-2">
                 <div class="w-1/2">
-                    <!-- Name of the Supply -->
-                    <label class="block mb-2">Name:</label>
+                    <!-- Name of the Supply (required) -->
+                    <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
                     <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4"
                         maxlength="{{ max_input_text_length }}" required />
                         
                 </div>
                 <div class="w-1/2">
-                    <!-- Category of the Supply -->
-                    <label class="block mb-2">Category:</label>
+                    <!-- Category of the Supply (required) -->
+                    <label class="block mb-2">Category: <span class="text-red-500">*</span></label>
                     <input type="text" name="supply_category" id="editCategory" class="w-full border rounded px-3 py-2 mb-4"
                         maxlength="{{ max_input_text_length }}" required />
                 </div>
             </div>
             <div class="w-full flex justify-between space-x-2">
                 <div class="w-1/2">
-                    <!-- Quantity of the Supply -->
-                    <label class="block mb-2">Quantity:</label>
+                    <!-- Quantity of the Supply (required) -->
+                    <label class="block mb-2">Quantity: <span class="text-red-500">*</span></label>
                     <input type="number" name="quantity" id="editQuantity" class="w-full border rounded px-3 py-2 mb-4" required />
                 </div>
                 <div class="w-1/2">
-                    <!-- Type of Unit of Quantity of the Supply -->
+                    <!-- Type of Unit of Quantity of the Supply (optional) -->
                     <label class="block mb-2">Unit:</label>
                     <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4"
-                    maxlength="{{ max_input_unit_length }}" required />
+                    maxlength="{{ max_input_unit_length }}" />
                 </div>
             </div>
             <div class="w-full flex justify-between space-x-2">
                 <div class="w-1/2">
-                    <!-- Last Restocking Date of the Supply -->
+                    <!-- Last Restocking Date of the Supply (optional) -->
                     <label class="block mb-2">Last restocked:</label>
-                    <input type="date" name="last_restocked" id="editLastRestocked" class="w-full border rounded px-3 py-2 mb-4"
-                    required />
+                    <input type="date" name="last_restocked" id="editLastRestocked" class="w-full border rounded px-3 py-2 mb-4" />
                 </div>
                 <div class="w-1/2">
-                    <!-- Procurement date of the Supply -->
+                    <!-- Procurement date of the Supply (optional) -->
                     <label class="block mb-2">Procurement date:</label>
-                    <input type="date" name="procurement_date" id="editProcurementDate" class="w-full border rounded px-3 py-2 mb-4"
-                        required />
+                    <input type="date" name="procurement_date" id="editProcurementDate" class="w-full border rounded px-3 py-2 mb-4" />
                 </div>
             </div>
             <div class="w-full flex justify-between space-x-2">
                 <div class="w-1/2">
-                    <!-- Minimum required amount of the Supply -->
+                    <!-- Minimum required amount of the Supply (optional) -->
                     <label class="block mb-2">Minimum required:</label>
-                    <input type="number" name="minimum_required" id="editMinimumRequired" class="w-full border rounded px-3 py-2 mb-4" required />
+                    <input type="number" name="minimum_required" id="editMinimumRequired" class="w-full border rounded px-3 py-2 mb-4" />
                 </div>
                 <div class="w-1/2">
-                    <!-- Cost per unit of the Supply -->
+                    <!-- Cost per unit of the Supply (optional) -->
                     <label class="block mb-2">Cost per unit:</label>
-                    <input type="number" name="cost_per_unit" id="editCostPerUnit" class="w-full border rounded px-3 py-2 mb-4" required />
+                    <input type="number" name="cost_per_unit" id="editCostPerUnit" class="w-full border rounded px-3 py-2 mb-4" />
                 </div>
             </div>
 
-            <!-- Notes for the Supply -->
+            <!-- Notes for the Supply (optional) -->
             <label class="block mb-2">Notes:</label>
             <textarea name="notes" id="editNotes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
-            maxlength="{{ max_textbox_length }}" required></textarea>
+            maxlength="{{ max_textbox_length }}"></textarea>
 
             <div class="w-full flex justify-between space-x-2">
                 <div>
@@ -191,7 +187,7 @@
                     </button>
                 </div>
                 <div>
-                    <div id="closeEditButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+                    <div id="closeEditButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 cursor-pointer">
                         Cancel
                     </div>
                 </div>
@@ -267,7 +263,7 @@
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.minimum_required }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.cost_per_unit }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ supply.procurement_date }}</td>
-                <!-- <td class="py-4 px-6 text-sm text-gray-900">{{ supply.notes }}</td> -->
+                <!-- Notes column: View button -->
                 <td class="py-4 px-6 text-sm">
                     <div class="flex space-x-2">
                         <button
@@ -275,7 +271,7 @@
                                 `{{ supply.notes }}`)"
                             class="text-white py-1 px-3 rounded text-sm hover:bg-amber-900"
                             style="background-color: #b49494;">
-                            Open Notes
+                            View
                         </button>
                     </div>
                 </td>
