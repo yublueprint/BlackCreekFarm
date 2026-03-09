@@ -75,7 +75,6 @@ class Equipment(models.Model):
         return self.name
 
 
-
 class Supplies(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     category = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)

@@ -1,6 +1,6 @@
 import pytest
 from django.contrib.auth.models import User
-import os 
+import os
 
 from app.backend.models import Equipment
 
@@ -12,6 +12,7 @@ def user(client):
     user = User.objects.create_user(username="tester", password="pass123")
     client.force_login(user)
     return user
+
 
 @pytest.fixture(autouse=True)
 def create_log_directory():

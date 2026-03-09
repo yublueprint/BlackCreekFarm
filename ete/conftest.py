@@ -17,7 +17,7 @@ project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 # Set the correct Django settings module (from your manage.py)
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 os.environ.setdefault("DJANGO_ALLOW_ASYNC_UNSAFE", "true")
 
 # Set up Django
@@ -33,7 +33,8 @@ from django.contrib.auth.models import User
 from playwright.sync_api import sync_playwright, Playwright, Browser, Page
 from django.core.management import call_command
 
-#Ensures the Django test database is set up before any Playwright (async) code runs.
+
+# Ensures the Django test database is set up before any Playwright (async) code runs.
 @pytest.fixture(scope="session", autouse=True)
 def django_db_setup_before_playwright(request, django_db_blocker: DjangoDbBlocker):
     """Force Django to set up the test database before any async code starts."""
@@ -50,22 +51,25 @@ def django_db_setup_before_playwright(request, django_db_blocker: DjangoDbBlocke
         db_cfg = setup_databases(verbosity=1, interactive=False)
 
     request.addfinalizer(lambda: teardown_databases(db_cfg, verbosity=1))
-    
+
+
 @pytest.fixture(scope="session")
 def playwright_instance():
     """Create a playwright instance."""
     with sync_playwright() as p:
         yield p
 
+
 @pytest.fixture(scope="session")
 def browser(playwright_instance: Playwright):
     """Create a browser instance."""
     browser = playwright_instance.chromium.launch(
         headless=os.getenv("CI", "false").lower() == "true",
-        slow_mo=50 if not os.getenv("CI") else 0
+        slow_mo=50 if not os.getenv("CI") else 0,
     )
     yield browser
     browser.close()
+
 
 @pytest.fixture
 def page(browser: Browser):
@@ -75,15 +79,15 @@ def page(browser: Browser):
     yield page
     page.close()
 
+
 @pytest.fixture
 def admin_user(db):
     """Create an admin user for testing."""
     user = User.objects.create_superuser(
-        username="testadmin",
-        email="admin@blackcreek.com",
-        password="testpass123"
+        username="testadmin", email="admin@blackcreek.com", password="testpass123"
     )
     return user
+
 
 @pytest.fixture
 def live_server_url():

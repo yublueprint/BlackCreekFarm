@@ -3,7 +3,6 @@ from django.urls import reverse
 
 from app.backend.models import Equipment
 
-
 pytestmark = pytest.mark.django_db
 
 
@@ -29,9 +28,7 @@ def test_add_success_required_only(client, user):
 
     assert response.status_code == 200
     assert Equipment.objects.filter(
-        name="Generator",
-        category="Power",
-        type="Portable"
+        name="Generator", category="Power", type="Portable"
     ).exists()
 
 
@@ -128,7 +125,10 @@ def test_add_unexpected_exception_handled(client, user, monkeypatch):
     )
 
     assert response.status_code == 200
-    assert "An unexpected error occurred while adding the equipment." in response.content.decode("utf-8")
+    assert (
+        "An unexpected error occurred while adding the equipment."
+        in response.content.decode("utf-8")
+    )
 
 
 def test_edit_unexpected_exception_handled(client, user, equipment, monkeypatch):
@@ -143,11 +143,14 @@ def test_edit_unexpected_exception_handled(client, user, equipment, monkeypatch)
         reverse("edit_equipment"),
         data={
             "id": equipment.id,
-            "name": "Tractor X", 
+            "name": "Tractor X",
             "category": "Vehicles",
             "type": "Heavy",
         },
     )
 
     assert response.status_code == 200
-    assert "An unexpected error occurred while editing the equipment." in response.content.decode("utf-8")
+    assert (
+        "An unexpected error occurred while editing the equipment."
+        in response.content.decode("utf-8")
+    )

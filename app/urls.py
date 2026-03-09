@@ -2,18 +2,34 @@ from django.urls import path
 
 from .backend.crop.crop import add_crop, crop_list, delete_crop, edit_crop
 from .backend.dashboard.dashboard import dashboard
-from .backend.equipment.equipment import (add_equipment, delete_equipment,
-                                          edit_equipment, equipment_list)
-from .backend.livestock.livestock import (add_livestock, delete_livestock,
-                                          edit_livestock, livestock_list)
+from .backend.equipment.equipment import (
+    add_equipment,
+    delete_equipment,
+    edit_equipment,
+    equipment_list,
+)
+from .backend.livestock.livestock import (
+    add_livestock,
+    delete_livestock,
+    edit_livestock,
+    livestock_list,
+)
 from .backend.recent_activities.recent_activities import (
-    download_all_activities, recent_activities_list)
+    download_all_activities,
+    recent_activities_list,
+)
 from .backend.reports.reports import reports
-from .backend.supplies.supplies import (add_supplies, delete_supplies,
-                                        edit_supplies, supplies_list)
-from .backend.transactions.transaction import (add_transaction,
-                                               delete_transaction,
-                                               transaction_list)
+from .backend.supplies.supplies import (
+    add_supplies,
+    delete_supplies,
+    edit_supplies,
+    supplies_list,
+)
+from .backend.transactions.transaction import (
+    add_transaction,
+    delete_transaction,
+    transaction_list,
+)
 
 urlpatterns = [
     path("", dashboard, name="dashboard"),

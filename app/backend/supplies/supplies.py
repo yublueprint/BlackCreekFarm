@@ -3,13 +3,19 @@ from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.supplies.exception import (SupplyCreationException,
-                                               SupplyDeleteException,
-                                               SupplyEditException)
+from app.exceptions.supplies.exception import (
+    SupplyCreationException,
+    SupplyDeleteException,
+    SupplyEditException,
+)
 from app.logging.logging import Logger
 
-from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, Supplies)
+from ..models import (
+    DEFAULT_TEXT_MAX_LENGTH,
+    TEXTBOX_MAX_LENGTH,
+    UNIT_INPUT_MAX_LENGTH,
+    Supplies,
+)
 
 logger = Logger("app/logging/app.log")
 

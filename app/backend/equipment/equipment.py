@@ -31,16 +31,22 @@ def add_equipment(request):
         try:
             name = (request.POST.get("name") or "").strip()
             category = (request.POST.get("category") or "").strip()
-            equipment_type = (request.POST.get("type") or "").strip()  # avoid shadowing builtin type
+            equipment_type = (
+                request.POST.get("type") or ""
+            ).strip()  # avoid shadowing builtin type
 
             # Optional fields: convert "" -> None
             purchase_date = (request.POST.get("purchase_date") or "").strip() or None
-            maintenance_due = (request.POST.get("maintenance_due") or "").strip() or None
+            maintenance_due = (
+                request.POST.get("maintenance_due") or ""
+            ).strip() or None
             notes = (request.POST.get("notes") or "").strip() or None
 
             # ONLY required fields
             if not name or not category or not equipment_type:
-                raise EquipmentCreationException("Name, Category, and Type are required.")
+                raise EquipmentCreationException(
+                    "Name, Category, and Type are required."
+                )
 
             Equipment.objects.create(
                 name=name,
@@ -98,7 +104,9 @@ def edit_equipment(request):
             equipment_type = (request.POST.get("type") or "").strip()
 
             purchase_date = (request.POST.get("purchase_date") or "").strip() or None
-            maintenance_due = (request.POST.get("maintenance_due") or "").strip() or None
+            maintenance_due = (
+                request.POST.get("maintenance_due") or ""
+            ).strip() or None
             notes = (request.POST.get("notes") or "").strip() or None
 
             # ONLY required fields
@@ -146,6 +154,7 @@ def edit_equipment(request):
 
     return redirect("equipment_list")
 
+
 @login_required
 def delete_equipment(request):
     if request.method == "POST":
@@ -181,7 +190,7 @@ def delete_equipment(request):
             return render(
                 request,
                 "app/equipment_list.html",
-    {
+                {
                     "equipment": page_obj,
                     "error": "An unexpected error occurred while deleting the equipment.",
                 },

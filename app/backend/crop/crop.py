@@ -2,9 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.crop.exception import (CropCreationException,
-                                           CropDeleteException,
-                                           CropEditException)
+from app.exceptions.crop.exception import (
+    CropCreationException,
+    CropDeleteException,
+    CropEditException,
+)
 from app.logging.logging import Logger
 
 from ..models import Crop
