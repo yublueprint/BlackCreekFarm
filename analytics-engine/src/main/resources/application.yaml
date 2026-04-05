@@ -1,4 +1,16 @@
 spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/blackcreekfarm
+    username: user
+    password: user
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   data:
     redis:
       host: localhost

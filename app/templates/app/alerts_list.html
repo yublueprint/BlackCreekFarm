@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Recent Alerts | BlackCreek Sync{% endblock %}
+
+{% block content %}
+<div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-semibold">Recent Alerts</h2>
+    <div>
+        <form action="{% url 'mark_all_alerts_read' %}" method="POST" class="inline">
+            {% csrf_token %}
+            <button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700 transition" 
+                style="background-color: #335D43;">Mark all as read</button>
+        </form>
+    </div>
+</div>
+
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+    <table class="min-w-full">
+        <thead class="bg-gray-50 border-b border-gray-200">
+            <tr>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Severity</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Title</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Message</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Time</th>
+                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Action</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for alert in page_obj %}
+            <tr class="hover:bg-gray-50 {% if not alert.is_read %}bg-blue-50{% endif %}">
+                <td class="py-4 px-6 text-sm">
+                    <span class="px-2 py-1 rounded-full text-xs font-semibold
+                        {% if alert.severity == 'CRITICAL' %}bg-red-100 text-red-800
+                        {% elif alert.severity == 'WARNING' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-blue-100 text-blue-800{% endif %}">
+                        {{ alert.severity }}
+                    </span>
+                </td>
+                <td class="py-4 px-6 text-sm {% if not alert.is_read %}font-bold{% endif %} text-gray-900">{{ alert.title }}</td>
+                <td class="py-4 px-6 text-sm text-gray-600">{{ alert.message }}</td>
+                <td class="py-4 px-6 text-sm text-gray-500">{{ alert.timestamp|date:"Y-m-d H:i" }}</td>
+                <td class="py-4 px-6 text-sm">
+                    {% if not alert.is_read %}
+                    <form action="{% url 'mark_alert_read' alert.id %}" method="POST" class="inline">
+                        {% csrf_token %}
+                        <button type="submit" class="text-indigo-600 hover:text-indigo-900 font-medium">Mark Read</button>
+                    </form>
+                    {% else %}
+                    <span class="text-gray-400">Read</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="py-8 px-6 text-center text-gray-500">No alerts found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if page_obj.paginator.num_pages > 1 %}
+<div class="mt-6 flex justify-between items-center text-sm">
+    <div class="text-gray-600">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </div>
+    <nav class="inline-flex rounded-md shadow-sm">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}" class="px-3 py-2 rounded-l-md border border-gray-300 bg-white hover:bg-gray-50 text-gray-700">Previous</a>
+        {% endif %}
+        
+        <span class="px-3 py-2 border-t border-b border-gray-300 bg-gray-50 text-gray-700 font-medium">{{ page_obj.number }}</span>
+        
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}" class="px-3 py-2 rounded-r-md border border-gray-300 bg-white hover:bg-gray-50 text-gray-700">Next</a>
+        {% endif %}
+    </nav>
+</div>
+{% endif %}
+{% endblock %}

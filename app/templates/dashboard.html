@@ -11,7 +11,9 @@
     <div class="bg-white p-4 rounded shadow">
         <h3 class="text-xl font-bold"><i class="fas fa-cow mr-2"></i> Total Livestock</h3>
         <p class="text-2xl mt-2">{{ livestock_count }}</p>
-        <div class="text-green-600 text-sm mt-2">↑ 5% from last month</div>
+        <div class="{% if livestock_growth >= 0 %}text-green-600{% else %}text-red-600{% endif %} text-sm mt-2">
+            {% if livestock_growth >= 0 %}↑{% else %}↓{% endif %} {{ livestock_growth|floatformat:1 }}% from last month
+        </div>
     </div>
     <div class="bg-white p-4 rounded shadow">
         <h3 class="text-xl font-bold"><i class="fas fa-seedling mr-2"></i> Active Crops</h3>
@@ -36,37 +38,35 @@
     </div>
 
     <!-- Alerts Section -->
-    <div class="bg-white p-4 rounded shadow">
-        <h3 class="text-xl font-bold mb-4">Recent Alerts</h3>
-        <ul class="space-y-3">
-            <li class="flex items-start">
-                <div class="bg-red-100 p-1 rounded-full mr-2">
-                    <span class="text-red-600">!</span>
+    <div class="bg-white p-4 rounded shadow flex flex-col">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold">Recent Alerts</h3>
+            <a href="{% url 'alerts_list' %}" class="text-sm text-green-700 hover:underline">View All</a>
+        </div>
+        <ul class="space-y-3 flex-grow">
+            {% for alert in recent_alerts %}
+            <li class="flex items-start pb-3 border-b last:border-0 border-gray-100">
+                <div class="p-1 rounded-full mr-3
+                    {% if alert.severity == 'CRITICAL' %}bg-red-100 text-red-600
+                    {% elif alert.severity == 'WARNING' %}bg-yellow-100 text-yellow-600
+                    {% else %}bg-blue-100 text-blue-600{% endif %}">
+                    {% if alert.severity == 'CRITICAL' or alert.severity == 'WARNING' %}!{% else %}i{% endif %}
                 </div>
-                <div>
-                    <p class="font-medium">Low feed inventory</p>
-                    <p class="text-sm text-gray-600">30 minutes ago</p>
-                </div>
-            </li>
-            <li class="flex items-start">
-                <div class="bg-yellow-100 p-1 rounded-full mr-2">
-                    <span class="text-yellow-600">!</span>
-                </div>
-                <div>
-                    <p class="font-medium">Equipment maintenance due</p>
-                    <p class="text-sm text-gray-600">2 hours ago</p>
+                <div class="flex-grow">
+                    <p class="font-medium text-sm text-gray-900">{{ alert.title }}</p>
+                    <p class="text-xs text-gray-500">{{ alert.timestamp|timesince }} ago</p>
                 </div>
             </li>
-            <li class="flex items-start">
-                <div class="bg-blue-100 p-1 rounded-full mr-2">
-                    <span class="text-blue-600">i</span>
-                </div>
-                <div>
-                    <p class="font-medium">Weather warning: Rain expected</p>
-                    <p class="text-sm text-gray-600">Today</p>
-                </div>
-            </li>
+            {% empty %}
+            <li class="text-sm text-gray-500 italic">No unread alerts.</li>
+            {% endfor %}
         </ul>
+        <div class="mt-4 pt-3 border-t text-center">
+            <form action="{% url 'mark_all_alerts_read' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="text-xs text-gray-500 hover:text-gray-800">Clear All Alerts</button>
+            </form>
+        </div>
     </div>
 </div>
 
