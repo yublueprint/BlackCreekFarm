@@ -1,7 +1,7 @@
 from django.urls import path
 
-from .backend.alerts.alerts import (alerts_list, mark_all_alerts_read,
-                                     mark_alert_read)
+from .backend.alerts.alerts import (alerts_list, mark_alert_read,
+                                    mark_all_alerts_read)
 from .backend.crop.crop import add_crop, crop_list, delete_crop, edit_crop
 from .backend.dashboard.dashboard import dashboard
 from .backend.equipment.equipment import (add_equipment, delete_equipment,
@@ -45,7 +45,11 @@ urlpatterns = [
     path("transactions/delete/", delete_transaction, name="delete_transaction"),
     # Reports URLs
     path("reports/", reports, name="reports"),
-    path("reports/livestock/pdf/", download_livestock_report, name="download_livestock_report"),
+    path(
+        "reports/livestock/pdf/",
+        download_livestock_report,
+        name="download_livestock_report",
+    ),
     # Alert URLs
     path("alerts/", alerts_list, name="alerts_list"),
     path("alerts/red/<int:alert_id>/", mark_alert_read, name="mark_alert_read"),

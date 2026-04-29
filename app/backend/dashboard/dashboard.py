@@ -1,8 +1,11 @@
+import gc
+
 import requests
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 from app.logging.logging import Logger
+
 from ..models import Alert, Crop, Equipment, Livestock
 
 # Initialize application logger (writes events to app/logging/app.log)
@@ -25,14 +28,16 @@ def dashboard(request):
     # Fetch growth metrics from Analytics Engine
     livestock_growth = 0
     try:
-        response = requests.get("http://localhost:8080/api/metrics/livestock/growth", timeout=1)
+        response = requests.get(
+            "http://localhost:8080/api/metrics/livestock/growth", timeout=1
+        )
         if response.status_code == 200:
             livestock_growth = response.json().get("growth_percentage", 0)
     except Exception as e:
         logger.log(f"Failed to fetch growth metrics: {e}")
 
     # Fetch recent unread alerts
-    recent_alerts = Alert.objects.filter(is_read=False).order_by('-timestamp')[:5]
+    recent_alerts = Alert.objects.filter(is_read=False).order_by("-timestamp")[:5]
 
     context = {
         "livestock_count": Livestock.objects.count(),  # Count of all livestock records
