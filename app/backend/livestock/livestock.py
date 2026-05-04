@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -14,9 +15,47 @@ logger = Logger("app/logging/app.log")
 
 @login_required
 def livestock_list(request):
-    livestock = Livestock.objects.all()
+    livestock = Livestock.objects.all().order_by("-id")
+
+    nameToSearch = request.GET.get("nameSearch")
+
+    if nameToSearch:
+        livestock = Livestock.objects.filter(name__icontains=nameToSearch)
+
+    paginator = Paginator(livestock, 10)
+    page_number = request.GET.get("page")
+
+    if page_number:
+        page_number = int(page_number)
+
+    if not page_number or page_number < 1:
+        page_number = 1
+    elif page_number > paginator.num_pages:
+        page_number = paginator.num_pages
+
+    try:
+        page_obj = paginator.get_page(page_number)
+    except PageNotAnInteger:
+        page_obj = paginator.page(1)
+    except EmptyPage:
+        page_obj = paginator.page(paginator.num_pages)
+
+    amount_to_go = 3
+    backward_pages_end = max(1, page_number - amount_to_go)
+    backward_pages = reversed(range(page_number - 1, backward_pages_end - 1, -1))
+
+    forward_pages_end = min(paginator.num_pages, page_number + amount_to_go)
+    forward_pages = range(page_number + 1, forward_pages_end + 1, 1)
+
     logger.log(f"User {request.user} viewed livestock list.")
-    return render(request, "app/livestock_list.html", {"livestock": livestock})
+    context = {
+        "livestock": livestock,
+        "page_obj": page_obj,
+        "backward_pages": backward_pages,
+        "forward_pages": forward_pages,
+    }
+    
+    return render(request, "app/livestock_list.html", context)
 
 
 @login_required
@@ -24,7 +63,7 @@ def add_livestock(request):
     if request.method == "POST":
         try:
             name = request.POST.get("name")
-            breed = request.POST.get("breed")
+            type = request.POST.get("type")
             age = request.POST.get("age")
             weight = request.POST.get("weight")
             health_status = request.POST.get("health_status")
@@ -33,12 +72,12 @@ def add_livestock(request):
             next_vaccination_date = request.POST.get("next_vaccination_date")
             notes = request.POST.get("notes")
 
-            if not name or not breed:
-                raise LivestockCreationException("Both name and breed are required.")
+            if not name or not type:
+                raise LivestockCreationException("Both name and type are required.")
 
             Livestock.objects.create(
                 name=name,
-                breed=breed,
+                type=type,
                 age=age or 0,
                 weight=weight or None,
                 health_status=health_status or "Unknown",
@@ -84,7 +123,7 @@ def edit_livestock(request):
 
             # ✅ Safe updates: preserve existing values if keys are missing
             animal.name = request.POST.get("name", animal.name)
-            animal.breed = request.POST.get("breed", animal.breed)
+            animal.type = request.POST.get("type", animal.type)
             animal.age = request.POST.get("age", animal.age)
             animal.weight = request.POST.get("weight", animal.weight)
             animal.health_status = request.POST.get(
@@ -99,8 +138,8 @@ def edit_livestock(request):
             animal.next_vaccination_date = request.POST.get(
                 "next_vaccination_date", animal.next_vaccination_date
             )
-            # print(f"DO YOU SEE THIS?: {len(str(animal.next_vaccination_date))}")
-            # print(f"IS IT TRUE?: {animal.next_vaccination_date == ''}")
+            if (len(str(animal.age)) == 0) or (animal.age == ""):
+                animal.age = None
             if (len(str(animal.weight)) == 0) or (animal.weight == ""):
                 animal.weight = None
             if (len(str(animal.next_vaccination_date)) == 0) or (
@@ -108,10 +147,14 @@ def edit_livestock(request):
             ):
                 animal.next_vaccination_date = None
             animal.notes = request.POST.get("notes", animal.notes)
+            if (len(str(animal.purchase_price)) == 0) or (animal.purchase_price == ""):
+                animal.purchase_price = 0
+            if (len(str(animal.current_value)) == 0) or (animal.current_value == ""):
+                animal.current_value = 0
 
-            if not animal.name or not animal.breed:
+            if not animal.name or not animal.type:
                 raise LivestockEditException(
-                    "Name and breed are required to update livestock."
+                    "Name and type are required to update livestock."
                 )
 
             animal.save()
