@@ -54,7 +54,7 @@ def livestock_list(request):
         "backward_pages": backward_pages,
         "forward_pages": forward_pages,
     }
-    
+
     return render(request, "app/livestock_list.html", context)
 
 

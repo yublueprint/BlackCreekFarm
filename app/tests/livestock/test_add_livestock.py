@@ -14,7 +14,7 @@ def test_add_livestock_success(client, user, mocker):
         reverse("add_livestock"),
         {
             "name": "Wooly",
-            "breed": "Merino",
+            "type": "Merino",
             "age": "3",
             "weight": "120.5",
             "health_status": "Healthy",
@@ -34,11 +34,11 @@ def test_add_livestock_success(client, user, mocker):
 def test_add_livestock_missing_required_fields(client, user, mocker):
     mock_logger = mocker.patch("app.backend.livestock.livestock.logger.log")
 
-    response = client.post(reverse("add_livestock"), {"age": "2", "breed": ""})
+    response = client.post(reverse("add_livestock"), {"age": "2", "type": ""})
     assert response.status_code == 200
     assert "error" in response.context
     mock_logger.assert_any_call(
-        f"Livestock creation error by {user}: Both name and breed are required."
+        f"Livestock creation error by {user}: Both name and type are required."
     )
 
 
