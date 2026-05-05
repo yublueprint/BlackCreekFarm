@@ -17,17 +17,17 @@ class Record(models.Model):
 
 class Livestock(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    breed = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    age = models.IntegerField()
+    type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    age = models.IntegerField(blank=True, null=True)
     weight = models.FloatField(blank=True, null=True)
-    health_status = models.CharField(max_length=50)
-    purchase_price = models.FloatField(default=0)
-    current_value = models.FloatField(default=0)
+    health_status = models.CharField(max_length=50, blank=True, null=True)
+    purchase_price = models.FloatField(default=0, blank=True, null=True)
+    current_value = models.FloatField(default=0, blank=True, null=True)
     next_vaccination_date = models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.name} - {self.breed}"
+        return f"{self.name} - {self.type}"
 
 
 class Crop(models.Model):
