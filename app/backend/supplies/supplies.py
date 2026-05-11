@@ -10,19 +10,60 @@ from app.logging.logging import Logger
 
 from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Supplies)
+from ..forms import SuppliesSearchForm
 
 logger = Logger("app/logging/app.log")
 
-
 @login_required
 def supplies_list(request):
+    form = SuppliesSearchForm(request.GET)
+
     supplies = Supplies.objects.all().order_by("-id")
 
-    nameToSearch = request.GET.get("nameSearch")
+    nameToSearch = request.GET.get("firstNameSearch")
+
+    active_filters = []
+
+    if form.is_valid():
+        data = form.cleaned_data
+
+        if data.get('id'):
+            supplies = Supplies.objects.filter(id=data['id'])
+            active_filters.append(f"ID: {str(data['id'])}")
+        if data.get('name'):
+            supplies = Supplies.objects.filter(name__icontains=data['name'])
+            active_filters.append(f"Name: {str(data['name'])}")
+        if data.get('category'):
+            supplies = Supplies.objects.filter(category__icontains=data['category'])
+            active_filters.append(f"Category: {str(data['category'])}")
+        if data.get('min_qty'):
+            supplies = Supplies.objects.filter(quantity__gte=data['min_qty'])
+            active_filters.append(f"Min Qty: {str(data['min_qty'])}")
+        if data.get('max_qty'):
+            supplies = Supplies.objects.filter(quantity__lte=data['max_qty'])
+            active_filters.append(f"Max Qty: {str(data['max_qty'])}")
+        if data.get('unit'):
+            supplies = Supplies.objects.filter(unit__icontains=data['unit'])
+            active_filters.append(f"Unit: {str(data['unit'])}")
+        if data.get('minimum_required'):
+            supplies = Supplies.objects.filter(minimum_required__gte=data['minimum_required'])
+            active_filters.append(f"Minimum Required: {str(data['minimum_required'])}")
+        if data.get('cost_per_unit'):
+            supplies = Supplies.objects.filter(cost_per_unit=data['cost_per_unit'])
+            active_filters.append(f"Cost Per Unit: {str(data['cost_per_unit'])}")
+        if data.get('last_restocked'):
+            supplies = Supplies.objects.filter(last_restocked=data['last_restocked'])
+            active_filters.append(f"Last Restocked: {str(data['last_restocked'])}")
+        if data.get('procurement_date'):
+            supplies = Supplies.objects.filter(last_restocked=data['procurement_date'])
+            active_filters.append(f"Procurement Date: {str(data['procurement_date'])}")
 
     if nameToSearch:
         supplies = Supplies.objects.filter(name__icontains=nameToSearch)
+        active_filters.append(f"Name: {nameToSearch}")
 
+
+    # FOR PAGINATION
     paginator = Paginator(supplies, 10)
     page_number = request.GET.get("page")
 
@@ -51,15 +92,28 @@ def supplies_list(request):
     forward_pages_end = min(paginator.num_pages, page_number + amount_to_go)
     forward_pages = range(page_number + 1, forward_pages_end + 1, 1)
 
+    category_given = ["Supply","supply","supplies"]
+    fields_given = ["ID","Name","Category","Quantity","Unit","Last Restocked","Minimum Required","Cost Per Unit","Procurement Date","Notes","Actions"]
+    object_attributes_given = ['id','name','category','quantity','unit','last_restocked','minimum_required','cost_per_unit','procurement_date']
+
     logger.log(f"User {request.user} viewed supplies list.")
     context = {
+        'form':form,
         "supplies": supplies,
-        "max_textbox_length": TEXTBOX_MAX_LENGTH,
-        "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
-        "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
+        "category_given": category_given,
+        "fields_given": fields_given,
+        "object_attributes_given": object_attributes_given,
+        "search_filters_applied":active_filters,
+        "list_url_given": 'supplies_list',
+        "add_url_given": 'add_supplies',
+        "edit_url_given": 'edit_supplies',
+        "delete_url_given": 'delete_supplies',
         "page_obj": page_obj,
         "backward_pages": backward_pages,
         "forward_pages": forward_pages,
+        "max_textbox_length": TEXTBOX_MAX_LENGTH,
+        "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
+        "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
     }
 
     return render(request, "app/supplies_list.html", context)

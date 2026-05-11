@@ -6,17 +6,12 @@
 {% block content %}
 <h2 class="text-3xl font-semibold mb-6">Livestock Management</h2>
 
-{% if error %}
-<div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-    {{ error }}
-</div>
-{% endif %}
 
 <!-- Add Button -->
 <button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
-    style="background-color: #335D43;">
-    <i class="fas fa-plus"></i>
-    Add Livestock
+style="background-color: #335D43;">
+<i class="fas fa-plus"></i>
+Add Livestock
 </button>
 
 <!-- Search -->
@@ -26,6 +21,13 @@
         <button type="submit" class="ml-1">Search</button>
     </form>
 </div>
+
+<!-- Display Error if Error occurs. -->
+{% if error %}
+<div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+    {{ error }}
+</div>
+{% endif %}
 
 <!-- Add Livestock Popup -->
 <div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
@@ -248,6 +250,7 @@
     </table>
 </div>
 
+<!-- Pagination. -->
 <div class="mt-3">
     <span>
         Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
