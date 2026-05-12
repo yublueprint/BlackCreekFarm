@@ -11,6 +11,7 @@ from app.logging.logging import Logger
 from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Supplies)
 from ..forms import SuppliesSearchForm
+from ..functions import paginationFunction
 
 logger = Logger("app/logging/app.log")
 
@@ -20,6 +21,7 @@ def supplies_list(request):
 
     supplies = Supplies.objects.all().order_by("-id")
 
+    # FOR SEARCH FILTERING.
     nameToSearch = request.GET.get("firstNameSearch")
 
     active_filters = []
@@ -76,35 +78,11 @@ def supplies_list(request):
         active_filters.append(f"Name: {nameToSearch}")
 
 
-    # FOR PAGINATION
-    paginator = Paginator(supplies, 10)
+    # FOR PAGINATION.
     page_number = request.GET.get("page")
+    page_obj, backward_pages, forward_pages = paginationFunction(supplies, page_number, 10)
 
-    # Cant do int(None).
-    if page_number:
-        page_number = int(page_number)
-
-    # If none or less than 1, make it 1.
-    # If it's higher than total amount of pages we have, set it to last page.
-    if not page_number or page_number < 1:
-        page_number = 1
-    elif page_number > paginator.num_pages:
-        page_number = paginator.num_pages
-
-    try:
-        page_obj = paginator.get_page(page_number)
-    except PageNotAnInteger:
-        page_obj = paginator.page(1)
-    except EmptyPage:
-        page_obj = paginator.page(paginator.num_pages)
-
-    amount_to_go = 3
-    backward_pages_end = max(1, page_number - amount_to_go)
-    backward_pages = reversed(range(page_number - 1, backward_pages_end - 1, -1))
-
-    forward_pages_end = min(paginator.num_pages, page_number + amount_to_go)
-    forward_pages = range(page_number + 1, forward_pages_end + 1, 1)
-
+    # Supply Titles, Fields, and Properties.
     category_given = ["Supply","supply","supplies"]
     fields_given = ["ID","Name","Category","Quantity","Unit","Last Restocked","Minimum Required","Cost Per Unit","Procurement Date","Notes","Actions"]
     object_attributes_given = ['id','name','category','quantity','unit','last_restocked','minimum_required','cost_per_unit','procurement_date']
