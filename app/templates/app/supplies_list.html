@@ -45,26 +45,28 @@
         </div>
     </div>
 </div>
-<!-- Search by Minimum Quantity -->
+<!-- Search by Quantity -->
 <div class="w-full">
     <div class="flex space-x-2 justify-between w-full">
         <div class="w-1/2">
-            <label for="min_qty">Minimum Quantity</label>
+            <p>Quantity</p>
         </div>
         <div class="w-1/2">
-            <!-- <input type="text" name="quantitySearch" placeholder="1000" class="w-full rounded-lg p-2 border border-gray-800"> -->
-            <input type="number" name="min_qty" value="{{ form.min_qty.value|default:'' }}" placeholder="e.g., 0" class="w-full rounded-lg p-1 border border-gray-800">
+            <select name="qty_mode" id="id_qty_mode" onchange="toggleInputs('id_qty_mode','qty_inputs_container')">
+                <option value="all" {% if form.qty_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Quantity</option>
+                <option value="range" {% if form.qty_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+            </select>
         </div>
     </div>
 </div>
-<!-- Search by Maximum Quantity -->
-<div class="w-full">
+<!-- Quantity Dropdown. -->
+<div id="qty_inputs_container" class="w-full">
     <div class="flex space-x-2 justify-between w-full">
         <div class="w-1/2">
-            <label for="max_qty">Maximum Quantity</label>
+            <input type="number" name="min_qty" value="{{ form.min_qty.value|default:'' }}" placeholder="Min Quantity" class="w-full rounded-lg p-1 border border-gray-800">
         </div>
         <div class="w-1/2">
-            <input type="number" name="max_qty" value="{{ form.max_qty.value|default:'' }}" placeholder="e.g., 20" class="w-full rounded-lg p-1 border border-gray-800">
+            <input type="number" name="max_qty" value="{{ form.max_qty.value|default:'' }}" placeholder="Max Quantity" class="w-full rounded-lg p-1 border border-gray-800">
         </div>
     </div>
 </div>
@@ -111,12 +113,27 @@
 <div class="w-full">
     <div class="flex space-x-2 justify-between w-full">
         <div class="w-1/2">
-            <p class="py-3">
+            <p class="">
                 Last Restocked
             </p>
         </div>
         <div class="w-1/2">
-            <input type="date" name="last_restocked" value="{{ form.last_restocked.value|date:'Y-m-d' }}" placeholder="e.g., kg" class="w-full rounded-lg p-2 border border-gray-800">
+            <!-- <input type="date" name="last_restocked" value="{{ form.last_restocked.value|date:'Y-m-d' }}" placeholder="e.g., kg" class="w-full rounded-lg p-2 border border-gray-800"> -->
+            <select name="last_restocked_mode" id="id_last_restocked_mode" onchange="toggleInputs('id_last_restocked_mode','last_restocked_inputs_container')">
+                <option value="all" {% if form.last_restocked_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
+                <option value="range" {% if form.last_restocked_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+            </select>
+        </div>
+    </div>
+</div>
+<!-- Last Restocked Dropdown. -->
+<div id="last_restocked_inputs_container" class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <input type="date" name="min_last_restocked" value="{{ form.min_last_restocked.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+        <div class="w-1/2">
+            <input type="date" name="max_last_restocked" value="{{ form.max_last_restocked.value }}" class="w-full rounded-lg p-1 border border-gray-800">
         </div>
     </div>
 </div>
@@ -124,12 +141,26 @@
 <div class="w-full">
     <div class="flex space-x-2 justify-between w-full">
         <div class="w-1/2">
-            <p class="py-3">
+            <p class="">
                 Procurement Date
             </p>
         </div>
         <div class="w-1/2">
-            <input type="date" name="procurement_date" value="{{ form.procurement_date.value|date:'Y-m-d' }}" placeholder="e.g., 5" class="w-full rounded-lg p-2 border border-gray-800">
+            <select name="procurement_date_mode" id="id_procurement_date_mode" onchange="toggleInputs('id_procurement_date_mode','procurement_date_inputs_container')">
+                <option value="all" {% if form.procurement_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
+                <option value="range" {% if form.procurement_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+            </select>
+        </div>
+    </div>
+</div>
+<!-- Procurement Date Dropdown. -->
+<div id="procurement_date_inputs_container" class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <input type="date" name="min_procurement_date" value="{{ form.min_procurement_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+        <div class="w-1/2">
+            <input type="date" name="max_procurement_date" value="{{ form.max_procurement_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
         </div>
     </div>
 </div>
@@ -261,20 +292,25 @@ maxlength="{{ max_textbox_length }}"></textarea>
 
 {% block editButton %}
 <button
-onclick="openEditPopup(
-    '{{ object.id }}',
-    '{{ object.name }}',
-    '{{ object.category }}',
-    '{{ object.quantity }}',
-    '{{ object.unit }}',
-    '{{ object.last_restocked|date:'Y-m-d' }}',
-    '{{ object.minimum_required }}',
-    '{{ object.cost_per_unit }}',
-    '{{ object.procurement_date|date:'Y-m-d' }}',
-    `{{ object.notes }}`)"
-    class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
-    style="background-color: #0D65A0;">
+  onclick="openEditPopup(
+    ['editId','{{ object.id }}'],
+    ['editName','{{ object.name }}'],
+    ['editCategory','{{ object.category }}'],
+    ['editQuantity','{{ object.quantity }}'],
+    ['editUnit','{{ object.unit }}'],
+    ['editLastRestocked','{{ object.last_restocked|date:'Y-m-d' }}'],
+    ['editMinimumRequired','{{ object.minimum_required }}'],
+    ['editCostPerUnit','{{ object.cost_per_unit }}'],
+    ['editProcurementDate','{{ object.procurement_date|date:'Y-m-d' }}'],
+    ['editNotes','{{ object.notes|escapejs }}']
+  )"
+  class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
+  style="background-color: #0D65A0;">
     Edit
 </button>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
 <script src="{% static 'js/supplies_list.js' %}"></script>
 {% endblock %}

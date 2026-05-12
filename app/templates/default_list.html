@@ -60,7 +60,7 @@
 </form>
 
 <!-- Search Filter Popup Form -->
-<div id="searchFilterPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+<div id="searchFilterPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
     <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
         <div class="flex justify-between w-full mb-5">
             <div class="w-1/2">
@@ -141,7 +141,7 @@
 </div>
 
 <!-- Edit Popup -->
-<div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+<div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
     <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
         <h3 class="text-xl font-bold mb-4">Edit {{ category_given.0 }}</h3>
         <form method="post" id="editForm" action="{% url edit_url_given %}">
@@ -171,7 +171,7 @@
 </div>
 
 <!-- Delete Popup -->
-<div id="deletePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+<div id="deletePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
     <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
         <h3 class="text-xl font-bold mb-4">Delete {{ category_given.0 }}</h3>
         <p class="mb-4">
@@ -196,7 +196,7 @@
 </div>
 
 <!-- Notes popup for a category object. -->
-<div id="notesPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+<div id="notesPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
     <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl flex flex-col">
         <!-- Header -->
         <h3 class="text-xl font-bold mb-4">Notes of {{ category_given.0 }}</h3>
@@ -315,6 +315,8 @@
     </nav>
 </div>
 
+{% block javascript %}
 <script src="{% static 'js/default_list.js' %}"></script>
+{% endblock %}
 
 {% endblock %}

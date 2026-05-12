@@ -28,38 +28,51 @@ def supplies_list(request):
         data = form.cleaned_data
 
         if data.get('id'):
-            supplies = Supplies.objects.filter(id=data['id'])
+            supplies = supplies.filter(id=data['id'])
             active_filters.append(f"ID: {str(data['id'])}")
+            # supplies = Supplies.objects.filter(id=data['id'])
         if data.get('name'):
-            supplies = Supplies.objects.filter(name__icontains=data['name'])
+            supplies = supplies.filter(name__icontains=data['name'])
             active_filters.append(f"Name: {str(data['name'])}")
         if data.get('category'):
-            supplies = Supplies.objects.filter(category__icontains=data['category'])
+            supplies = supplies.filter(category__icontains=data['category'])
             active_filters.append(f"Category: {str(data['category'])}")
-        if data.get('min_qty'):
-            supplies = Supplies.objects.filter(quantity__gte=data['min_qty'])
-            active_filters.append(f"Min Qty: {str(data['min_qty'])}")
-        if data.get('max_qty'):
-            supplies = Supplies.objects.filter(quantity__lte=data['max_qty'])
-            active_filters.append(f"Max Qty: {str(data['max_qty'])}")
+        if data.get('qty_mode'):
+            if data.get('qty_mode') == 'range':
+                if data.get('min_qty') is not None:
+                    supplies = supplies.filter(quantity__gte=data['min_qty'])
+                    active_filters.append(f"Min Qty: {str(data['min_qty'])}")
+                if data.get('max_qty') is not None:
+                    supplies = supplies.filter(quantity__lte=data['max_qty'])
+                    active_filters.append(f"Max Qty: {str(data['max_qty'])}")
         if data.get('unit'):
-            supplies = Supplies.objects.filter(unit__icontains=data['unit'])
+            supplies = supplies.filter(unit__icontains=data['unit'])
             active_filters.append(f"Unit: {str(data['unit'])}")
         if data.get('minimum_required'):
-            supplies = Supplies.objects.filter(minimum_required__gte=data['minimum_required'])
+            supplies = supplies.filter(minimum_required__gte=data['minimum_required'])
             active_filters.append(f"Minimum Required: {str(data['minimum_required'])}")
         if data.get('cost_per_unit'):
-            supplies = Supplies.objects.filter(cost_per_unit=data['cost_per_unit'])
+            supplies = supplies.filter(cost_per_unit=data['cost_per_unit'])
             active_filters.append(f"Cost Per Unit: {str(data['cost_per_unit'])}")
-        if data.get('last_restocked'):
-            supplies = Supplies.objects.filter(last_restocked=data['last_restocked'])
-            active_filters.append(f"Last Restocked: {str(data['last_restocked'])}")
-        if data.get('procurement_date'):
-            supplies = Supplies.objects.filter(last_restocked=data['procurement_date'])
-            active_filters.append(f"Procurement Date: {str(data['procurement_date'])}")
+        if data.get('last_restocked_mode'):
+            if data.get('last_restocked_mode') == 'range':
+                if data.get('min_last_restocked') is not None:
+                    supplies = supplies.filter(last_restocked__gte=data['min_last_restocked'])
+                    active_filters.append(f"Min Last Restocked: {str(data['min_last_restocked'])}")
+                if data.get('max_last_restocked') is not None:
+                    supplies = supplies.filter(last_restocked__lte=data['max_last_restocked'])
+                    active_filters.append(f"Max Last Restocked: {str(data['max_last_restocked'])}")
+        if data.get('procurement_date_mode'):
+            if data.get('procurement_date_mode') == 'range':
+                if data.get('min_procurement_date') is not None:
+                    supplies = supplies.filter(procurement_date__gte=data['min_procurement_date'])
+                    active_filters.append(f"Min Procurement Date: {str(data['min_procurement_date'])}")
+                if data.get('max_procurement_date') is not None:
+                    supplies = supplies.filter(procurement_date__lte=data['max_procurement_date'])
+                    active_filters.append(f"Max Procurement Date: {str(data['max_procurement_date'])}")
 
     if nameToSearch:
-        supplies = Supplies.objects.filter(name__icontains=nameToSearch)
+        supplies = supplies.filter(name__icontains=nameToSearch)
         active_filters.append(f"Name: {nameToSearch}")
 
 

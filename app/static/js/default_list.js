@@ -33,8 +33,20 @@ closeSearchPopupButton.addEventListener("click", () => {
 
 function clearSearchFilters() {
     const form = document.getElementById("searchForm");
-
+    
     form.querySelectorAll('input').forEach(input => input.value = '');
+}
+
+function toggleInputs(mode_id, container_id) {
+    const mode = document.getElementById(mode_id).value;
+    const container = document.getElementById(container_id);
+
+    if (mode === 'range') {
+        container.style.display = 'block';
+    } else {
+        container.style.display = 'none';
+        container.querySelectorAll('input').forEach(i => i.value = '');
+    }
 }
 
 /*
@@ -75,18 +87,21 @@ closeEditButton.addEventListener("click", () => {
     editPopup.classList.add("hidden");
 });
 
-// For edit : What needs to be manually done in each JS file.
-// Example below is that for supplies.
-// function openEditPopup(id, name, category, quantity, unit, last_restocked, minimum_required, cost_per_unit, procurement_date, notes) {
-//     document.getElementById("editId").value = id;
-//     document.getElementById("editName").value = name;
-//     document.getElementById("editCategory").value = category;
-//     document.getElementById("editQuantity").value = quantity;
-//     document.getElementById("editUnit").value = unit;
-//     document.getElementById("editLastRestocked").value = last_restocked;
-//     document.getElementById("editMinimumRequired").value = minimum_required;
-//     document.getElementById("editCostPerUnit").value = cost_per_unit;
-//     document.getElementById("editProcurementDate").value = procurement_date;
-//     document.getElementById("editNotes").value = notes;
-//     editPopup.classList.remove("hidden");
-// }
+function openEditPopup(...pairs) {
+    pairs.forEach(([elementId, value]) => {
+        const element = document.getElementById(elementId);
+        
+        if (element) {
+            // Check if it's an input/select or just a text container
+            if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA') {
+                element.value = value;
+            } else {
+                element.textContent = value;
+            }
+        } else {
+            console.warn(`Element with ID "${elementId}" not found.`);
+        }
+    });
+
+    if (editPopup) editPopup.classList.remove('hidden');
+}
