@@ -28,7 +28,7 @@
             </p>
         </div>
         <div class="w-1/2">
-            <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
+            <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}" maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
         </div>
     </div>
 </div>
@@ -41,7 +41,7 @@
             </p>
         </div>
         <div class="w-1/2">
-            <input type="text" id="typeSearch" name="{{ form.type.name }}" placeholder="Enter type/species" value="{{ form.type.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
+            <input type="text" id="typeSearch" name="{{ form.type.name }}" placeholder="Enter type/species" value="{{ form.type.value|default:'' }}" maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
         </div>
     </div>
 </div>
@@ -192,11 +192,11 @@
 <div class="flex space-x-2 justify-between w-full">
     <div class="w-1/2">
         <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
-        <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+        <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="{{ max_input_text_length }}" required />
     </div>
     <div class="w-1/2">
         <label class="block mb-2">Type Of Animal (Species): <span class="text-red-500">*</span></label>
-        <input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+        <input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4" maxlength="{{ max_input_text_length }}" required />
     </div>
 </div>
 <div class="flex space-x-2 justify-between w-full">
@@ -212,7 +212,7 @@
 <div class="flex space-x-2 justify-between w-full">
     <div class="w-1/2">
         <label class="block mb-2">Health Status:</label>
-        <input type="text" name="health_status" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" />
+        <input type="text" name="health_status" class="w-full border rounded px-3 py-2 mb-4" maxlength="{{ max_input_text_length }}" />
     </div>
     <div class="w-1/2">
         <label class="block mb-2">Next Vaccination Date:</label>
@@ -240,12 +240,12 @@
 <div class="w-full flex justify-between space-x-2">
     <div class="w-1/2">
         <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
-        <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" required />
+        <input type="text" name="name" id="editName" maxlength="{{ max_input_text_length }}" class="w-full border rounded px-3 py-2 mb-4" required />
 
     </div>
     <div class="w-1/2">
         <label class="block mb-2">Type of Animal (Species): <span class="text-red-500">*</span></label>
-        <input type="text" name="type" id="editType" class="w-full border rounded px-3 py-2 mb-4" required />
+        <input type="text" name="type" id="editType" maxlength="{{ max_input_text_length }}" class="w-full border rounded px-3 py-2 mb-4" required />
     </div>
 </div>
 <div class="w-full flex justify-between space-x-2">
@@ -261,7 +261,7 @@
 <div class="w-full flex justify-between space-x-2">
     <div class="w-1/2">
         <label class="block mb-2">Health Status:</label>
-        <input type="text" name="health_status" id="editHealthStatus" class="w-full border rounded px-3 py-2 mb-4"/>
+        <input type="text" name="health_status" id="editHealthStatus" maxlength="{{ max_input_text_length }}" class="w-full border rounded px-3 py-2 mb-4"/>
         
     </div>
     <div class="w-1/2">
