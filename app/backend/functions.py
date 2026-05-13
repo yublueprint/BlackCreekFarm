@@ -1,5 +1,6 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
+
 def paginationFunction(objects, page_number=1, num_per_page=10):
     # FOR PAGINATION
     paginator = Paginator(objects, num_per_page)

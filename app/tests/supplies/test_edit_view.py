@@ -1,7 +1,8 @@
 import pytest
+from django.contrib.messages import get_messages
 from django.http import Http404
 from django.urls import reverse
-from django.contrib.messages import get_messages
+
 from app.backend.models import Supplies
 
 pytestmark = pytest.mark.django_db
@@ -56,15 +57,13 @@ def test_edit_supplies_missing_fields_values_existing(client, user, supply, mock
         follow=True,
     )
     assert response.status_code == 200
-    page_objects = response.context['page_obj'].object_list
+    page_objects = response.context["page_obj"].object_list
     names = [obj.name for obj in page_objects]
     assert "Unknown" in names
     assert Supplies.objects.filter(id=supply.id).exists()
     assert Supplies.objects.filter(name="Unknown").exists()
 
-    mock_logger.assert_any_call(
-        f"User {user.username} edited supply: Unknown"
-    )
+    mock_logger.assert_any_call(f"User {user.username} edited supply: Unknown")
 
 
 def test_edit_supplies_not_found(client, user, mocker):
@@ -75,7 +74,7 @@ def test_edit_supplies_not_found(client, user, mocker):
     assert response.status_code == 200
     storage = get_messages(response.wsgi_request)
     messages = [m.message for m in storage]
-    
+
     assert "Supply not found." in messages
     mock_logger.assert_any_call(f"Supply edit error by {user}: Supply not found.")
 

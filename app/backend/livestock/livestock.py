@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -8,10 +7,10 @@ from app.exceptions.livestock.exception import (LivestockCreationException,
                                                 LivestockEditException)
 from app.logging.logging import Logger
 
-from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, Livestock)
 from ..forms import LivestockSearchForm
 from ..functions import paginationFunction
+from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+                      UNIT_INPUT_MAX_LENGTH, Livestock)
 
 logger = Logger("app/logging/app.log")
 
@@ -23,74 +22,97 @@ def livestock_list(request):
     livestock = Livestock.objects.all().order_by("-id")
 
     nameToSearch = request.GET.get("firstNameSearch")
-    
+
     active_filters = []
 
     if form.is_valid():
         data = form.cleaned_data
 
         # ID
-        if data.get('id'):
-            livestock = livestock.filter(id=data['id'])
+        if data.get("id"):
+            livestock = livestock.filter(id=data["id"])
             active_filters.append(f"ID: {str(data['id'])}")
         # NAME
-        if data.get('name'):
-            livestock = livestock.filter(name__icontains=data['name'])
+        if data.get("name"):
+            livestock = livestock.filter(name__icontains=data["name"])
             active_filters.append(f"Name: {str(data['name'])}")
         # TYPE
-        if data.get('type'):
-            livestock = livestock.filter(type__icontains=data['type'])
+        if data.get("type"):
+            livestock = livestock.filter(type__icontains=data["type"])
             active_filters.append(f"Type: {str(data['type'])}")
         # AGE
-        if data.get('age_mode'):
-            if data.get('age_mode') == 'range':
-                if data.get('min_age') is not None:
-                    livestock = livestock.filter(age__gte=data['min_age'])
+        if data.get("age_mode"):
+            if data.get("age_mode") == "range":
+                if data.get("min_age") is not None:
+                    livestock = livestock.filter(age__gte=data["min_age"])
                     active_filters.append(f"Min Age: {str(data['min_age'])}")
-                if data.get('max_age') is not None:
-                    livestock = livestock.filter(age__lte=data['max_age'])
+                if data.get("max_age") is not None:
+                    livestock = livestock.filter(age__lte=data["max_age"])
                     active_filters.append(f"Max Age: {str(data['max_age'])}")
         # WEIGHT
-        if data.get('weight_mode'):
-            if data.get('weight_mode') == 'range':
-                if data.get('min_weight') is not None:
-                    livestock = livestock.filter(weight__gte=data['min_weight'])
+        if data.get("weight_mode"):
+            if data.get("weight_mode") == "range":
+                if data.get("min_weight") is not None:
+                    livestock = livestock.filter(weight__gte=data["min_weight"])
                     active_filters.append(f"Min Weight: {str(data['min_weight'])}")
-                if data.get('max_weight') is not None:
-                    livestock = livestock.filter(weight__lte=data['max_weight'])
+                if data.get("max_weight") is not None:
+                    livestock = livestock.filter(weight__lte=data["max_weight"])
                     active_filters.append(f"Max Weight: {str(data['max_weight'])}")
         # HEALTH STATUS
-        if data.get('health_status'):
-            livestock = livestock.filter(health_status__icontains=data['health_status'])
+        if data.get("health_status"):
+            livestock = livestock.filter(health_status__icontains=data["health_status"])
             active_filters.append(f"Health Status: {str(data['health_status'])}")
         # PURCHASE PRICE
-        if data.get('purchase_price_mode'):
-            if data.get('purchase_price_mode') == 'range':
-                if data.get('min_purchase_price') is not None:
-                    livestock = livestock.filter(purchase_price__gte=data['min_purchase_price'])
-                    active_filters.append(f"Min Purchase Price: {str(data['min_purchase_price'])}")
-                if data.get('max_purchase_price') is not None:
-                    livestock = livestock.filter(purchase_price__lte=data['max_purchase_price'])
-                    active_filters.append(f"Max Purchase Price: {str(data['max_purchase_price'])}")
+        if data.get("purchase_price_mode"):
+            if data.get("purchase_price_mode") == "range":
+                if data.get("min_purchase_price") is not None:
+                    livestock = livestock.filter(
+                        purchase_price__gte=data["min_purchase_price"]
+                    )
+                    active_filters.append(
+                        f"Min Purchase Price: {str(data['min_purchase_price'])}"
+                    )
+                if data.get("max_purchase_price") is not None:
+                    livestock = livestock.filter(
+                        purchase_price__lte=data["max_purchase_price"]
+                    )
+                    active_filters.append(
+                        f"Max Purchase Price: {str(data['max_purchase_price'])}"
+                    )
         # CURRENT VALUE
-        if data.get('current_value_mode'):
-            if data.get('current_value_mode') == 'range':
-                if data.get('min_current_value') is not None:
-                    livestock = livestock.filter(current_value__gte=data['min_current_value'])
-                    active_filters.append(f"Min Current Value: {str(data['min_current_value'])}")
-                if data.get('max_current_value') is not None:
-                    livestock = livestock.filter(current_value__lte=data['max_current_value'])
-                    active_filters.append(f"Max Current Value: {str(data['max_current_value'])}")
+        if data.get("current_value_mode"):
+            if data.get("current_value_mode") == "range":
+                if data.get("min_current_value") is not None:
+                    livestock = livestock.filter(
+                        current_value__gte=data["min_current_value"]
+                    )
+                    active_filters.append(
+                        f"Min Current Value: {str(data['min_current_value'])}"
+                    )
+                if data.get("max_current_value") is not None:
+                    livestock = livestock.filter(
+                        current_value__lte=data["max_current_value"]
+                    )
+                    active_filters.append(
+                        f"Max Current Value: {str(data['max_current_value'])}"
+                    )
         # NEXT VACCINATION DATE
-        if data.get('next_vaccination_mode'):
-            if data.get('next_vaccination_mode') == 'range':
-                if data.get('min_next_vaccination') is not None:
-                    livestock = livestock.filter(next_vaccination_date__gte=data['min_next_vaccination'])
-                    active_filters.append(f"Min Next Vaccination: {str(data['min_next_vaccination'])}")
-                if data.get('max_next_vaccination') is not None:
-                    livestock = livestock.filter(next_vaccination_date__lte=data['max_next_vaccination'])
-                    active_filters.append(f"Max Next Vaccination: {str(data['max_next_vaccination'])}")
-
+        if data.get("next_vaccination_mode"):
+            if data.get("next_vaccination_mode") == "range":
+                if data.get("min_next_vaccination") is not None:
+                    livestock = livestock.filter(
+                        next_vaccination_date__gte=data["min_next_vaccination"]
+                    )
+                    active_filters.append(
+                        f"Min Next Vaccination: {str(data['min_next_vaccination'])}"
+                    )
+                if data.get("max_next_vaccination") is not None:
+                    livestock = livestock.filter(
+                        next_vaccination_date__lte=data["max_next_vaccination"]
+                    )
+                    active_filters.append(
+                        f"Max Next Vaccination: {str(data['max_next_vaccination'])}"
+                    )
 
     if nameToSearch:
         livestock = livestock.filter(name__icontains=nameToSearch)
@@ -98,25 +120,49 @@ def livestock_list(request):
 
     # FOR PAGINATION.
     page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages = paginationFunction(livestock, page_number, 10)
+    page_obj, backward_pages, forward_pages = paginationFunction(
+        livestock, page_number, 10
+    )
 
     # Livestock Titles, Fields, and Properties.
     category_given = ["Livestock", "livestock", "livestock"]
-    fields_given = ["ID", "Name", "Type of Animal (Species)", "Age", "Weight (kg)", "Health", "Purchase Price", "Value ($)", "Next Vaccination", "Notes", "Actions"]
-    object_attributes_given = ['id', 'name', 'type', 'age', 'weight', 'health_status', 'purchase_price', 'current_value', 'next_vaccination_date']
+    fields_given = [
+        "ID",
+        "Name",
+        "Type of Animal (Species)",
+        "Age",
+        "Weight (kg)",
+        "Health",
+        "Purchase Price",
+        "Value ($)",
+        "Next Vaccination",
+        "Notes",
+        "Actions",
+    ]
+    object_attributes_given = [
+        "id",
+        "name",
+        "type",
+        "age",
+        "weight",
+        "health_status",
+        "purchase_price",
+        "current_value",
+        "next_vaccination_date",
+    ]
 
     logger.log(f"User {request.user} viewed livestock list.")
     context = {
-        'form': form,
+        "form": form,
         "livestock": livestock,
         "category_given": category_given,
         "fields_given": fields_given,
         "object_attributes_given": object_attributes_given,
         "search_filters_applied": active_filters,
-        "list_url_given": 'livestock_list',
-        "add_url_given": 'add_livestock',
-        "edit_url_given": 'edit_livestock',
-        "delete_url_given": 'delete_livestock', 
+        "list_url_given": "livestock_list",
+        "add_url_given": "add_livestock",
+        "edit_url_given": "edit_livestock",
+        "delete_url_given": "delete_livestock",
         "page_obj": page_obj,
         "backward_pages": backward_pages,
         "forward_pages": forward_pages,

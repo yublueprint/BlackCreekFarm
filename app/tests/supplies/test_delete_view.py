@@ -1,11 +1,12 @@
 import pytest
+from django.contrib.messages import get_messages
 from django.http import Http404
 from django.urls import reverse
-from django.contrib.messages import get_messages
 
 from app.backend.models import Supplies
 
 pytestmark = pytest.mark.django_db
+
 
 def test_delete_supplies_success(client, user, supply, mocker):
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
@@ -18,6 +19,7 @@ def test_delete_supplies_success(client, user, supply, mocker):
     assert Supplies.objects.count() == 0
     mock_logger.assert_any_call(f"User {user} deleted supply: {supply.name}")
 
+
 def test_delete_supplies_not_found(client, user, mocker):
     mocker.patch("app.backend.supplies.supplies.get_object_or_404", side_effect=Http404)
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
@@ -26,10 +28,11 @@ def test_delete_supplies_not_found(client, user, mocker):
     assert response.status_code == 200
     storage = get_messages(response.wsgi_request)
     messages = [m.message for m in storage]
-    
+
     assert "Supply not found." in messages
     assert not Supplies.objects.filter(id=999).exists()
     mock_logger.assert_any_call(f"Supply delete error by {user}: Supply not found.")
+
 
 def test_delete_supplies_unexpected_exception(client, user, supply, mocker):
     _ = mocker.patch(
@@ -38,7 +41,9 @@ def test_delete_supplies_unexpected_exception(client, user, supply, mocker):
     )
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
-    response = client.post(reverse("delete_supplies"), data={"id": supply.id}, follow=True)
+    response = client.post(
+        reverse("delete_supplies"), data={"id": supply.id}, follow=True
+    )
     assert response.status_code == 200
     storage = get_messages(response.wsgi_request)
     messages = [m.message for m in storage]

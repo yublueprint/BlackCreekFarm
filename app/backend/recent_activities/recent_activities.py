@@ -3,13 +3,11 @@ import os
 import zipfile
 
 from django.contrib.auth.decorators import login_required
-from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import FileResponse
 from django.shortcuts import render
 
-from app.logging.logging import Logger
-
 from app.backend.functions import paginationFunction
+from app.logging.logging import Logger
 
 logger = Logger("app/logging/app.log")
 
@@ -17,12 +15,14 @@ logger = Logger("app/logging/app.log")
 @login_required
 def recent_activities_list(request):
     logger.log(f"User {request.user} viewed recent activities list.")
-    
+
     recent_activities = logger.retrieve_recent_activity(5, True)
-    
+
     # PAGINATION
     page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages = paginationFunction(recent_activities, page_number, 25)
+    page_obj, backward_pages, forward_pages = paginationFunction(
+        recent_activities, page_number, 25
+    )
 
     context = {
         "recent_activity": recent_activities,

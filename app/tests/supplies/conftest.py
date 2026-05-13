@@ -5,6 +5,7 @@ from app.backend.models import Supplies
 
 pytestmark = pytest.mark.django_db
 
+
 @pytest.fixture
 def user(client):
     user = User.objects.create_user(username="tester", password="pass123")
