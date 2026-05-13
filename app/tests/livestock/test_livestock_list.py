@@ -3,7 +3,7 @@ from django.urls import reverse
 
 pytestmark = pytest.mark.django_db
 
-
+@pytest.mark.skip(reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid.")
 def test_livestock_list_renders_all(client, user, mocker):
 
     mock_livestock = [

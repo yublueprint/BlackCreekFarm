@@ -108,11 +108,13 @@
 </div>
 
 <!-- Display Error Message if Error occurs-->
-{% if error %}
-<div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-    Error: {{ error }}
-</div>
-{% endif %}
+{% for message in messages %}
+    {% if message.level_tag == 'error' %}
+    <div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
+        Error: {{ message }}
+    </div>
+    {% endif %}
+{% endfor %}
 
 <!-- Add Button Popup Form -->
 <div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">

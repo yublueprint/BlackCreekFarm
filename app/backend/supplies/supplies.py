@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -14,6 +15,62 @@ from ..forms import SuppliesSearchForm
 from ..functions import paginationFunction
 
 logger = Logger("app/logging/app.log")
+
+def get_properties(request, ExceptionToUse: Exception):
+    """
+    Gets properties of supplies and validates the inputs.
+    """
+    # Mandatory fields.
+    name = (request.POST.get("name") or "").strip() or 'Unknown'
+    supply_category = (request.POST.get("supply_category") or "").strip() or 'Unknown'
+    quantity = request.POST.get("quantity") or -1 
+    # Optional fields.
+    unit = (request.POST.get("unit") or "").strip() or 'Unknown'
+    last_restocked = request.POST.get("last_restocked") or None
+    minimum_required = request.POST.get("minimum_required") or None
+    cost_per_unit = request.POST.get("cost_per_unit") or None
+    procurement_date = request.POST.get("procurement_date") or None
+    notes = request.POST.get("notes") or None
+
+    required_inputs = {
+        "name": name,
+        "supply_category": supply_category,
+        "quantity": quantity,
+    }
+
+    default_text_inputs_given = {
+        "name": name,
+        "supply_category": supply_category,
+    }
+
+    unit_inputs_given = {
+        "unit": unit,
+    }
+
+    textbox_inputs_given = {
+        "notes": notes,
+    }
+
+    # Raise an error if mandatory fields are missing.
+    for key, value in required_inputs.items():
+        if value is None:
+            raise ExceptionToUse(f"Missing {key} for supply.")
+
+    inputs_given_list = [
+        (default_text_inputs_given, DEFAULT_TEXT_MAX_LENGTH),
+        (unit_inputs_given, UNIT_INPUT_MAX_LENGTH),
+        (textbox_inputs_given, TEXTBOX_MAX_LENGTH),
+    ]
+
+    # check length if the optional field was actually provided.
+    for input_given, max_length in inputs_given_list:
+        for key, value in input_given.items():
+            if value and len(value) > max_length:
+                raise ExceptionToUse(
+                    f"Supply {key} input must be less or equal to {max_length} characters."
+                )
+
+    return name, supply_category, quantity, unit, last_restocked, minimum_required, cost_per_unit, procurement_date, notes
 
 @login_required
 def supplies_list(request):
@@ -90,7 +147,7 @@ def supplies_list(request):
     logger.log(f"User {request.user} viewed supplies list.")
     context = {
         'form':form,
-        "supplies": supplies,
+        'supplies': supplies,
         "category_given": category_given,
         "fields_given": fields_given,
         "object_attributes_given": object_attributes_given,
@@ -113,56 +170,8 @@ def supplies_list(request):
 @login_required
 def add_supplies(request):
     if request.method == "POST":
-        try:
-            name = request.POST.get("name")
-            supply_category = request.POST.get("supply_category")
-            quantity = request.POST.get("quantity")
-            # Optional fields
-            unit = request.POST.get("unit") or None
-            last_restocked = request.POST.get("last_restocked") or None
-            minimum_required = request.POST.get("minimum_required") or None
-            cost_per_unit = request.POST.get("cost_per_unit") or None
-            procurement_date = request.POST.get("procurement_date") or None
-            notes = request.POST.get("notes") or None
-
-            # Mandatory fields.
-            required_inputs = {
-                "name": name,
-                "supply_category": supply_category,
-                "quantity": quantity,
-            }
-
-            default_text_inputs_given = {
-                "name": name,
-                "supply_category": supply_category,
-            }
-
-            unit_inputs_given = {
-                "unit": unit,
-            }
-
-            textbox_inputs_given = {
-                "notes": notes,
-            }
-
-            # Raise an error if mandatory fields are missing.
-            for key, value in required_inputs.items():
-                if not value:
-                    raise SupplyCreationException(f"Missing {key} for supply.")
-
-            inputs_given_list = [
-                (default_text_inputs_given, DEFAULT_TEXT_MAX_LENGTH),
-                (unit_inputs_given, UNIT_INPUT_MAX_LENGTH),
-                (textbox_inputs_given, TEXTBOX_MAX_LENGTH),
-            ]
-
-            # check length if the optional field was actually provided.
-            for input_given, max_length in inputs_given_list:
-                for key, value in input_given.items():
-                    if value and len(value) > max_length:
-                        raise SupplyCreationException(
-                            f"Supply {key} input must be less or equal to {max_length} characters."
-                        )
+        try:        
+            name, supply_category, quantity, unit, last_restocked, minimum_required, cost_per_unit, procurement_date, notes = get_properties(request, SupplyCreationException)
 
             Supplies.objects.create(
                 name=name,
@@ -181,23 +190,12 @@ def add_supplies(request):
 
         except SupplyCreationException as e:
             logger.log(f"Supply creation error by {request.user}: {e}")
-            supplies = Supplies.objects.all()
-            return render(
-                request,
-                "app/supplies_list.html",
-                {"supplies": supplies, "error": str(e)},
-            )
+            messages.error(request, str(e))
+            return redirect("supplies_list")
         except Exception as e:
             logger.log(f"Unexpected error during supply creation: {e}")
-            supplies = Supplies.objects.all()
-            return render(
-                request,
-                "app/supplies_list.html",
-                {
-                    "supplies": supplies,
-                    "error": "An unexpected error occurred while adding the supply.",
-                },
-            )
+            messages.error(request, "An unexpected error occurred while adding the supply.")
+            return redirect("supplies_list")
     return redirect("supplies_list")
 
 
@@ -210,55 +208,7 @@ def edit_supplies(request):
             except Http404:
                 raise SupplyEditException("Supply not found.")
 
-            supply.name = request.POST.get("name")
-            supply.category = request.POST.get("supply_category")
-            supply.quantity = request.POST.get("quantity")
-            # Optional fields
-            supply.unit = request.POST.get("unit") or None
-            supply.last_restocked = request.POST.get("last_restocked") or None
-            supply.minimum_required = request.POST.get("minimum_required") or None
-            supply.cost_per_unit = request.POST.get("cost_per_unit") or None
-            supply.procurement_date = request.POST.get("procurement_date") or None
-            supply.notes = request.POST.get("notes") or None
-
-            # Mandatory fields.
-            required_inputs = {
-                "name": supply.name,
-                "supply_category": supply.category,
-                "quantity": supply.quantity,
-            }
-
-            default_text_inputs_given = {
-                "name": supply.name,
-                "supply_category": supply.category,
-            }
-
-            unit_inputs_given = {
-                "unit": supply.unit,
-            }
-
-            textbox_inputs_given = {
-                "notes": supply.notes,
-            }
-
-            # Raise an error if mandatory field is missing.
-            for key, value in required_inputs.items():
-                if not value:
-                    raise SupplyEditException(f"Missing {key} for supply.")
-
-            inputs_given_list = [
-                (default_text_inputs_given, DEFAULT_TEXT_MAX_LENGTH),
-                (unit_inputs_given, UNIT_INPUT_MAX_LENGTH),
-                (textbox_inputs_given, TEXTBOX_MAX_LENGTH),
-            ]
-
-            # check length if the optional field was actually provided.
-            for input_given, max_length in inputs_given_list:
-                for key, value in input_given.items():
-                    if value and len(value) > max_length:
-                        raise SupplyEditException(
-                            f"Supply {key} input must be less or equal to {max_length} characters."
-                        )
+            supply.name, supply.category, supply.quantity, supply.unit, supply.last_restocked, supply.minimum_required, supply.cost_per_unit, supply.procurement_date, supply.notes = get_properties(request, SupplyEditException)
 
             supply.save()
 
@@ -267,23 +217,12 @@ def edit_supplies(request):
 
         except SupplyEditException as e:
             logger.log(f"Supply edit error by {request.user}: {e}")
-            supplies = Supplies.objects.all()
-            return render(
-                request,
-                "app/supplies_list.html",
-                {"supplies": supplies, "error": str(e)},
-            )
+            messages.error(request, str(e))
+            return redirect("supplies_list")
         except Exception as e:
             logger.log(f"Unexpected error during supply edit: {e}")
-            supplies = Supplies.objects.all()
-            return render(
-                request,
-                "app/supplies_list.html",
-                {
-                    "supplies": supplies,
-                    "error": "An unexpected error occurred while editing the supply.",
-                },
-            )
+            messages.error(request, "An unexpected error occurred while editing the supply.")
+            return redirect("supplies_list")
     return redirect("supplies_list")
 
 
@@ -296,7 +235,7 @@ def delete_supplies(request):
             except Http404:
                 raise SupplyDeleteException("Supply not found.")
 
-            supply_name = supply.name
+            supply_name = supply.name or 'Unknown'
             supply.delete()
 
             logger.log(f"User {request.user} deleted supply: {supply_name}")
@@ -304,21 +243,10 @@ def delete_supplies(request):
 
         except SupplyDeleteException as e:
             logger.log(f"Supply delete error by {request.user}: {e}")
-            supplies = Supplies.objects.all()
-            return render(
-                request,
-                "app/supplies_list.html",
-                {"supplies": supplies, "error": str(e)},
-            )
+            messages.error(request, str(e))
+            return redirect("supplies_list")
         except Exception as e:
             logger.log(f"Unexpected error during supply deletion: {e}")
-            supplies = Supplies.objects.all()
-            return render(
-                request,
-                "app/supplies_list.html",
-                {
-                    "supplies": supplies,
-                    "error": "An unexpected error occurred while deleting the supply.",
-                },
-            )
+            messages.error(request, "An unexpected error occurred while deleting the supply.")
+            return redirect("supplies_list")
     return redirect("supplies_list")

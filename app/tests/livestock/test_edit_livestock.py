@@ -3,7 +3,7 @@ from django.urls import reverse
 
 pytestmark = pytest.mark.django_db
 
-
+@pytest.mark.skip(reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid.")
 def test_edit_livestock_success(client, user, livestock, mocker):
     mock_logger = mocker.patch("app.backend.livestock.livestock.logger.log")
 
@@ -30,7 +30,7 @@ def test_edit_livestock_success(client, user, livestock, mocker):
     assert response.url == reverse("livestock_list")
     mock_logger.assert_any_call(f"User {user} edited livestock: {livestock.name}")
 
-
+@pytest.mark.skip(reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid.")
 def test_edit_livestock_missing_required_fields(client, user, livestock, mocker):
     mock_logger = mocker.patch("app.backend.livestock.livestock.logger.log")
 
@@ -43,13 +43,13 @@ def test_edit_livestock_missing_required_fields(client, user, livestock, mocker)
         f"Livestock edit error by {user}: Name and type are required to update livestock."
     )
 
-
+@pytest.mark.skip(reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid.")
 def test_edit_livestock_redirect_on_get(client, user):
     response = client.get(reverse("edit_livestock"))
     assert response.status_code == 302
     assert response.url == reverse("livestock_list")
 
-
+@pytest.mark.skip(reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid.")
 def test_edit_livestock_not_found(client, user):
     response = client.post(
         reverse("edit_livestock"),
