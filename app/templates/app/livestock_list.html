@@ -1,304 +1,309 @@
-{% extends 'base.html' %}
+{% extends 'default_list.html' %}
 {% load static %}
 
 {% block title %}Livestock | BlackCreek Sync{% endblock %}
 
-{% block content %}
-<h2 class="text-3xl font-semibold mb-6">Livestock Management</h2>
+<!-- Search Form Content -->
+{% block search_form_content %}
 
-{% if error %}
-<div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-    {{ error }}
+<!-- Search by ID -->
+<div class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <p class="py-3">
+                Search by ID
+            </p>
+        </div>
+        <div class="w-1/2">
+            <input type="number" id="idSearch" name="{{ form.id.name }}" placeholder="e.g., 102" value="{{ form.id.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
+        </div>
+    </div>
 </div>
-{% endif %}
-
-<!-- Add Button -->
-<button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
-    style="background-color: #335D43;">
-    <i class="fas fa-plus"></i>
-    Add Livestock
-</button>
-
-<!-- Search -->
-<div class="mb-4">
-    <form action="{% url 'livestock_list' %}" method="get">
-        <input type="text" name="nameSearch" placeholder="Search by name... 🔎" value="{{ request.GET.nameSearch }}" class="border rounded-md p-2">
-        <button type="submit" class="ml-1">Search</button>
-    </form>
+<!-- Search by Name -->
+<div class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <p class="py-3">
+                Search by Name
+            </p>
+        </div>
+        <div class="w-1/2">
+            <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}" maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
+        </div>
+    </div>
 </div>
+<!-- Search by Type -->
+<div class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <p class="py-3">
+                Type
+            </p>
+        </div>
+        <div class="w-1/2">
+            <input type="text" id="typeSearch" name="{{ form.type.name }}" placeholder="Enter type/species" value="{{ form.type.value|default:'' }}" maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
+        </div>
+    </div>
+</div>
+<!-- Search by Age -->
+<div class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <p>Age</p>
+        </div>
+        <div class="w-1/2">
+            <select name="age_mode" id="id_age_mode" onchange="toggleInputs('id_age_mode','age_inputs_container')">
+                <option value="all" {% if form.age_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Age</option>
+                <option value="range" {% if form.age_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+            </select>
+        </div>
+    </div>
+</div>
+<!-- Age Dropdown. -->
+<div id="age_inputs_container" class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <input type="number" name="min_age" value="{{ form.min_age.value|default:'' }}" placeholder="Min Age" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+        <div class="w-1/2">
+            <input type="number" name="max_age" value="{{ form.max_age.value|default:'' }}" placeholder="Max Age" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+    </div>
+</div>
+<!-- Search by Weight -->
+<div class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <p>Weight</p>
+        </div>
+        <div class="w-1/2">
+            <select name="weight_mode" id="id_weight_mode" onchange="toggleInputs('id_weight_mode','weight_inputs_container')">
+                <option value="all" {% if form.weight_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Weight</option>
+                <option value="range" {% if form.weight_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+            </select>
+        </div>
+    </div>
+</div>
+<!-- Weight Dropdown. -->
+<div id="weight_inputs_container" class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <input type="number" name="min_weight" value="{{ form.min_weight.value|default:'' }}" placeholder="Min Weight" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+        <div class="w-1/2">
+            <input type="number" name="max_weight" value="{{ form.max_weight.value|default:'' }}" placeholder="Max Weight" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+    </div>
+</div>
+<!-- Search by Health Status -->
+<div class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <p class="py-3">
+                Health Status
+            </p>
+        </div>
+        <div class="w-1/2">
+            <input type="text" id="healthSearch" name="{{ form.health_status.name }}" placeholder="Enter health status" value="{{ form.health_status.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
+        </div>
+    </div>
+</div>
+<!-- Search by Purchase Price -->
+<div class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <p>Purchase Price</p>
+        </div>
+        <div class="w-1/2">
+            <select name="purchase_price_mode" id="id_purchase_price_mode" onchange="toggleInputs('id_purchase_price_mode','purchase_price_inputs_container')">
+                <option value="all" {% if form.purchase_price_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Purchase Price</option>
+                <option value="range" {% if form.purchase_price_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+            </select>
+        </div>
+    </div>
+</div>
+<!-- Purchase Price Dropdown. -->
+<div id="purchase_price_inputs_container" class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <input type="number" name="min_purchase_price" value="{{ form.min_purchase_price.value|default:'' }}" placeholder="Min Weight" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+        <div class="w-1/2">
+            <input type="number" name="max_purchase_price" value="{{ form.max_purchase_price.value|default:'' }}" placeholder="Max Weight" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+    </div>
+</div>
+<!-- Search by Current Value -->
+<div class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <p>Current Value</p>
+        </div>
+        <div class="w-1/2">
+            <select name="current_value_mode" id="id_current_value_mode" onchange="toggleInputs('id_current_value_mode','current_value_inputs_container')">
+                <option value="all" {% if form.purchase_price_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Current Value</option>
+                <option value="range" {% if form.purchase_price_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+            </select>
+        </div>
+    </div>
+</div>
+<!-- Current Value Dropdown. -->
+<div id="current_value_inputs_container" class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <input type="number" name="min_current_value" value="{{ form.min_current_value.value|default:'' }}" placeholder="Min Weight" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+        <div class="w-1/2">
+            <input type="number" name="max_current_value" value="{{ form.max_current_value.value|default:'' }}" placeholder="Max Weight" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+    </div>
+</div>
+<!-- Search by Next Vaccination Date -->
+<div class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <p class="">
+                Next Vaccination Date
+            </p>
+        </div>
+        <div class="w-1/2">
+            <select name="next_vaccination_mode" id="id_next_vaccination_mode" onchange="toggleInputs('id_next_vaccination_mode','next_vaccination_inputs_container')">
+                <option value="all" {% if form.next_vaccination_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
+                <option value="range" {% if form.next_vaccination_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+            </select>
+        </div>
+    </div>
+</div>
+<!-- Next Vaccination Date Dropdown. -->
+<div id="next_vaccination_inputs_container" class="w-full">
+    <div class="flex space-x-2 justify-between w-full">
+        <div class="w-1/2">
+            <input type="date" name="min_next_vaccination" value="{{ form.min_next_vaccination.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+        <div class="w-1/2">
+            <input type="date" name="max_next_vaccination" value="{{ form.max_next_vaccination.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-<!-- Add Livestock Popup -->
-<div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
-        <h3 class="text-xl font-bold mb-4">Add Livestock</h3>
-        <form method="post" id="addLivestockForm" action="{% url 'add_livestock' %}">
-            {% csrf_token %}
-            <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
-                    <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
-                </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Type Of Animal (Species): <span class="text-red-500">*</span></label>
-                    <input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
-                </div>
-            </div>
-            <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
-                    <label class="block mb-2">Age:</label>
-                    <input type="number" name="age" class="w-full border rounded px-3 py-2 mb-4" min="0"/>
-                </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Weight (kg):</label>
-                    <input type="number" name="weight" class="w-full border rounded px-3 py-2 mb-4" step="0.1" />
-                </div>
-            </div>
-            <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
-                    <label class="block mb-2">Health Status:</label>
-                    <input type="text" name="health_status" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" />
-                </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Next Vaccination Date:</label>
-                    <input type="date" name="next_vaccination_date" class="w-full border rounded px-3 py-2 mb-4" />
-                </div>
-            </div>
-            <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
-                    <label class="block mb-2">Purchase Price ($):</label>
-                    <input type="number" name="purchase_price" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
-                </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Current Value ($):</label>
-                    <input type="number" name="current_value" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
-                </div>
-            </div>
-
-            <label class="block mb-2">Notes:</label>
-            <textarea name="notes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"></textarea>
-
-            <div class="flex space-x-2 justify-between w-full">
-                <div>
-                    <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
-                        style="background-color: #335D43;">Save</button>
-                </div>
-                <div>
-                    <button id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 cursor-pointer">Cancel</button>
-                </div>
-            </div>
-        </form>
+<!-- Add form content. -->
+{% block add_form_content %}
+<div class="flex space-x-2 justify-between w-full">
+    <div class="w-1/2">
+        <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
+        <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="{{ max_input_text_length }}" required />
+    </div>
+    <div class="w-1/2">
+        <label class="block mb-2">Type Of Animal (Species): <span class="text-red-500">*</span></label>
+        <input type="text" name="type" class="w-full border rounded px-3 py-2 mb-4" maxlength="{{ max_input_text_length }}" required />
+    </div>
+</div>
+<div class="flex space-x-2 justify-between w-full">
+    <div class="w-1/2">
+        <label class="block mb-2">Age:</label>
+        <input type="number" name="age" class="w-full border rounded px-3 py-2 mb-4" min="0"/>
+    </div>
+    <div class="w-1/2">
+        <label class="block mb-2">Weight (kg):</label>
+        <input type="number" name="weight" class="w-full border rounded px-3 py-2 mb-4" step="0.1" />
+    </div>
+</div>
+<div class="flex space-x-2 justify-between w-full">
+    <div class="w-1/2">
+        <label class="block mb-2">Health Status:</label>
+        <input type="text" name="health_status" class="w-full border rounded px-3 py-2 mb-4" maxlength="{{ max_input_text_length }}" />
+    </div>
+    <div class="w-1/2">
+        <label class="block mb-2">Next Vaccination Date:</label>
+        <input type="date" name="next_vaccination_date" class="w-full border rounded px-3 py-2 mb-4" />
+    </div>
+</div>
+<div class="flex space-x-2 justify-between w-full">
+    <div class="w-1/2">
+        <label class="block mb-2">Purchase Price ($):</label>
+        <input type="number" name="purchase_price" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
+    </div>
+    <div class="w-1/2">
+        <label class="block mb-2">Current Value ($):</label>
+        <input type="number" name="current_value" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
     </div>
 </div>
 
-<!-- Edit Livestock Popup -->
-<div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
-        <h3 class="text-xl font-bold mb-4">Edit Livestock</h3>
-        <form method="post" id="editLivestockForm" action="{% url 'edit_livestock' %}">
-            {% csrf_token %}
-            <!-- Ignore. -->
-            <input type="hidden" name="id" id="editId" />
+<!-- Notes for Livestock -->
+<label class="block mb-2">Notes:</label>
+<textarea name="notes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"></textarea>
+{% endblock %}
 
-            <div class="w-full flex justify-between space-x-2">
-                <div class="w-1/2">
-                    <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" required />
+<!-- Edit form content. -->
+{% block edit_form_content %}
+<div class="w-full flex justify-between space-x-2">
+    <div class="w-1/2">
+        <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
+        <input type="text" name="name" id="editName" maxlength="{{ max_input_text_length }}" class="w-full border rounded px-3 py-2 mb-4" required />
+
+    </div>
+    <div class="w-1/2">
+        <label class="block mb-2">Type of Animal (Species): <span class="text-red-500">*</span></label>
+        <input type="text" name="type" id="editType" maxlength="{{ max_input_text_length }}" class="w-full border rounded px-3 py-2 mb-4" required />
+    </div>
+</div>
+<div class="w-full flex justify-between space-x-2">
+    <div class="w-1/2">
+        <label class="block mb-2">Age:</label>
+        <input type="number" name="age" id="editAge" class="w-full border rounded px-3 py-2 mb-4" min="0"/>
+    </div>
+    <div class="w-1/2">
+        <label class="block mb-2">Weight (kg):</label>
+        <input type="number" name="weight" id="editWeight" class="w-full border rounded px-3 py-2 mb-4" step="0.1" />
+    </div>
+</div>
+<div class="w-full flex justify-between space-x-2">
+    <div class="w-1/2">
+        <label class="block mb-2">Health Status:</label>
+        <input type="text" name="health_status" id="editHealthStatus" maxlength="{{ max_input_text_length }}" class="w-full border rounded px-3 py-2 mb-4"/>
         
-                </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Type of Animal (Species): <span class="text-red-500">*</span></label>
-                    <input type="text" name="type" id="editType" class="w-full border rounded px-3 py-2 mb-4" required />
-                </div>
-            </div>
-            <div class="w-full flex justify-between space-x-2">
-                <div class="w-1/2">
-                    <label class="block mb-2">Age:</label>
-                    <input type="number" name="age" id="editAge" class="w-full border rounded px-3 py-2 mb-4" min="0"/>
-                </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Weight (kg):</label>
-                    <input type="number" name="weight" id="editWeight" class="w-full border rounded px-3 py-2 mb-4" step="0.1" />
-                </div>
-            </div>
-            <div class="w-full flex justify-between space-x-2">
-                <div class="w-1/2">
-                    <label class="block mb-2">Health Status:</label>
-                    <input type="text" name="health_status" id="editHealthStatus" class="w-full border rounded px-3 py-2 mb-4"/>
-                    
-                </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Next Vaccination Date:</label>
-                    <input type="date" name="next_vaccination_date" id="editNextVaccinationDate" class="w-full border rounded px-3 py-2 mb-4" />        
-                </div>
-            </div>
-            <div class="w-full flex justify-between space-x-2">
-                <div class="w-1/2">
-                    <label class="block mb-2">Purchase Price ($):</label>
-                    <input type="number" name="purchase_price" id="editPurchasePrice" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
-                </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Current Value ($):</label>
-                    <input type="number" name="current_value" id="editCurrentValue" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
-                </div>
-            </div>
-            <label class="block mb-2">Notes:</label>
-            <textarea name="notes" id="editNotes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"></textarea>
-            <div class="w-full flex justify-between space-x-2">
-                <div>
-                    <button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
-                        style="background-color: #335D43;">Save Changes</button>
-                </div>
-                <div>
-                    <button id="closeEditButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">Cancel</button>
-                </div>
-            </div>
-        </form>
+    </div>
+    <div class="w-1/2">
+        <label class="block mb-2">Next Vaccination Date:</label>
+        <input type="date" name="next_vaccination_date" id="editNextVaccinationDate" class="w-full border rounded px-3 py-2 mb-4" />        
     </div>
 </div>
-
-<!-- Delete Popup -->
-<div id="deletePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h3 class="text-xl font-bold mb-4">Delete Livestock</h3>
-        <p class="text-lg mb-4">
-            Are you sure you want to delete the livestock record for <strong id="deleteName"></strong>?
-        </p>
-        <form method="post" id="deleteLivestockForm" action="{% url 'delete_livestock' %}">
-            {% csrf_token %}
-            <input type="hidden" name="id" id="deleteId" />
-            <div class="flex justify-center gap-x-4">
-                <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">Delete</button>
-                <button type="button" id="closeDeleteButton" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">Cancel</button>
-            </div>
-        </form>
+<div class="w-full flex justify-between space-x-2">
+    <div class="w-1/2">
+        <label class="block mb-2">Purchase Price ($):</label>
+        <input type="number" name="purchase_price" id="editPurchasePrice" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
+    </div>
+    <div class="w-1/2">
+        <label class="block mb-2">Current Value ($):</label>
+        <input type="number" name="current_value" id="editCurrentValue" class="w-full border rounded px-3 py-2 mb-4" step="0.01" />
     </div>
 </div>
+<label class="block mb-2">Notes:</label>
+<textarea name="notes" id="editNotes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"></textarea>
+{% endblock %}
 
-<!-- Notes popup for a livestock. -->
-<div id="notesPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl flex flex-col">
-        <!-- Header -->
-        <h3 class="text-xl font-bold mb-4">Notes of Animal</h3>
-        <textarea name="notesOfAnimal" id="notesOfAnimalOutput" rows="30" disabled class="w-full px-3 py-2 mb-4 overflow-y-auto border rounded resize-none"></textarea>
-        <!-- Close popup button. -->
-        <button type="button" id="closeNotesButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-            Close
-        </button>
-    </div>
-</div>
+{% block editButton %}
+<button
+  onclick="openEditPopup(
+    ['editId','{{ object.id }}'],
+    ['editName','{{ object.name }}'],
+    ['editType','{{ object.type }}'],
+    ['editAge','{{ object.age }}'],
+    ['editWeight','{{ object.weight }}'],
+    ['editHealthStatus','{{ object.health_status }}'],
+    ['editPurchasePrice','{{ object.purchase_price }}'],
+    ['editCurrentValue','{{ object.current_value }}'],
+    ['editNextVaccinationDate','{{ object.next_vaccination_date|date:'Y-m-d' }}'],
+    ['editNotes','{{ object.notes|escapejs }}']
+  )"
+  class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
+  style="background-color: #0D65A0;">
+    Edit
+</button>
+{% endblock %}
 
-<!-- Table -->
-<div class="bg-white rounded-lg shadow-md overflow-x-auto">
-    <table class="min-w-full">
-        <thead class="bg-gray-50 border-b border-gray-200">
-            <tr>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Type of Animal (Species)</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Age</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Weight (kg)</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Health</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Value ($)</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Next Vaccination</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-            {% for animal in livestock %}
-            <tr class="hover:bg-gray-50">
-                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.id }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.name }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.type }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.age }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.weight }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.health_status }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.current_value }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.next_vaccination_date}}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ animal.notes|default:"—" }}</td>
-                <!-- Notes column: View button -->
-                <td class="py-4 px-6 text-sm">
-                    <div class="flex space-x-2">
-                        <button
-                            onclick="openNotesPopup(
-                                `{{ animal.notes }}`)"
-                            class="text-white py-1 px-3 rounded text-sm hover:bg-amber-900"
-                            style="background-color: #b49494;">
-                            View
-                        </button>
-                    </div>
-                </td>
-                <td class="py-4 px-6 text-sm">
-                    <div class="flex space-x-2">
-                        <button
-                            onclick="openEditPopup('{{ animal.id }}', '{{ animal.name }}', '{{ animal.type }}', '{{ animal.age }}', '{{ animal.weight }}', '{{ animal.health_status }}', '{{ animal.purchase_price }}', '{{ animal.current_value }}', '{{ animal.next_vaccination_date|date:'Y-m-d' }}', '{{ animal.notes }}')"
-                            class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
-                            style="background-color: #0D65A0;">Edit</button>
-                        <button onclick="openDeletePopup('{{ animal.id }}', '{{ animal.name }}')"
-                            class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">Delete</button>
-                    </div>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="10" class="py-8 px-6 text-center text-gray-500">No livestock records found</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<div class="mt-3">
-    <span>
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-    </span>
-</div>
-
-<div class="mt-3">
-    <nav>
-        <ul class="flex space-x-1 list-none text-sm">
-            <!-- First and Previous. -->
-            {% if page_obj.has_previous %}
-                <a href="?page=1" class="border rounded-md bg-white font-medium text-black px-4 py-2"><li>&laquo; First</li></a>
-                <a href="?page={{ page_obj.previous_page_number }}" class="border rounded-md bg-white font-medium text-md text-black px-4 py-2"><li><<</li></a>
-            {% else %}    
-                <li class="border rounded-md bg-gray-200 text-gray-700 px-4 py-2">&laquo; First</li>
-                <li class="border rounded-md bg-gray-200 text-md text-gray-700 px-4 py-2"><<</li>
-            {% endif %}
-
-            <!-- Going backward from current page. -->
-            {% for page_number in backward_pages %}
-                <a href="?page={{ page_number }}" class="border bg-white rounded-md font-medium text-black px-4 py-2"><li>{{ page_number }}</li></a>
-            {% endfor %}
-                
-            <!-- Add current page number. -->
-            <a href="?page={{ page_obj.number }}" class="border bg-green-700 rounded-md font-medium text-white px-4 py-2"><li>{{ page_obj.number }}</li></a>
-            
-            
-            <!-- Going forward from current page. -->
-            {% for page_number in forward_pages %}
-                <a href="?page={{ page_number }}" class="border bg-white rounded-md font-medium text-black px-4 py-2"><li>{{ page_number }}</li></a>
-            {% endfor %}
-
-
-            <!-- Next and Last. --> 
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}" class="border bg-white rounded-md font-medium text-md text-black px-4 py-2"><li>>></li></a>
-                <a href="?page={{ page_obj.paginator.num_pages }}" class="border bg-white rounded-md font-medium text-black px-4 py-2"><li>Last &raquo;</li></a>
-            {% else %}
-                <li class="border rounded-md bg-gray-200 text-md text-gray-700 px-4 py-2">>></li>
-                <li class="border rounded-md bg-gray-200 text-gray-700 px-4 py-2">Last &raquo;</li>
-            {% endif %}
-
-            <div>
-                <form action="" method="GET">
-                    <input type="number" name="page" id="searchPageNumberID" class="border bg-white rounded-md font-medium text-md text-black px-2 py-2 w-1/3">
-                    <button type="submit" class="text-md ml-1">Go &raquo;</button>
-                </form>
-            </div>
-        </ul>
-    </nav>
-</div>
-
+{% block javascript %}
+{{ block.super }}
 <script src="{% static 'js/livestock_list.js' %}"></script>
 {% endblock %}
