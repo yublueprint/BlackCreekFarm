@@ -37,7 +37,6 @@ def crop_list(request):
 def add_crop(request):
     if request.method == "POST":
         try:
-
             name = request.POST.get("name")
             crop_type = request.POST.get("crop_type")
             planting_date = request.POST.get("planting_date")
@@ -49,9 +48,10 @@ def add_crop(request):
             region = request.POST.get("region")
             notes = request.POST.get("notes")
 
-            if not name or not crop_type or not planting_date or not expected_yield:
+            # REQUIRED FIELDS (aligned with ticket)
+            if not name or not crop_type or not planting_date:
                 raise CropCreationException(
-                    "Name, crop type, planting date, and expected yield are required."
+                    "Name, crop type, and planting date are required."
                 )
 
             crop = Crop.objects.create(
@@ -61,9 +61,7 @@ def add_crop(request):
                 harvest_date=harvest_date if harvest_date else None,
                 expected_yield=float(expected_yield) if expected_yield else 0,
                 yield_efficiency=float(yield_efficiency) if yield_efficiency else 0,
-                water_usage_liters=(
-                    float(water_usage_liters) if water_usage_liters else 0
-                ),
+                water_usage_liters=float(water_usage_liters) if water_usage_liters else 0,
                 next_checkup=next_checkup if next_checkup else None,
                 region=region,
                 notes=notes,
@@ -84,6 +82,7 @@ def add_crop(request):
                 "app/crop_list.html",
                 {"crops": crops, "error": str(e)},
             )
+
         except ValueError as e:
             logger.log(f"Value error during crop creation by {request.user}: {e}")
 
@@ -99,6 +98,7 @@ def add_crop(request):
                     "error": "Invalid input values. Please check numeric fields.",
                 },
             )
+
         except Exception as e:
             logger.log(f"Unexpected error during crop creation: {e}")
 
@@ -140,18 +140,17 @@ def edit_crop(request):
             crop.region = request.POST.get("region")
             crop.notes = request.POST.get("notes")
 
+            # REQUIRED FIELDS (aligned with ticket)
             if not crop.name or not crop.crop_type or not crop.planting_date:
                 raise CropEditException(
                     "Name, crop type, and planting date are required."
                 )
 
+            # NUMERIC FIELDS: allow blank -> 0; invalid -> error
             try:
-                if crop.expected_yield:
-                    crop.expected_yield = float(crop.expected_yield)
-                if crop.yield_efficiency:
-                    crop.yield_efficiency = float(crop.yield_efficiency)
-                if crop.water_usage_liters:
-                    crop.water_usage_liters = float(crop.water_usage_liters)
+                crop.expected_yield = float(crop.expected_yield) if crop.expected_yield else 0
+                crop.yield_efficiency = float(crop.yield_efficiency) if crop.yield_efficiency else 0
+                crop.water_usage_liters = float(crop.water_usage_liters) if crop.water_usage_liters else 0
             except ValueError:
                 raise CropEditException(
                     "Invalid numeric values in yield or water usage fields."
@@ -176,6 +175,7 @@ def edit_crop(request):
                 "app/crop_list.html",
                 {"crops": crops, "error": str(e)},
             )
+
         except Exception as e:
             logger.log(f"Unexpected error during crop edit: {e}")
 
@@ -191,6 +191,8 @@ def edit_crop(request):
                     "error": "An unexpected error occurred while editing the crop.",
                 },
             )
+
+    return redirect("crop_list")
 
 
 @login_required
@@ -220,6 +222,7 @@ def delete_crop(request):
                 "app/crop_list.html",
                 {"crops": crops, "error": str(e)},
             )
+
         except Exception as e:
             logger.log(f"Unexpected error during crop deletion: {e}")
 
@@ -235,3 +238,5 @@ def delete_crop(request):
                     "error": "An unexpected error occurred while deleting the crop.",
                 },
             )
+
+    return redirect("crop_list")
