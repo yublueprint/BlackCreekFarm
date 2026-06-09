@@ -17,17 +17,17 @@ class Record(models.Model):
 
 class Livestock(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    breed = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    age = models.IntegerField()
+    type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    age = models.IntegerField(blank=True, null=True)
     weight = models.FloatField(blank=True, null=True)
-    health_status = models.CharField(max_length=50)
-    purchase_price = models.FloatField(default=0)
-    current_value = models.FloatField(default=0)
+    health_status = models.CharField(max_length=50, blank=True, null=True)
+    purchase_price = models.FloatField(default=0, blank=True, null=True)
+    current_value = models.FloatField(default=0, blank=True, null=True)
     next_vaccination_date = models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.name} - {self.breed}"
+        return f"{self.name} - {self.type}"
 
 
 class Crop(models.Model):
@@ -74,10 +74,10 @@ class Supplies(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     category = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     quantity = models.FloatField()
-    unit = models.CharField(max_length=UNIT_INPUT_MAX_LENGTH)
+    unit = models.CharField(max_length=UNIT_INPUT_MAX_LENGTH, blank=True, null=True)
     last_restocked = models.DateField(blank=True, null=True)
-    minimum_required = models.FloatField(default=0)
-    cost_per_unit = models.FloatField(default=0)
+    minimum_required = models.FloatField(blank=True, null=True)
+    cost_per_unit = models.FloatField(blank=True, null=True)
     procurement_date = models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True, max_length=TEXTBOX_MAX_LENGTH)
 

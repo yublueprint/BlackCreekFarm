@@ -1,6 +1,9 @@
 import pytest
+from django.contrib.messages import get_messages
 from django.http import Http404
 from django.urls import reverse
+
+from app.backend.models import Supplies
 
 pytestmark = pytest.mark.django_db
 
@@ -31,8 +34,12 @@ def test_edit_supplies_success(client, user, supply, mocker):
     mock_logger.assert_any_call(f"User {user} edited supply: Updated")
 
 
-def test_edit_supplies_missing_fields(client, user, supply, mocker):
+def test_edit_supplies_missing_fields_values_existing(client, user, supply, mocker):
+    """
+    When editing, some fields may be missing but should still succeed.
+    """
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
+
     response = client.post(
         reverse("edit_supplies"),
         {
@@ -47,26 +54,29 @@ def test_edit_supplies_missing_fields(client, user, supply, mocker):
             "procurement_date": "2025-11-28",
             "notes": "Some note.\nCan have line break too. :)",
         },
+        follow=True,
     )
     assert response.status_code == 200
-    assert "error" in response.context
-    mock_logger.assert_any_call(
-        f"Supply edit error by {user}: Missing name for supply."
-    )
+    page_objects = response.context["page_obj"].object_list
+    names = [obj.name for obj in page_objects]
+    assert "Unknown" in names
+    assert Supplies.objects.filter(id=supply.id).exists()
+    assert Supplies.objects.filter(name="Unknown").exists()
+
+    mock_logger.assert_any_call(f"User {user.username} edited supply: Unknown")
 
 
 def test_edit_supplies_not_found(client, user, mocker):
     mocker.patch("app.backend.supplies.supplies.get_object_or_404", side_effect=Http404)
-    mock_all = mocker.patch(
-        "app.backend.supplies.supplies.Supplies.objects.all", return_value=[]
-    )
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
-    response = client.post(reverse("edit_supplies"), {"id": 999})
+    response = client.post(reverse("edit_supplies"), data={"id": 999}, follow=True)
     assert response.status_code == 200
-    assert "error" in response.context
+    storage = get_messages(response.wsgi_request)
+    messages = [m.message for m in storage]
+
+    assert "Supply not found." in messages
     mock_logger.assert_any_call(f"Supply edit error by {user}: Supply not found.")
-    mock_all.assert_called_once()
 
 
 def test_edit_supplies_unexpected_exception(client, user, mocker):
@@ -74,17 +84,12 @@ def test_edit_supplies_unexpected_exception(client, user, mocker):
         "app.backend.supplies.supplies.get_object_or_404",
         side_effect=Exception("Something broke"),
     )
-    mock_all = mocker.patch(
-        "app.backend.supplies.supplies.Supplies.objects.all", return_value=[]
-    )
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
-    response = client.post(reverse("edit_supplies"), {"id": 1})
+    response = client.post(reverse("edit_supplies"), {"id": 1}, follow=True)
     assert response.status_code == 200
-    assert "unexpected" in response.context["error"].lower()
     mock_get.assert_called_once()
     mock_logger.assert_any_call("Unexpected error during supply edit: Something broke")
-    mock_all.assert_called_once()
 
 
 def test_edit_supplies_redirect_on_get(client, user):

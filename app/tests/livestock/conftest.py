@@ -16,5 +16,5 @@ def user(client):
 @pytest.fixture
 def livestock():
     return Livestock.objects.create(
-        name="Woolyyy", breed="Merino", age=3, health_status="Healthy"
+        name="Woolyyy", type="Merino", age=3, health_status="Healthy"
     )
