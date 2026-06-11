@@ -1,0 +1,25 @@
+<!-- Add Button Popup Form -->
+<div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl flex-1 max-h-[90vh] overflow-y-auto">
+        <h3 class="text-xl font-bold mb-4">Add {{ stock_name|default:"Item" }}</h3>
+        <form method="post" id="addForm" action="{% url add_url_given %}">
+            {% csrf_token %}
+            {{ form_inside|safe }}
+
+            <!-- Action Buttons. -->
+            <div class="flex space-x-2 justify-between w-full">
+                <div>
+                    <!-- Submit Information Button -->
+                    <button type="submit" class="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800">
+                        Save
+                    </button>
+                </div>
+                <div>
+                    <div id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 cursor-pointer">
+                        Cancel
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

@@ -90,8 +90,6 @@ def supplies_list(request):
     supplies = Supplies.objects.all().order_by("-id")
 
     # FOR SEARCH FILTERING.
-    nameToSearch = request.GET.get("firstNameSearch")
-
     active_filters = []
 
     if form.is_valid():
@@ -157,18 +155,13 @@ def supplies_list(request):
                         f"Max Procurement Date: {str(data['max_procurement_date'])}"
                     )
 
-    if nameToSearch:
-        supplies = supplies.filter(name__icontains=nameToSearch)
-        active_filters.append(f"Name: {nameToSearch}")
-
     # FOR PAGINATION.
     page_number = request.GET.get("page")
     page_obj, backward_pages, forward_pages = paginationFunction(
         supplies, page_number, 10
     )
 
-    # Supply Titles, Fields, and Properties.
-    category_given = ["Supply", "supply", "supplies"]
+    # Supply Fields and Properties/Attributes.
     fields_given = [
         "ID",
         "Name",
@@ -194,11 +187,8 @@ def supplies_list(request):
         "procurement_date",
     ]
 
-    logger.log(f"User {request.user} viewed supplies list.")
     context = {
         "form": form,
-        "supplies": supplies,
-        "category_given": category_given,
         "fields_given": fields_given,
         "object_attributes_given": object_attributes_given,
         "search_filters_applied": active_filters,
@@ -214,6 +204,7 @@ def supplies_list(request):
         "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
     }
 
+    logger.log(f"User {request.user} viewed supplies list.")
     return render(request, "app/supplies_list.html", context)
 
 

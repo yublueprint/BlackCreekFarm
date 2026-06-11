@@ -1,0 +1,10 @@
+<!-- Display Search Filters Used -->
+<div class="mb-4">
+    <div class="flex space-x-2">
+        {% for search_filter in search_filters_applied %}
+        <div class="border border-green-700 shadow-sm bg-green-100 text-green-700 rounded-3xl px-3 py-1 font-medium text-center text-sm min-w-[48px]">
+            {{ search_filter }}
+        </div>
+        {% endfor %}
+    </div>
+</div>

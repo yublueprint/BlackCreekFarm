@@ -31,15 +31,15 @@
                 class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'equipment_list' %}bg-gray-200{% endif %}">
                 <i class="fas fa-cog mr-3"></i>Equipment
             </a>
-            <a href="/supplies/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded">
+            <a href="/supplies/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'supplies_list' %}bg-gray-200{% endif %}">
                 <i class="fas fa-truck mr-3"></i>Supplies
             </a>
-            <a href="/transactions/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded">
+            <a href="/transactions/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'transaction_list' %}bg-gray-200{% endif %}">
                 <i class="fas fa-dollar-sign mr-3"></i>Transactions
             </a>
 
-            <!-- Reports - highlighted in gray -->
-            <a href="/reports/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded">
+            <!-- Reports -->
+            <a href="/reports/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'reports' %}bg-gray-200{% endif %}">
                 <i class="fas fa-folder mr-3"></i>Reports
             </a>
         </nav>

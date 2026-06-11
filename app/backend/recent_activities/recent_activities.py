@@ -44,18 +44,24 @@ def download_all_activities(request):
         buffer = io.BytesIO()
 
         mod_activity_logs = logger.download_all_activity_logs()
-        # print(mod_activity_logs)
+        # print(f"MOD ACTIVITY LOGS: {mod_activity_logs}")
 
         with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as zipf:
+            file_count = 0
             for file_name in mod_activity_logs:
                 if os.path.exists(file_name):
-                    zipf.write(file_name, arcname=file_name)
+                    file_count = file_count + 1
+                    zipf.write(file_name, arcname=f"modification_activities_{file_count}.log")
 
         buffer.seek(0)
 
         response = FileResponse(
-            buffer, as_attachment=True, filename="bulk_log_download.zip"
+            buffer,
+            as_attachment=True,
+            filename="activity_logs.zip",
+            content_type="application/zip",
         )
+        return response
     except Exception as e:
         logger.log(f"Unexpected error during log file download: {e}")
         # response = redirect("recent_activities_list")
@@ -64,5 +70,4 @@ def download_all_activities(request):
             "error": str(e),
         }
         response = render(request, "app/recent_activities_list.html", context)
-    finally:
         return response

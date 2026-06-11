@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Dashboard | BlackCreek Sync{% endblock %}
 
@@ -72,11 +73,8 @@
 
 <div class="mt-6 bg-white p-4 rounded shadow">
     <h3 class="text-xl font-bold mb-4">Recent Activity</h3>
-    <p id="getAllRecentActivity" class="mb-8"><a href="{% url 'recent_activities_list' %}"
-            class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 gap-2" style="background-color: #335D43;">See
-            all recent
-            activity.</a>
-    </p>
+    {% url 'recent_activities_list' as recent_activity_url %}
+    {% include 'partials/url_button.html' with button_id="getAllRecentActivity" button_url=recent_activity_url button_text="See all recent activity." %}
     <div class="overflow-x-auto">
         <table class="min-w-full">
             <thead>
@@ -105,46 +103,5 @@
     </div>
 </div>
 
-<script>
-    // Initialize chart when the DOM is loaded
-    document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('yieldChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Crop Yield (tons)',
-                    data: [12, 19, 15, 17, 21, 25],
-                    borderColor: 'rgb(75, 192, 192)',
-                    tension: 0.1,
-                    fill: false
-                }, {
-                    label: 'Milk Production (gallons)',
-                    data: [18, 15, 20, 22, 24, 23],
-                    borderColor: 'rgb(54, 162, 235)',
-                    tension: 0.1,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false
-            }
-        });
-    });
-
-    // Make it clear that something is loading when retrieving all recent activity as it takes some time (around 3 seconds for now).
-    const getAllRecentActivityBtn = document.getElementById("getAllRecentActivity");
-    getAllRecentActivityBtn.addEventListener("click", () => {
-        // Disable clicking to prevent spam and pipe / bridging issues stated by Django. 
-        getAllRecentActivityBtn.childNodes[0].disabled = true;
-        getAllRecentActivityBtn.childNodes[0].style.pointerEvents = 'none';
-
-        // Visually show that something is loading.
-        getAllRecentActivityBtn.childNodes[0].textContent = "Loading, please wait...";
-        getAllRecentActivityBtn.childNodes[0].style.backgroundColor = '#f0f7f1';
-        getAllRecentActivityBtn.childNodes[0].style.color = '#335D43';
-    });
-</script>
+<script src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}

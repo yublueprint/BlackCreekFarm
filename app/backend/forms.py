@@ -5,7 +5,6 @@ class SuppliesSearchForm(forms.Form):
     id = forms.IntegerField(required=False, label="Search by ID")
     name = forms.CharField(required=False, label="Search by Name")
     category = forms.CharField(required=False, label="Category")
-    # quantity = forms.FloatField(required=False, label='Quantity')
     qty_mode = forms.ChoiceField(
         choices=[("all", "Any Quantity"), ("range", "Specific Range")],
         required=False,

@@ -70,7 +70,7 @@ closeButton.addEventListener("click", () => {
 const deletePopup = document.getElementById("deletePopup");
 const closeDeleteButton = document.getElementById("closeDeleteButton");
 
-function openDeletePopup(id, name) {
+function openDeletePopup(id, name="item") {
     document.getElementById("deleteId").value = id;
     document.getElementById("deleteObjectName").textContent = name;
     deletePopup.classList.remove("hidden");
