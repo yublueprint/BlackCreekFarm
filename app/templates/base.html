@@ -1,22 +1,22 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{% block title %}BlackCreek Sync{% endblock %}</title>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}BlackCreek Sync{% endblock %}</title>
 
-    {% include 'partials/static_imports.html' %}
-</head>
+        {% include 'partials/static_imports.html' %}
+    </head>
 
-<body class="app-theme">
-    <div class="flex flex-col md:flex-row h-screen">
-        {% include 'partials/main_sidebar.html' %}
+    <body class="app-theme">
+        <div class="flex flex-col md:flex-row h-screen">
+            {% include 'partials/main_sidebar.html' %}
 
-        <!-- Main Content -->
-        <main class="flex-1 p-6 overflow-y-auto">
-            {% block content %}{% endblock %}
-        </main>
-    </div>
-</body>
-
+            <!-- Main Content -->
+            <main class="flex-1 p-6 overflow-y-auto">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </body>
 </html>

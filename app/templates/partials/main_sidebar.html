@@ -10,9 +10,12 @@
                 <img class="w-full" src="{% static 'imgs/blackcreek-logo.png' %}" />
             </div>
             <!-- MENU BUTTON -->
-            <div class="flex flex-row items-center md:hidden md:items-stretch">
+            <div class="flex flex-row space-x-6 items-center md:hidden md:items-stretch">
+                <a href="{% url 'alerts_list' %}" class="block md:hidden">
+                    <i class="fa-solid fa-inbox fa-xl"></i>
+                </a>
                 <button id="menu-btn" onclick="navButton()" class="block md:hidden focus:outline-none hover:text-indigo-200" aria-label="Toggle Menu">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>  
                 </button>
@@ -56,7 +59,7 @@
         </nav>
     </div>
 
-    <div id="logoutButton" class="w-full hidden px-4 pb-2 md:px-4 md:py-4 md:border-t">
+    <div id="logoutButton" class="w-full hidden md:block px-4 pb-2 md:px-4 md:py-4 md:border-t">
         <a href="{% url 'logout' %}" class="block text-red-600 hover:bg-red-100 p-3 rounded font-medium">
             <i class="fas fa-sign-out-alt mr-2"></i>Logout
         </a>
