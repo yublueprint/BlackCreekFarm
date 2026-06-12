@@ -1,12 +1,16 @@
-<!-- Sidebar -->
-<aside class="w-64 bg-white shadow-md flex flex-col h-full">
-    <div class="p-6 flex-grow">
-        <h1 class="text-xl font-bold mb-6">
-            <img class="w-full"
-                src="https://apos-aka-blackcreek-prod.s3.ca-central-1.amazonaws.com/apos-frontend/releases/00125469818737598/default/modules/theme-default/images/black-creek-community-farm-logo-black.png" />
-        </h1>
+{% load static %}
 
-        <nav class="space-y-1">
+<!-- Sidebar -->
+<aside class="w-full md:w-64 bg-white shadow-md flex flex-row md:flex-col md:h-full">
+    <div class="p-6 flex-grow flex flex-row md:flex-col justify-between md:justify-start items-center md:items-stretch">
+        <div class="max-w-[208px] text-xl font-bold md:mb-6 flex flex-row items-center justify-center md:items-stretch">
+            <img class="w-full" src="{% static 'imgs/blackcreek-logo.png' %}" />
+        </div>
+        <div class="flex flex-row items-center md:hidden md:items-stretch">
+            ZOMBRE
+        </div>
+
+        <nav class="hidden md:block space-y-1">
             <!-- Overview - highlighted in green -->
             <a href="{% url 'dashboard' %}"
                 class="block text-gray-700 p-3 rounded-lg {% if request.resolver_match.url_name == 'dashboard' %}bg-[#DBED9E]{% else %}bg-[#DBED9E]{% endif %}">
@@ -37,15 +41,13 @@
             <a href="/transactions/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'transaction_list' %}bg-gray-200{% endif %}">
                 <i class="fas fa-dollar-sign mr-3"></i>Transactions
             </a>
-
-            <!-- Reports -->
             <a href="/reports/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'reports' %}bg-gray-200{% endif %}">
                 <i class="fas fa-folder mr-3"></i>Reports
             </a>
         </nav>
     </div>
 
-    <div class="p-4 border-t">
+    <div class="p-4 md:border-t hidden md:block">
         <a href="{% url 'logout' %}" class="block text-red-600 hover:bg-red-100 p-2 rounded font-medium">
             <i class="fas fa-sign-out-alt mr-2"></i>Logout
         </a>

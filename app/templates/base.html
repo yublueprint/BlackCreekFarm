@@ -9,11 +9,19 @@
 </head>
 
 <body class="app-theme">
-    <div class="flex h-screen">
+    <div class="flex flex-col md:flex-row h-screen">
         {% include 'partials/main_sidebar.html' %}
 
         <!-- Main Content -->
         <main class="flex-1 p-6 overflow-y-auto">
+            <div class="flex flex-col md:flex-row">
+                <div class="bg-blue-700">
+                    BLUE
+                </div>
+                <div class="bg-red-700">
+                    RED
+                </div>
+            </div>
             {% block content %}{% endblock %}
         </main>
     </div>

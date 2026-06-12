@@ -73,11 +73,11 @@ class Equipment(models.Model):
 class Supplies(models.Model):
     name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
     category = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    quantity = models.FloatField()
-    unit = models.CharField(max_length=UNIT_INPUT_MAX_LENGTH, blank=True, null=True)
+    quantity = models.FloatField(max_length=UNIT_INPUT_MAX_LENGTH)
+    unit = models.CharField(blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    minimum_required = models.FloatField(blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    cost_per_unit = models.FloatField(blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
     last_restocked = models.DateField(blank=True, null=True)
-    minimum_required = models.FloatField(blank=True, null=True)
-    cost_per_unit = models.FloatField(blank=True, null=True)
     procurement_date = models.DateField(blank=True, null=True)
     notes = models.TextField(blank=True, null=True, max_length=TEXTBOX_MAX_LENGTH)
 

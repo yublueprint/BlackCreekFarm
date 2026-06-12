@@ -1,4 +1,13 @@
 /*
+Form validation.
+*/
+function limitInputLength(element) {
+    if (element.value.length > element.maxLength) {
+        element.value = element.value.slice(0, element.maxLength);
+    }
+}
+
+/*
 Opening notes of a category object.
 */
 const notesPopup = document.getElementById("notesPopup");

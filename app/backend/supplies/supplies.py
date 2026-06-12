@@ -82,14 +82,8 @@ def get_properties(request, ExceptionToUse: Exception):
         notes,
     )
 
-
-@login_required
-def supplies_list(request):
-    form = SuppliesSearchForm(request.GET)
-
+def search_filtering(form):
     supplies = Supplies.objects.all().order_by("-id")
-
-    # FOR SEARCH FILTERING.
     active_filters = []
 
     if form.is_valid():
@@ -98,7 +92,6 @@ def supplies_list(request):
         if data.get("id"):
             supplies = supplies.filter(id=data["id"])
             active_filters.append(f"ID: {str(data['id'])}")
-            # supplies = Supplies.objects.filter(id=data['id'])
         if data.get("name"):
             supplies = supplies.filter(name__icontains=data["name"])
             active_filters.append(f"Name: {str(data['name'])}")
@@ -154,6 +147,13 @@ def supplies_list(request):
                     active_filters.append(
                         f"Max Procurement Date: {str(data['max_procurement_date'])}"
                     )
+    return active_filters, supplies
+
+@login_required
+def supplies_list(request):
+    # FOR SEARCH FILTERING.
+    form = SuppliesSearchForm(request.GET)
+    active_filters, supplies = search_filtering(form)
 
     # FOR PAGINATION.
     page_number = request.GET.get("page")

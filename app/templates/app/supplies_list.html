@@ -37,7 +37,8 @@
                     </p>
                 </div>
                 <div class="w-1/2">
-                    <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
+                    <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}"
+                    maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
         </div>
@@ -50,7 +51,8 @@
                     </p>
                 </div>
                 <div class="w-1/2">
-                    <input type="text" id="categorySearch" name="{{ form.category.name }}" placeholder="Enter category name" value="{{ form.category.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
+                    <input type="text" id="categorySearch" name="{{ form.category.name }}" placeholder="Enter category name" value="{{ form.category.value|default:'' }}"
+                    maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
         </div>
@@ -72,10 +74,12 @@
         <div id="qty_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
                 <div class="w-1/2">
-                    <input type="number" name="min_qty" value="{{ form.min_qty.value|default:'' }}" placeholder="Min Quantity" class="w-full rounded-lg p-1 border border-gray-800">
+                    <input type="number" name="min_qty" value="{{ form.min_qty.value|default:'' }}" placeholder="Min Quantity"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
                 <div class="w-1/2">
-                    <input type="number" name="max_qty" value="{{ form.max_qty.value|default:'' }}" placeholder="Max Quantity" class="w-full rounded-lg p-1 border border-gray-800">
+                    <input type="number" name="max_qty" value="{{ form.max_qty.value|default:'' }}" placeholder="Max Quantity"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
         </div>
@@ -88,7 +92,8 @@
                     </p>
                 </div>
                 <div class="w-1/2">
-                    <input type="text" name="{{ form.unit.name }}" value="{{ form.unit.value|default:'' }}" placeholder="e.g., kg" class="w-full rounded-lg p-2 border border-gray-800">
+                    <input type="text" name="{{ form.unit.name }}" value="{{ form.unit.value|default:'' }}" placeholder="e.g., kg"
+                     maxlength="{{ max_input_unit_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
         </div>
@@ -101,7 +106,8 @@
                     </p>
                 </div>
                 <div class="w-1/2">
-                    <input type="number" name="{{ form.minimum_required.name }}" value="{{ form.minimum_required.value|default:'' }}" placeholder="e.g., 1000" class="w-full rounded-lg p-2 border border-gray-800">
+                    <input type="number" name="{{ form.minimum_required.name }}" value="{{ form.minimum_required.value|default:'' }}" placeholder="e.g., 1000"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
         </div>
@@ -110,11 +116,12 @@
             <div class="flex space-x-2 justify-between w-full">
                 <div class="w-1/2">
                     <p class="py-3">
-                        Cost Per Unit ( $ )
+                        Cost Per Unit ($)
                     </p>
                 </div>
                 <div class="w-1/2">
-                    <input type="number" name="{{ form.cost_per_unit.name }}" value="{{ form.cost_per_unit.value|default:'' }}" placeholder="e.g., 5" class="w-full rounded-lg p-2 border border-gray-800">
+                    <input type="number" name="{{ form.cost_per_unit.name }}" value="{{ form.cost_per_unit.value|default:'' }}" placeholder="e.g., 5"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
         </div>
@@ -198,7 +205,8 @@
             <div class="w-1/2">
                 <!-- Quantity of the Supply (required) -->
                 <label class="block mb-2">Quantity: <span class="text-red-500">*</span></label>
-                <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4" required />
+                <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" required />
             </div>
             <div class="w-1/2">
                 <!-- Type of Unit of Quantity of the Supply (optional) -->
@@ -212,12 +220,14 @@
             <div class="w-1/2">
                 <!-- Minimum required amount of the Supply (optional) -->
                 <label class="block mb-2">Minimum required:</label>
-                <input type="number" name="minimum_required" class="w-full border rounded px-3 py-2 mb-4" />
+                <input type="number" name="minimum_required"
+                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4"/>
             </div>
             <div class="w-1/2">
                 <!-- Cost per unit of the Supply (optional) -->
-                <label class="block mb-2">Cost per unit:</label>
-                <input type="number" name="cost_per_unit" class="w-full border rounded px-3 py-2 mb-4" />
+                <label class="block mb-2">Cost per unit ($):</label>
+                <input type="number" name="cost_per_unit"
+                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4" />
             </div>
         </div>
 
@@ -250,27 +260,28 @@
                 <!-- Name of the Supply (required) -->
                 <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
                 <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
+                 maxlength="{{ max_input_text_length }}" required />
                 
             </div>
             <div class="w-1/2">
                 <!-- Category of the Supply (required) -->
                 <label class="block mb-2">Category: <span class="text-red-500">*</span></label>
                 <input type="text" name="supply_category" id="editCategory" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_text_length }}" required />
+                 maxlength="{{ max_input_text_length }}" required />
             </div>
         </div>
         <div class="w-full flex justify-between space-x-2">
             <div class="w-1/2">
                 <!-- Quantity of the Supply (required) -->
                 <label class="block mb-2">Quantity: <span class="text-red-500">*</span></label>
-                <input type="number" name="quantity" id="editQuantity" class="w-full border rounded px-3 py-2 mb-4" required />
+                <input type="number" name="quantity" id="editQuantity"
+                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4" required />
             </div>
             <div class="w-1/2">
                 <!-- Type of Unit of Quantity of the Supply (optional) -->
                 <label class="block mb-2">Unit:</label>
                 <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4"
-                maxlength="{{ max_input_unit_length }}" />
+                 maxlength="{{ max_input_unit_length }}" />
             </div>
         </div>
         <div class="w-full flex justify-between space-x-2">
@@ -289,19 +300,21 @@
             <div class="w-1/2">
                 <!-- Minimum required amount of the Supply (optional) -->
                 <label class="block mb-2">Minimum required:</label>
-                <input type="number" name="minimum_required" id="editMinimumRequired" class="w-full border rounded px-3 py-2 mb-4" />
+                <input type="number" name="minimum_required" id="editMinimumRequired"
+                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4" />
             </div>
             <div class="w-1/2">
                 <!-- Cost per unit of the Supply (optional) -->
-                <label class="block mb-2">Cost per unit:</label>
-                <input type="number" name="cost_per_unit" id="editCostPerUnit" class="w-full border rounded px-3 py-2 mb-4" />
+                <label class="block mb-2">Cost per unit ($):</label>
+                <input type="number" name="cost_per_unit" id="editCostPerUnit" 
+                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4" />
             </div>
         </div>
 
         <!-- Notes for the Supply (optional) -->
         <label class="block mb-2">Notes:</label>
         <textarea name="notes" id="editNotes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
-        maxlength="{{ max_textbox_length }}"></textarea>
+         maxlength="{{ max_textbox_length }}"></textarea>
     {% endcapture %}
     {% include "partials/default_list/edit_form_popup.html" with stock_name="Supply" form_inside=edit_form_content %}
 {% endblock %}
@@ -319,7 +332,7 @@
         {% for object in page_obj %}
             <tr class="hover:bg-gray-50">
                 {% for attribute in object_attributes_given %}
-                    <td class="py-4 px-6 text-sm text-gray-900">{{ object|get_attr:attribute }}</td>
+                    <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object|get_attr:attribute }}</td>
                 {% endfor %}
 
                 {% if object|has_attr:"notes" %}
