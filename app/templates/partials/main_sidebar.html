@@ -1,27 +1,36 @@
 {% load static %}
 
 <!-- Sidebar -->
-<aside class="w-full md:w-64 bg-white shadow-md flex flex-row md:flex-col md:h-full">
-    <div class="p-6 flex-grow flex flex-row md:flex-col justify-between md:justify-start items-center md:items-stretch">
-        <div class="max-w-[208px] text-xl font-bold md:mb-6 flex flex-row items-center justify-center md:items-stretch">
-            <img class="w-full" src="{% static 'imgs/blackcreek-logo.png' %}" />
+<aside class="w-full md:w-64 bg-white shadow-md flex flex-col md:h-full overflow-y-auto">
+    <div class="p-6 flex-grow flex flex-col justify-between md:justify-start items-center md:items-stretch">
+        <!-- BRAND AND MENU BUTTON -->
+        <div class="w-full flex flex-row justify-between md:justify-start items-center md:items-stretch">
+            <!-- BRAND LOGO -->
+            <div class="max-w-[208px] text-xl font-bold md:mb-6 flex flex-row items-center justify-center md:items-stretch">
+                <img class="w-full" src="{% static 'imgs/blackcreek-logo.png' %}" />
+            </div>
+            <!-- MENU BUTTON -->
+            <div class="flex flex-row items-center md:hidden md:items-stretch">
+                <button id="menu-btn" onclick="navButton()" class="block md:hidden focus:outline-none hover:text-indigo-200" aria-label="Toggle Menu">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>  
+                </button>
+            </div>
         </div>
-        <div class="flex flex-row items-center md:hidden md:items-stretch">
-            ZOMBRE
-        </div>
-
-        <nav class="hidden md:block space-y-1">
+        <!-- MENU LINKS -->
+        <nav id="menu-links" class="w-full hidden mt-8 md:mt-0 md:block md:flex flex-col space-y-1">
             <!-- Overview - highlighted in green -->
             <a href="{% url 'dashboard' %}"
                 class="block text-gray-700 p-3 rounded-lg {% if request.resolver_match.url_name == 'dashboard' %}bg-[#DBED9E]{% else %}bg-[#DBED9E]{% endif %}">
                 <i class="fas fa-chart-line mr-3"></i>Overview
             </a>
-
+    
             <!-- STOCK category label -->
-            <div class="pt-4 pb-2">
+            <div class="pt-2 pb-0 md:pt-4 md:pb-2">
                 <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">STOCK</span>
             </div>
-
+    
             <!-- Stock items -->
             <a href="{% url 'livestock_list' %}"
                 class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'livestock_list' %}bg-gray-200{% endif %}">
@@ -47,8 +56,8 @@
         </nav>
     </div>
 
-    <div class="p-4 md:border-t hidden md:block">
-        <a href="{% url 'logout' %}" class="block text-red-600 hover:bg-red-100 p-2 rounded font-medium">
+    <div id="logoutButton" class="w-full hidden px-4 pb-2 md:px-4 md:py-4 md:border-t">
+        <a href="{% url 'logout' %}" class="block text-red-600 hover:bg-red-100 p-3 rounded font-medium">
             <i class="fas fa-sign-out-alt mr-2"></i>Logout
         </a>
     </div>

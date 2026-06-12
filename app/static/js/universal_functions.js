@@ -1,3 +1,18 @@
+/*
+JS THAT NEEDS TO BE THROUGHOUT WHOLE APP.
+*/
+// console.log('DO YOU HEAR ME?');
+
+/*
+FUNCTIONS
+*/
+function navButton() {
+    const menuLinks = document.getElementById('menu-links');
+    const logoutBtn = document.getElementById('logoutButton');
+    menuLinks.classList.toggle('hidden');
+    logoutBtn.classList.toggle('hidden');
+}
+
 function urlButtonStyling(elementId) {
     const urlBtn = document.getElementById(elementId);
     const originalText = urlBtn.textContent;
