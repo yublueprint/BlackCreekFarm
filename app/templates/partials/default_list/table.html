@@ -2,9 +2,7 @@
     <table class="min-w-full">
         <thead class="bg-gray-50 border-b border-gray-200">
             <tr>
-                {% for field in fields_given %}
-                    <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">{{ field }}</th>
-                {% endfor %}
+                {{ table_header_content|safe }}
             </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">

@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block add_list_button %}
-    {% include 'partials/default_list/add_button.html' with button_text="Add Supplies" %}
+    {% include 'partials/default_list/add_button.html' with button_text="Add Supply" %}
 {% endblock %}
 
 {% block search_form_popup %}
@@ -252,9 +252,9 @@
     {% include "partials/default_list/add_form_popup.html" with stock_name="Supply" form_inside=add_form_content %}
 {% endblock %}
 
-<!-- Edit form content. -->
 {% block edit_form_popup %}
     {% capture as edit_form_content %}
+        <!-- Edit form content. -->
         <div class="w-full flex justify-between space-x-2">
             <div class="w-1/2">
                 <!-- Name of the Supply (required) -->
@@ -328,19 +328,40 @@
 {% endblock %}
 
 {% block table %}
+    {% capture as custom_supplies_header %}
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Category</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Quantity</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Unit</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Last Restocked</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Minimum Required</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Cost Per Unit ($)</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Procurement Date</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+    {% endcapture %}
     {% capture as custom_supplies_rows %}
         {% for object in page_obj %}
             <tr class="hover:bg-gray-50">
-                {% for attribute in object_attributes_given %}
-                    <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object|get_attr:attribute }}</td>
-                {% endfor %}
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.id }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.name|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.category|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.quantity|default:"0" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.unit|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.last_restocked|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.minimum_required|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.cost_per_unit|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.procurement_date|default:"—" }}</td>
 
-                {% if object|has_attr:"notes" %}
+                {% if object.notes %}
                     <td class="py-4 px-6 text-sm">
-                        <button onclick="openNotesPopup(`{{ object.notes }}`)" class="bg-[#b49494] text-white py-1 px-3 rounded text-sm hover:bg-amber-900">
+                        <button onclick="openNotesPopup(`Notes of Supply`,`{{ object.notes }}`)" class="bg-[#b49494] text-white py-1 px-3 rounded text-sm hover:bg-amber-900">
                             View
                         </button>
                     </td>
+                {% else %}
+                    <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">—</td>
                 {% endif %}
                 
                 <td class="py-4 px-6 text-sm">
@@ -348,10 +369,10 @@
                         <button
                         onclick="openEditPopup(
                             ['editId','{{ object.id }}'],
-                            ['editName','{{ object.name }}'],
-                            ['editCategory','{{ object.category }}'],
+                            ['editName','{{ object.name|escapejs }}'],
+                            ['editCategory','{{ object.category|escapejs }}'],
                             ['editQuantity','{{ object.quantity }}'],
-                            ['editUnit','{{ object.unit }}'],
+                            ['editUnit','{{ object.unit|escapejs }}'],
                             ['editLastRestocked','{{ object.last_restocked|date:'Y-m-d' }}'],
                             ['editMinimumRequired','{{ object.minimum_required }}'],
                             ['editCostPerUnit','{{ object.cost_per_unit }}'],
@@ -363,7 +384,7 @@
                             Edit
                         </button>
 
-                        <button onclick="openDeletePopup('{{ object.id }}', '{{ object.name }}')"
+                        <button onclick="openDeletePopup('{{ object.id }}', '{{ object.name|escapejs }}')"
                             class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
                             Delete
                         </button>
@@ -376,7 +397,7 @@
             </tr>
         {% endfor %}
     {% endcapture %}
-    {% include "partials/default_list/table.html" with table_rows_content=custom_supplies_rows %}
+    {% include "partials/default_list/table.html" with table_header_content=custom_supplies_header table_rows_content=custom_supplies_rows %}
 {% endblock %}
 
 {% block javascript %}

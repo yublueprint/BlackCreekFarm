@@ -1,10 +1,11 @@
-<!-- templates/login.html -->
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Farm Admin Login</title>
+    <link rel="icon" type="image/png" href="{% static 'imgs/favicon.png' %}">
 
     <!-- Importing Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -45,6 +46,7 @@
             border-radius: 7px;
             border-color: lightgray;
             color: black;
+            font-size: medium;
         }
 
         form ul li {

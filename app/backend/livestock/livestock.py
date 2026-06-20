@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
@@ -8,21 +9,83 @@ from app.exceptions.livestock.exception import (LivestockCreationException,
 from app.logging.logging import Logger
 
 from ..forms import LivestockSearchForm
-from ..functions import paginationFunction
+from ..functions import paginationFunction, editStockNameChange
 from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Livestock)
 
 logger = Logger("app/logging/app.log")
 
+def get_properties(request, ExceptionToUse: Exception):
+    """
+    Gets properties of livestock and validates the inputs.
+    """
+    # Mandatory fields.
+    name = (request.POST.get("name") or "").strip() or "Unknown"
+    type = (request.POST.get("type") or "").strip() or "Unknown"
+    # Optional fields.
+    age = request.POST.get("age") or None
+    weight = request.POST.get("weight") or None
+    health_status = (request.POST.get("health_status") or "").strip() or "Unknown"
+    purchase_price = request.POST.get("purchase_price") or None
+    current_value = request.POST.get("current_value") or None
+    next_vaccination_date = request.POST.get("next_vaccination_date") or None
+    notes = request.POST.get("notes") or None
 
-@login_required
-def livestock_list(request):
-    form = LivestockSearchForm(request.GET)
+    required_inputs = {
+        "name": name,
+        "type": type,
+    }
 
+    default_text_inputs_given = {
+        "name": name,
+        "type": type,
+        "health_status": health_status,
+    }
+
+    unit_inputs_given = {
+        "age": age,
+        "weight": weight,
+        "purchase_price": purchase_price,
+        "current_value": current_value,
+    }
+
+    textbox_inputs_given = {
+        "notes": notes,
+    }
+
+    # Raise an error if mandatory fields are missing.
+    for key, value in required_inputs.items():
+        if value is None:
+            raise ExceptionToUse(f"Missing {key} for livestock.")
+
+    inputs_given_list = [
+        (default_text_inputs_given, DEFAULT_TEXT_MAX_LENGTH),
+        (unit_inputs_given, UNIT_INPUT_MAX_LENGTH),
+        (textbox_inputs_given, TEXTBOX_MAX_LENGTH),
+    ]
+
+    # check length if the optional field was actually provided.
+    for input_given, max_length in inputs_given_list:
+        for key, value in input_given.items():
+            if value and len(value) > max_length:
+                raise ExceptionToUse(
+                    f"Livestock {key} input must be less or equal to {max_length} characters."
+                )
+
+    return (
+        name,
+        type,
+        age,
+        weight,
+        health_status,
+        purchase_price,
+        current_value,
+        next_vaccination_date,
+        notes,
+    )
+
+def search_filtering(form):
     livestock = Livestock.objects.all().order_by("-id")
-
-    nameToSearch = request.GET.get("firstNameSearch")
-
     active_filters = []
 
     if form.is_valid():
@@ -113,19 +176,22 @@ def livestock_list(request):
                     active_filters.append(
                         f"Max Next Vaccination: {str(data['max_next_vaccination'])}"
                     )
+    return active_filters, livestock
 
-    if nameToSearch:
-        livestock = livestock.filter(name__icontains=nameToSearch)
-        active_filters.append(f"Name: {nameToSearch}")
+
+@login_required
+def livestock_list(request):
+    # FOR SEARCH FILTERING.
+    form = LivestockSearchForm(request.GET)
+    active_filters, livestock = search_filtering(form)
 
     # FOR PAGINATION.
     page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages = paginationFunction(
+    page_obj, backward_pages, forward_pages, page_number = paginationFunction(
         livestock, page_number, 10
     )
 
-    # Livestock Titles, Fields, and Properties.
-    category_given = ["Livestock", "livestock", "livestock"]
+    # Livestock Fields, and Properties/Attributes.
     fields_given = [
         "ID",
         "Name",
@@ -151,11 +217,8 @@ def livestock_list(request):
         "next_vaccination_date",
     ]
 
-    logger.log(f"User {request.user} viewed livestock list.")
     context = {
         "form": form,
-        "livestock": livestock,
-        "category_given": category_given,
         "fields_given": fields_given,
         "object_attributes_given": object_attributes_given,
         "search_filters_applied": active_filters,
@@ -171,6 +234,7 @@ def livestock_list(request):
         "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
     }
 
+    logger.log(f"User {request.user} viewed livestock list (page {page_number}).")
     return render(request, "app/livestock_list.html", context)
 
 
@@ -178,53 +242,41 @@ def livestock_list(request):
 def add_livestock(request):
     if request.method == "POST":
         try:
-            name = request.POST.get("name")
-            type = request.POST.get("type")
-            age = request.POST.get("age")
-            weight = request.POST.get("weight")
-            health_status = request.POST.get("health_status")
-            purchase_price = request.POST.get("purchase_price")
-            current_value = request.POST.get("current_value")
-            next_vaccination_date = request.POST.get("next_vaccination_date")
-            notes = request.POST.get("notes")
+            (
+                name,
+                type,
+                age,
+                weight,
+                health_status,
+                purchase_price,
+                current_value,
+                next_vaccination_date,
+                notes,
+            ) = get_properties(request, LivestockCreationException)
 
-            if not name or not type:
-                raise LivestockCreationException("Both name and type are required.")
-
-            Livestock.objects.create(
+            livestock = Livestock.objects.create(
                 name=name,
                 type=type,
-                age=age or 0,
-                weight=weight or None,
-                health_status=health_status or "Unknown",
-                purchase_price=purchase_price or 0,
-                current_value=current_value or 0,
-                next_vaccination_date=next_vaccination_date or None,
-                notes=notes or "",
+                age=age,
+                weight=weight,
+                health_status=health_status,
+                purchase_price=purchase_price,
+                current_value=current_value,
+                next_vaccination_date=next_vaccination_date,
+                notes=notes,
             )
 
-            logger.log(f"User {request.user} added livestock: {name}")
+            logger.log(f"User {request.user} added livestock: {name} (ID: {livestock.id}).")
             return redirect("livestock_list")
 
         except LivestockCreationException as e:
             logger.log(f"Livestock creation error by {request.user}: {e}")
-            livestock = Livestock.objects.all()
-            return render(
-                request,
-                "app/livestock_list.html",
-                {"livestock": livestock, "error": str(e)},
-            )
+            messages.error(request, str(e))
+            return redirect("livestock_list")
         except Exception as e:
             logger.log(f"Unexpected error during livestock creation: {e}")
-            livestock = Livestock.objects.all()
-            return render(
-                request,
-                "app/livestock_list.html",
-                {
-                    "livestock": livestock,
-                    "error": "An unexpected error occurred while adding the livestock.",
-                },
-            )
+            messages.error(request, "An unexpected error occurred while adding the livestock.")
+            return redirect("livestock_list")
     return redirect("livestock_list")
 
 
@@ -236,66 +288,36 @@ def edit_livestock(request):
                 animal = get_object_or_404(Livestock, id=request.POST.get("id"))
             except Http404:
                 raise LivestockEditException("Livestock not found.")
-
-            # ✅ Safe updates: preserve existing values if keys are missing
-            animal.name = request.POST.get("name", animal.name)
-            animal.type = request.POST.get("type", animal.type)
-            animal.age = request.POST.get("age", animal.age)
-            animal.weight = request.POST.get("weight", animal.weight)
-            animal.health_status = request.POST.get(
-                "health_status", animal.health_status
-            )
-            animal.purchase_price = request.POST.get(
-                "purchase_price", animal.purchase_price
-            )
-            animal.current_value = request.POST.get(
-                "current_value", animal.current_value
-            )
-            animal.next_vaccination_date = request.POST.get(
-                "next_vaccination_date", animal.next_vaccination_date
-            )
-            if (len(str(animal.age)) == 0) or (animal.age == ""):
-                animal.age = None
-            if (len(str(animal.weight)) == 0) or (animal.weight == ""):
-                animal.weight = None
-            if (len(str(animal.next_vaccination_date)) == 0) or (
-                animal.next_vaccination_date == ""
-            ):
-                animal.next_vaccination_date = None
-            animal.notes = request.POST.get("notes", animal.notes)
-            if (len(str(animal.purchase_price)) == 0) or (animal.purchase_price == ""):
-                animal.purchase_price = 0
-            if (len(str(animal.current_value)) == 0) or (animal.current_value == ""):
-                animal.current_value = 0
-
-            if not animal.name or not animal.type:
-                raise LivestockEditException(
-                    "Name and type are required to update livestock."
-                )
+            
+            old_name = animal.name
+            
+            (
+                animal.name,
+                animal.type,
+                animal.age,
+                animal.weight,
+                animal.health_status,
+                animal.purchase_price,
+                animal.current_value,
+                animal.next_vaccination_date,
+                animal.notes,
+            ) = get_properties(request, LivestockEditException)
 
             animal.save()
-            logger.log(f"User {request.user} edited livestock: {animal.name}")
+
+            name_change_msg = editStockNameChange(old_name, animal.name)
+            
+            logger.log(f"User {request.user} edited livestock: {old_name} {name_change_msg} (ID: {animal.id}).")
             return redirect("livestock_list")
 
         except LivestockEditException as e:
             logger.log(f"Livestock edit error by {request.user}: {e}")
-            livestock = Livestock.objects.all()
-            return render(
-                request,
-                "app/livestock_list.html",
-                {"livestock": livestock, "error": str(e)},
-            )
+            messages.error(request, str(e))
+            return redirect("livestock_list")
         except Exception as e:
             logger.log(f"Unexpected error during livestock edit: {e}")
-            livestock = Livestock.objects.all()
-            return render(
-                request,
-                "app/livestock_list.html",
-                {
-                    "livestock": livestock,
-                    "error": "An unexpected error occurred while editing the livestock.",
-                },
-            )
+            messages.error(request, "An unexpected error occurred while editing the livestock.")
+            return redirect("livestock_list")
     return redirect("livestock_list")
 
 
@@ -308,29 +330,19 @@ def delete_livestock(request):
             except Http404:
                 raise LivestockDeleteException("Livestock not found.")
 
-            animal_name = animal.name
+            animal_name = animal.name or "Unknown"
+            animal_id = animal.id or -1
             animal.delete()
 
-            logger.log(f"User {request.user} deleted livestock: {animal_name}")
+            logger.log(f"User {request.user} deleted livestock: {animal_name} (ID: {animal_id}).")
             return redirect("livestock_list")
 
         except LivestockDeleteException as e:
             logger.log(f"Livestock delete error by {request.user}: {e}")
-            livestock = Livestock.objects.all()
-            return render(
-                request,
-                "app/livestock_list.html",
-                {"livestock": livestock, "error": str(e)},
-            )
+            messages.error(request, str(e))
+            return redirect("livestock_list")
         except Exception as e:
             logger.log(f"Unexpected error during livestock deletion: {e}")
-            livestock = Livestock.objects.all()
-            return render(
-                request,
-                "app/livestock_list.html",
-                {
-                    "livestock": livestock,
-                    "error": "An unexpected error occurred while deleting the livestock.",
-                },
-            )
+            messages.error(request, "An unexpected error occurred while deleting the livestock.")
+            return redirect("livestock_list")
     return redirect("livestock_list")

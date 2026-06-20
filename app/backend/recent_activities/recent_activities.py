@@ -14,13 +14,12 @@ logger = Logger("app/logging/app.log")
 
 @login_required
 def recent_activities_list(request):
-    logger.log(f"User {request.user} viewed recent activities list.")
 
     recent_activities = logger.retrieve_recent_activity(5, True)
 
     # PAGINATION
     page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages = paginationFunction(
+    page_obj, backward_pages, forward_pages, page_number = paginationFunction(
         recent_activities, page_number, 25
     )
 
@@ -31,6 +30,7 @@ def recent_activities_list(request):
         "forward_pages": forward_pages,
     }
 
+    logger.log(f"User {request.user} viewed recent activities list (page {page_number}).")
     return render(request, "app/recent_activities_list.html", context)
 
 

@@ -30,4 +30,10 @@ def paginationFunction(objects, page_number=1, num_per_page=10):
     forward_pages_end = min(paginator.num_pages, page_number + amount_to_go)
     forward_pages = range(page_number + 1, forward_pages_end + 1, 1)
 
-    return page_obj, backward_pages, forward_pages
+    return page_obj, backward_pages, forward_pages, page_number
+
+def editStockNameChange(old_name, new_name):
+    if old_name != new_name:
+        return f"to {new_name}"
+    else:
+        return ""

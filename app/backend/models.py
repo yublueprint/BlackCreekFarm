@@ -1,9 +1,10 @@
 from django.db import models
 
-# Max text length for a Char field.
+# NOTE: If trying to lower number while an object in the DB has higher number, it will cause error.
 TEXTBOX_MAX_LENGTH = 2000
 DEFAULT_TEXT_MAX_LENGTH = 100
-UNIT_INPUT_MAX_LENGTH = 20
+UNIT_INPUT_MAX_LENGTH = 18 # Do not have it set to more than 18 as BigInt max limit is 18 digits.
+DEFAULT_FILLER_TEXT = "N/A"
 
 
 class Record(models.Model):
@@ -16,65 +17,69 @@ class Record(models.Model):
 
 
 class Livestock(models.Model):
-    name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    age = models.IntegerField(blank=True, null=True)
-    weight = models.FloatField(blank=True, null=True)
-    health_status = models.CharField(max_length=50, blank=True, null=True)
-    purchase_price = models.FloatField(default=0, blank=True, null=True)
-    current_value = models.FloatField(default=0, blank=True, null=True)
+    name = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    type = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    age = models.BigIntegerField(blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    weight = models.FloatField(blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    health_status = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    purchase_price = models.FloatField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    current_value = models.FloatField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
     next_vaccination_date = models.DateField(blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, null=True, max_length=TEXTBOX_MAX_LENGTH)
 
     def __str__(self):
-        return f"{self.name} - {self.type}"
+        return f"{self.name} ({self.type})"
 
 
 class Crop(models.Model):
-    name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    crop_type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH, default="unknown")
-    planting_date = models.DateField()
+    name = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    crop_type = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    planting_date = models.DateField(blank=True, null=True)
     harvest_date = models.DateField(blank=True, null=True)
-    expected_yield = models.FloatField(default=0)
-    yield_efficiency = models.FloatField(default=0)
-    water_usage_liters = models.FloatField(default=0)
+    expected_yield = models.FloatField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    yield_efficiency = models.FloatField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    water_usage_liters = models.FloatField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
     next_checkup = models.DateField(blank=True, null=True)
-    region = models.CharField(max_length=50, blank=True, null=True)
-    notes = models.TextField(blank=True, null=True)
+    region = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    notes = models.TextField(blank=True, null=True, max_length=TEXTBOX_MAX_LENGTH)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.crop_type})"
 
 
 class Equipment(models.Model):
-    name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    category = models.CharField(max_length=50, default="N/A")
-    type = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    purchase_date = models.DateField()
-    maintenance_due = models.DateField()
-    hours_used = models.FloatField(default=0)
-    condition = models.CharField(max_length=50, default="Good")
+    class activeChoices(models.TextChoices):
+        YES = 'Yes', 'Yes'
+        NO = 'No', 'No'
+
+    name = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    category = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    type = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    serial_number = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    purchase_date = models.DateField(blank=True, null=True)
+    maintenance_due = models.DateField(blank=True, null=True)
     next_checkup = models.DateField(blank=True, null=True)
-    purchase_cost = models.FloatField(default=0)
-    notes = models.TextField(blank=True, null=True)
-    serial_number = models.CharField(max_length=100, blank=True, null=True)
-    location = models.CharField(max_length=100, blank=True, null=True)
     warranty_expiry = models.DateField(blank=True, null=True)
-    supplier = models.CharField(max_length=100, blank=True, null=True)
-    maintenance_history = models.TextField(blank=True, null=True)
-    active = models.BooleanField(default=True)
-    last_service_by = models.CharField(max_length=100, blank=True, null=True)
-    service_interval_days = models.IntegerField(default=0)
+    location = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    supplier = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    hours_used = models.FloatField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    condition = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    purchase_cost = models.FloatField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    active = models.CharField(default=activeChoices.YES, choices=activeChoices, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    last_service_by = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    service_interval_days = models.BigIntegerField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    maintenance_history = models.TextField(blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    notes = models.TextField(default="", blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.category})"
 
 
 class Supplies(models.Model):
-    name = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
-    category = models.CharField(max_length=DEFAULT_TEXT_MAX_LENGTH)
+    name = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    category = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
     quantity = models.FloatField(max_length=UNIT_INPUT_MAX_LENGTH)
-    unit = models.CharField(blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    unit = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
     minimum_required = models.FloatField(blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
     cost_per_unit = models.FloatField(blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
     last_restocked = models.DateField(blank=True, null=True)
