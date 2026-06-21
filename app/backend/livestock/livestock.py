@@ -9,11 +9,12 @@ from app.exceptions.livestock.exception import (LivestockCreationException,
 from app.logging.logging import Logger
 
 from ..forms import LivestockSearchForm
-from ..functions import paginationFunction, editStockNameChange
+from ..functions import editStockNameChange, paginationFunction
 from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Livestock)
 
 logger = Logger("app/logging/app.log")
+
 
 def get_properties(request, ExceptionToUse: Exception):
     """
@@ -83,6 +84,7 @@ def get_properties(request, ExceptionToUse: Exception):
         next_vaccination_date,
         notes,
     )
+
 
 def search_filtering(form):
     livestock = Livestock.objects.all().order_by("-id")
@@ -238,7 +240,9 @@ def add_livestock(request):
                 notes=notes,
             )
 
-            logger.log(f"User {request.user} added livestock: {name} (ID: {livestock.id}).")
+            logger.log(
+                f"User {request.user} added livestock: {name} (ID: {livestock.id})."
+            )
             return redirect("livestock_list")
 
         except LivestockCreationException as e:
@@ -247,7 +251,9 @@ def add_livestock(request):
             return redirect("livestock_list")
         except Exception as e:
             logger.log(f"Unexpected error during livestock creation: {e}")
-            messages.error(request, "An unexpected error occurred while adding the livestock.")
+            messages.error(
+                request, "An unexpected error occurred while adding the livestock."
+            )
             return redirect("livestock_list")
     return redirect("livestock_list")
 
@@ -260,9 +266,9 @@ def edit_livestock(request):
                 animal = get_object_or_404(Livestock, id=request.POST.get("id"))
             except Http404:
                 raise LivestockEditException("Livestock not found.")
-            
+
             old_name = animal.name
-            
+
             (
                 animal.name,
                 animal.type,
@@ -278,8 +284,10 @@ def edit_livestock(request):
             animal.save()
 
             name_change_msg = editStockNameChange(old_name, animal.name)
-            
-            logger.log(f"User {request.user} edited livestock: {old_name} {name_change_msg} (ID: {animal.id}).")
+
+            logger.log(
+                f"User {request.user} edited livestock: {old_name} {name_change_msg} (ID: {animal.id})."
+            )
             return redirect("livestock_list")
 
         except LivestockEditException as e:
@@ -288,7 +296,9 @@ def edit_livestock(request):
             return redirect("livestock_list")
         except Exception as e:
             logger.log(f"Unexpected error during livestock edit: {e}")
-            messages.error(request, "An unexpected error occurred while editing the livestock.")
+            messages.error(
+                request, "An unexpected error occurred while editing the livestock."
+            )
             return redirect("livestock_list")
     return redirect("livestock_list")
 
@@ -306,7 +316,9 @@ def delete_livestock(request):
             animal_id = animal.id or -1
             animal.delete()
 
-            logger.log(f"User {request.user} deleted livestock: {animal_name} (ID: {animal_id}).")
+            logger.log(
+                f"User {request.user} deleted livestock: {animal_name} (ID: {animal_id})."
+            )
             return redirect("livestock_list")
 
         except LivestockDeleteException as e:
@@ -315,6 +327,8 @@ def delete_livestock(request):
             return redirect("livestock_list")
         except Exception as e:
             logger.log(f"Unexpected error during livestock deletion: {e}")
-            messages.error(request, "An unexpected error occurred while deleting the livestock.")
+            messages.error(
+                request, "An unexpected error occurred while deleting the livestock."
+            )
             return redirect("livestock_list")
     return redirect("livestock_list")

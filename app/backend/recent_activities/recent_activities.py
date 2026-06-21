@@ -30,7 +30,9 @@ def recent_activities_list(request):
         "forward_pages": forward_pages,
     }
 
-    logger.log(f"User {request.user} viewed recent activities list (page {page_number}).")
+    logger.log(
+        f"User {request.user} viewed recent activities list (page {page_number})."
+    )
     return render(request, "app/recent_activities_list.html", context)
 
 
@@ -51,7 +53,9 @@ def download_all_activities(request):
             for file_name in mod_activity_logs:
                 if os.path.exists(file_name):
                     file_count = file_count + 1
-                    zipf.write(file_name, arcname=f"modification_activities_{file_count}.log")
+                    zipf.write(
+                        file_name, arcname=f"modification_activities_{file_count}.log"
+                    )
 
         buffer.seek(0)
 

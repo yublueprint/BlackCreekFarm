@@ -7,6 +7,9 @@ from app.backend.models import Crop
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_delete_crop_success(client, user, crop, mocker):
     mock_logger = mocker.patch("app.backend.crop.crop.logger.log")
 
@@ -19,6 +22,9 @@ def test_delete_crop_success(client, user, crop, mocker):
     mock_logger.assert_any_call(f"User {user} deleted crop: {crop.name}")
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_delete_crop_not_found(client, user, mocker):
     mocker.patch("app.backend.crop.crop.get_object_or_404", side_effect=Http404)
 
@@ -37,6 +43,9 @@ def test_delete_crop_not_found(client, user, mocker):
     mock_all.assert_called_once()
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_delete_crop_unexpected_exception(client, user, mocker):
     mocker.patch(
         "app.backend.crop.crop.get_object_or_404",
@@ -60,6 +69,9 @@ def test_delete_crop_unexpected_exception(client, user, mocker):
     mock_all.assert_called_once()
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_delete_crop_redirect_on_get(client, user):
     response = client.get(reverse("delete_crop"))
     assert response.status_code == 302

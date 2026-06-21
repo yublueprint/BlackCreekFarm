@@ -3,16 +3,17 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.transactions.exception import (TransactionCreationException,
-                                                TransactionDeleteException,
-                                                TransactionEditException)
+from app.exceptions.transactions.exception import (
+    TransactionCreationException, TransactionDeleteException)
 from app.logging.logging import Logger
 
 from ..forms import TransactionSearchForm
-from ..functions import paginationFunction, editStockNameChange
-from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH, UNIT_INPUT_MAX_LENGTH, Transaction)
+from ..functions import paginationFunction
+from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+                      UNIT_INPUT_MAX_LENGTH, Transaction)
 
 logger = Logger("app/logging/app.log")
+
 
 def get_properties(request, ExceptionToUse: Exception):
     """
@@ -80,6 +81,7 @@ def get_properties(request, ExceptionToUse: Exception):
         notes,
     )
 
+
 def search_filtering(form):
     transactions = Transaction.objects.all().order_by("-id")
     active_filters = []
@@ -92,7 +94,9 @@ def search_filtering(form):
             active_filters.append(f"ID: {str(data['id'])}")
         if data.get("item_type"):
             if data.get("item_type") != "None":
-                transactions = transactions.filter(item_type__icontains=data["item_type"])
+                transactions = transactions.filter(
+                    item_type__icontains=data["item_type"]
+                )
                 active_filters.append(f"Item Type: {str(data['item_type'])}")
         if data.get("item_id"):
             transactions = transactions.filter(item_id=data["item_id"])
@@ -102,8 +106,12 @@ def search_filtering(form):
             active_filters.append(f"Item Name: {str(data['item_name'])}")
         if data.get("transaction_type"):
             if data.get("transaction_type") != "None":
-                transactions = transactions.filter(transaction_type__icontains=data["transaction_type"])
-                active_filters.append(f"Transaction Type: {str(data['transaction_type'])}")
+                transactions = transactions.filter(
+                    transaction_type__icontains=data["transaction_type"]
+                )
+                active_filters.append(
+                    f"Transaction Type: {str(data['transaction_type'])}"
+                )
         if data.get("qty_mode"):
             if data.get("qty_mode") == "range":
                 if data.get("min_qty") is not None:
@@ -115,11 +123,19 @@ def search_filtering(form):
         if data.get("transaction_date_mode"):
             if data.get("transaction_date_mode") == "range":
                 if data.get("min_transaction_date") is not None:
-                    transactions = transactions.filter(date__gte=data["min_transaction_date"])
-                    active_filters.append(f"Min Transaction Date: {str(data['min_transaction_date'])}")
+                    transactions = transactions.filter(
+                        date__gte=data["min_transaction_date"]
+                    )
+                    active_filters.append(
+                        f"Min Transaction Date: {str(data['min_transaction_date'])}"
+                    )
                 if data.get("max_transaction_date") is not None:
-                    transactions = transactions.filter(date__lte=data["max_transaction_date"])
-                    active_filters.append(f"Max Transaction Date: {str(data['max_transaction_date'])}")
+                    transactions = transactions.filter(
+                        date__lte=data["max_transaction_date"]
+                    )
+                    active_filters.append(
+                        f"Max Transaction Date: {str(data['max_transaction_date'])}"
+                    )
     return active_filters, transactions
 
 
@@ -170,23 +186,30 @@ def add_transaction(request):
             transaction = Transaction.objects.create(
                 item_type=item_type,
                 item_id=item_id,
-                item_name =item_name,
+                item_name=item_name,
                 transaction_type=transaction_type,
                 quantity=quantity,
                 date=date,
                 notes=notes,
             )
-            logger.log(f"User {request.user} added transaction: {item_type} {item_id} (ID: {transaction.id}).")
+            logger.log(
+                f"User {request.user} added transaction: {item_type} {item_id} (ID: {transaction.id})."
+            )
             return redirect("transaction_list")
         except TransactionCreationException as e:
             logger.log(f"Transaction creation error by {request.user}: {e}")
             messages.error(request, str(e))
             return redirect("transaction_list")
         except Exception as e:
-            logger.log(f"Unexpected error during transaction creation by user {request.user}: {e}")
-            messages.error(request, "An unexpected error occurred while adding the transaction.")
+            logger.log(
+                f"Unexpected error during transaction creation by user {request.user}: {e}"
+            )
+            messages.error(
+                request, "An unexpected error occurred while adding the transaction."
+            )
             return redirect("transaction_list")
     return redirect("transaction_list")
+
 
 @login_required
 def delete_transaction(request):
@@ -196,20 +219,26 @@ def delete_transaction(request):
                 transaction = get_object_or_404(Transaction, id=request.POST.get("id"))
             except Http404:
                 raise TransactionDeleteException("Transaction not found.")
-            
+
             transaction_item_type = transaction.item_type
             transaction_item_id = transaction.item_id
             transaction_id = transaction.id
             transaction.delete()
 
-            logger.log(f"User {request.user} deleted transaction: {transaction_item_type} {transaction_item_id} (ID: {transaction_id}).")
+            logger.log(
+                f"User {request.user} deleted transaction: {transaction_item_type} {transaction_item_id} (ID: {transaction_id})."
+            )
             return redirect("transaction_list")
         except TransactionDeleteException as e:
             logger.log(f"Transaction delete error by {request.user}: {e}")
             messages.error(request, str(e))
             return redirect("transaction_list")
         except Exception as e:
-            logger.log(f"Unexpected error during transaction deletion by user {request.user}: {e}")
-            messages.error(request, "An unexpected error occured while deleting the transaction.")
+            logger.log(
+                f"Unexpected error during transaction deletion by user {request.user}: {e}"
+            )
+            messages.error(
+                request, "An unexpected error occured while deleting the transaction."
+            )
             return redirect("transaction_list")
     return redirect("transaction_list")

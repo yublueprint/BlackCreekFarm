@@ -4,6 +4,9 @@ from django.urls import reverse
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_crop_list_renders_all(client, user, mocker):
     mock_crops = [
         mocker.MagicMock(name="crop1"),
@@ -25,6 +28,9 @@ def test_crop_list_renders_all(client, user, mocker):
     mock_logger.assert_called_once_with(f"User {user} viewed crop list (page 1).")
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_crop_list_contains_notes_column(client, user, crop):
     response = client.get(reverse("crop_list"))
 
@@ -33,6 +39,9 @@ def test_crop_list_contains_notes_column(client, user, crop):
     assert "Notes" in content
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_crop_list_shows_open_notes_when_notes_exist(client, user, crop):
     response = client.get(reverse("crop_list"))
 

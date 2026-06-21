@@ -32,6 +32,7 @@ def paginationFunction(objects, page_number=1, num_per_page=10):
 
     return page_obj, backward_pages, forward_pages, page_number
 
+
 def editStockNameChange(old_name, new_name):
     if old_name != new_name:
         return f"to {new_name}"

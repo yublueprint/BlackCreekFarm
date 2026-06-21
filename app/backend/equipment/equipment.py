@@ -9,10 +9,12 @@ from app.exceptions.equipment.exception import (EquipmentCreationException,
 from app.logging.logging import Logger
 
 from ..forms import EquipmentSearchForm
-from ..functions import paginationFunction, editStockNameChange
-from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH, UNIT_INPUT_MAX_LENGTH, Equipment)
+from ..functions import editStockNameChange, paginationFunction
+from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+                      UNIT_INPUT_MAX_LENGTH, Equipment)
 
 logger = Logger("app/logging/app.log")
+
 
 def get_properties(request, ExceptionToUse: Exception):
     """
@@ -106,6 +108,7 @@ def get_properties(request, ExceptionToUse: Exception):
         maintenance_history,
         notes,
     )
+
 
 def search_filtering(form):
     equipment = Equipment.objects.all().order_by("-id")
@@ -203,37 +206,60 @@ def search_filtering(form):
             if data.get("hours_used_mode") == "range":
                 if data.get("min_hours_used") is not None:
                     equipment = equipment.filter(hours_used__gte=data["min_hours_used"])
-                    active_filters.append(f"Min Hours Used: {str(data['min_hours_used'])}")
+                    active_filters.append(
+                        f"Min Hours Used: {str(data['min_hours_used'])}"
+                    )
                 if data.get("max_hours_used") is not None:
                     equipment = equipment.filter(hours_used__lte=data["max_hours_used"])
-                    active_filters.append(f"Max Hours Used: {str(data['max_hours_used'])}")
+                    active_filters.append(
+                        f"Max Hours Used: {str(data['max_hours_used'])}"
+                    )
         if data.get("condition"):
             equipment = equipment.filter(condition__icontains=data["condition"])
             active_filters.append(f"Condition: {str(data['condition'])}")
         if data.get("purchase_cost_mode"):
             if data.get("purchase_cost_mode") == "range":
                 if data.get("min_purchase_cost") is not None:
-                    equipment = equipment.filter(purchase_cost__gte=data["min_purchase_cost"])
-                    active_filters.append(f"Min Purchase Cost: {str(data['min_purchase_cost'])}")
+                    equipment = equipment.filter(
+                        purchase_cost__gte=data["min_purchase_cost"]
+                    )
+                    active_filters.append(
+                        f"Min Purchase Cost: {str(data['min_purchase_cost'])}"
+                    )
                 if data.get("max_purchase_cost") is not None:
-                    equipment = equipment.filter(purchase_cost__lte=data["max_purchase_cost"])
-                    active_filters.append(f"Max Purchase Cost: {str(data['max_purchase_cost'])}")
+                    equipment = equipment.filter(
+                        purchase_cost__lte=data["max_purchase_cost"]
+                    )
+                    active_filters.append(
+                        f"Max Purchase Cost: {str(data['max_purchase_cost'])}"
+                    )
         if data.get("active"):
             if data.get("active") != "None":
                 equipment = equipment.filter(active__icontains=data["active"])
                 active_filters.append(f"Active: {str(data['active'])}")
         if data.get("last_service_by"):
-            equipment = equipment.filter(last_service_by__icontains=data["last_service_by"])
+            equipment = equipment.filter(
+                last_service_by__icontains=data["last_service_by"]
+            )
             active_filters.append(f"Condition: {str(data['last_service_by'])}")
         if data.get("service_interval_days_mode"):
             if data.get("service_interval_days_mode") == "range":
                 if data.get("min_service_interval_days") is not None:
-                    equipment = equipment.filter(service_interval_days__gte=data["min_service_interval_days"])
-                    active_filters.append(f"Min Service Interval Days: {str(data['min_service_interval_days'])}")
+                    equipment = equipment.filter(
+                        service_interval_days__gte=data["min_service_interval_days"]
+                    )
+                    active_filters.append(
+                        f"Min Service Interval Days: {str(data['min_service_interval_days'])}"
+                    )
                 if data.get("max_service_interval_days") is not None:
-                    equipment = equipment.filter(service_interval_days__lte=data["max_service_interval_days"])
-                    active_filters.append(f"Max Service Interval Days: {str(data['max_service_interval_days'])}")
+                    equipment = equipment.filter(
+                        service_interval_days__lte=data["max_service_interval_days"]
+                    )
+                    active_filters.append(
+                        f"Max Service Interval Days: {str(data['max_service_interval_days'])}"
+                    )
     return active_filters, equipment
+
 
 @login_required
 def equipment_list(request):
@@ -312,7 +338,9 @@ def add_equipment(request):
                 service_interval_days=service_interval_days,
             )
 
-            logger.log(f"User {request.user} added equipment: {name} (ID: {equipment.id}).")
+            logger.log(
+                f"User {request.user} added equipment: {name} (ID: {equipment.id})."
+            )
             return redirect("equipment_list")
 
         except EquipmentCreationException as e:
@@ -320,8 +348,12 @@ def add_equipment(request):
             messages.error(request, str(e))
             return redirect("equipment_list")
         except Exception as e:
-            logger.log(f"Unexpected error during equipment creation by user {request.user}: {e}")
-            messages.error(request, "An unexpected error occurred while adding the equipment.")
+            logger.log(
+                f"Unexpected error during equipment creation by user {request.user}: {e}"
+            )
+            messages.error(
+                request, "An unexpected error occurred while adding the equipment."
+            )
             return redirect("equipment_list")
     return redirect("equipment_list")
 
@@ -334,7 +366,7 @@ def edit_equipment(request):
                 equipment = get_object_or_404(Equipment, id=request.POST.get("id"))
             except Http404:
                 raise EquipmentEditException("Equipment not found.")
-            
+
             old_name = equipment.name
 
             (
@@ -362,7 +394,9 @@ def edit_equipment(request):
 
             name_change_msg = editStockNameChange(old_name, equipment.name)
 
-            logger.log(f"User {request.user} edited equipment: {old_name} {name_change_msg} (ID: {equipment.id})")
+            logger.log(
+                f"User {request.user} edited equipment: {old_name} {name_change_msg} (ID: {equipment.id})"
+            )
             return redirect("equipment_list")
 
         except EquipmentEditException as e:
@@ -371,7 +405,9 @@ def edit_equipment(request):
             return redirect("equipment_list")
         except Exception as e:
             logger.log(f"Unexpected error during equipment edit: {e}")
-            messages.error(request, "An unexpected error occurred while editing the equipment.")
+            messages.error(
+                request, "An unexpected error occurred while editing the equipment."
+            )
             return redirect("equipment_list")
     return redirect("equipment_list")
 
@@ -389,7 +425,9 @@ def delete_equipment(request):
             equipment_id = equipment.id or -1
             equipment.delete()
 
-            logger.log(f"User {request.user} deleted equipment: {equipment_name} (ID: {equipment_id}).")
+            logger.log(
+                f"User {request.user} deleted equipment: {equipment_name} (ID: {equipment_id})."
+            )
             return redirect("equipment_list")
 
         except EquipmentDeleteException as e:
@@ -397,7 +435,11 @@ def delete_equipment(request):
             messages.error(request, str(e))
             return redirect("equipment_list")
         except Exception as e:
-            logger.log(f"Unexpected error during equipment deletion by user {request.user}: {e}")
-            messages.error(request, "An unexpected error occurred while deleting the equipment.")
+            logger.log(
+                f"Unexpected error during equipment deletion by user {request.user}: {e}"
+            )
+            messages.error(
+                request, "An unexpected error occurred while deleting the equipment."
+            )
             return redirect("equipment_list")
     return redirect("equipment_list")

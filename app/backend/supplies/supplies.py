@@ -9,7 +9,7 @@ from app.exceptions.supplies.exception import (SupplyCreationException,
 from app.logging.logging import Logger
 
 from ..forms import SuppliesSearchForm
-from ..functions import paginationFunction, editStockNameChange
+from ..functions import editStockNameChange, paginationFunction
 from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Supplies)
 
@@ -82,6 +82,7 @@ def get_properties(request, ExceptionToUse: Exception):
         notes,
     )
 
+
 def search_filtering(form):
     supplies = Supplies.objects.all().order_by("-id")
     active_filters = []
@@ -148,6 +149,7 @@ def search_filtering(form):
                         f"Max Procurement Date: {str(data['max_procurement_date'])}"
                     )
     return active_filters, supplies
+
 
 @login_required
 def supplies_list(request):
@@ -217,7 +219,9 @@ def add_supplies(request):
             return redirect("supplies_list")
         except Exception as e:
             logger.log(f"Unexpected error during supply creation: {e}")
-            messages.error(request, "An unexpected error occurred while adding the supply.")
+            messages.error(
+                request, "An unexpected error occurred while adding the supply."
+            )
             return redirect("supplies_list")
     return redirect("supplies_list")
 
@@ -230,7 +234,7 @@ def edit_supplies(request):
                 supply = get_object_or_404(Supplies, id=request.POST.get("id"))
             except Http404:
                 raise SupplyEditException("Supply not found.")
-            
+
             old_name = supply.name
 
             (
@@ -249,7 +253,9 @@ def edit_supplies(request):
 
             name_change_msg = editStockNameChange(old_name, supply.name)
 
-            logger.log(f"User {request.user} edited supply: {old_name} {name_change_msg} (ID: {supply.id}).")
+            logger.log(
+                f"User {request.user} edited supply: {old_name} {name_change_msg} (ID: {supply.id})."
+            )
             return redirect("supplies_list")
 
         except SupplyEditException as e:
@@ -258,7 +264,9 @@ def edit_supplies(request):
             return redirect("supplies_list")
         except Exception as e:
             logger.log(f"Unexpected error during supply edit: {e}")
-            messages.error(request, "An unexpected error occurred while editing the supply.")
+            messages.error(
+                request, "An unexpected error occurred while editing the supply."
+            )
             return redirect("supplies_list")
     return redirect("supplies_list")
 
@@ -276,7 +284,9 @@ def delete_supplies(request):
             supply_id = supply.id or -1
             supply.delete()
 
-            logger.log(f"User {request.user} deleted supply: {supply_name} (ID: {supply_id}).")
+            logger.log(
+                f"User {request.user} deleted supply: {supply_name} (ID: {supply_id})."
+            )
             return redirect("supplies_list")
 
         except SupplyDeleteException as e:
@@ -285,6 +295,8 @@ def delete_supplies(request):
             return redirect("supplies_list")
         except Exception as e:
             logger.log(f"Unexpected error during supply deletion: {e}")
-            messages.error(request, "An unexpected error occurred while deleting the supply.")
+            messages.error(
+                request, "An unexpected error occurred while deleting the supply."
+            )
             return redirect("supplies_list")
     return redirect("supplies_list")

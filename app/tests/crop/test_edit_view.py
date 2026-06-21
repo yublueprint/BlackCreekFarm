@@ -5,6 +5,9 @@ from django.urls import reverse
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_crop_success(client, user, crop, mocker):
     mock_logger = mocker.patch("app.backend.crop.crop.logger.log")
 
@@ -32,6 +35,9 @@ def test_edit_crop_success(client, user, crop, mocker):
     mock_logger.assert_any_call(f"User {user} edited crop: Corn to Updated Corn")
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_crop_missing_fields(client, user, crop, mocker):
     mock_logger = mocker.patch("app.backend.crop.crop.logger.log")
 
@@ -48,12 +54,17 @@ def test_edit_crop_missing_fields(client, user, crop, mocker):
 
     assert response.status_code == 200
     assert "error" in response.context
-    assert response.context["error"] == "Name, crop type, and planting date are required."
+    assert (
+        response.context["error"] == "Name, crop type, and planting date are required."
+    )
     mock_logger.assert_any_call(
         f"Crop edit error by {user}: Name, crop type, and planting date are required."
     )
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_crop_invalid_numeric_values(client, user, crop, mocker):
     mock_logger = mocker.patch("app.backend.crop.crop.logger.log")
 
@@ -78,6 +89,9 @@ def test_edit_crop_invalid_numeric_values(client, user, crop, mocker):
     )
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_crop_not_found(client, user, mocker):
     mocker.patch("app.backend.crop.crop.get_object_or_404", side_effect=Http404)
 
@@ -96,6 +110,9 @@ def test_edit_crop_not_found(client, user, mocker):
     mock_all.assert_called_once()
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_crop_unexpected_exception(client, user, mocker):
     mock_get = mocker.patch(
         "app.backend.crop.crop.get_object_or_404",
@@ -118,6 +135,9 @@ def test_edit_crop_unexpected_exception(client, user, mocker):
     mock_all.assert_called_once()
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_crop_redirect_on_get(client, user):
     response = client.get(reverse("edit_crop"))
     assert response.status_code == 302

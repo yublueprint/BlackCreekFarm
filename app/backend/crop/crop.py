@@ -9,7 +9,7 @@ from app.exceptions.crop.exception import (CropCreationException,
 from app.logging.logging import Logger
 
 from ..forms import CropSearchForm
-from ..functions import paginationFunction, editStockNameChange
+from ..functions import editStockNameChange, paginationFunction
 from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Crop)
 
@@ -41,7 +41,7 @@ def get_properties(request, ExceptionToUse: Exception):
     default_text_inputs_given = {
         "name": name,
         "crop_type": crop_type,
-        "region":region,
+        "region": region,
     }
 
     unit_inputs_given = {
@@ -86,6 +86,7 @@ def get_properties(request, ExceptionToUse: Exception):
         notes,
     )
 
+
 def search_filtering(form):
     crops = Crop.objects.all().order_by("-id")
     active_filters = []
@@ -106,50 +107,82 @@ def search_filtering(form):
             if data.get("planting_date_mode") == "range":
                 if data.get("min_planting_date") is not None:
                     crops = crops.filter(planting_date__gte=data["min_planting_date"])
-                    active_filters.append(f"Min Planting Date: {str(data['min_planting_date'])}")
+                    active_filters.append(
+                        f"Min Planting Date: {str(data['min_planting_date'])}"
+                    )
                 if data.get("max_planting_date") is not None:
                     crops = crops.filter(planting_date__lte=data["max_planting_date"])
-                    active_filters.append(f"Max Planting Date: {str(data['max_planting_date'])}")
+                    active_filters.append(
+                        f"Max Planting Date: {str(data['max_planting_date'])}"
+                    )
         if data.get("harvest_date_mode"):
             if data.get("harvest_date_mode") == "range":
                 if data.get("min_harvest_date") is not None:
                     crops = crops.filter(harvest_date__gte=data["min_harvest_date"])
-                    active_filters.append(f"Min Harvest Date: {str(data['min_harvest_date'])}")
+                    active_filters.append(
+                        f"Min Harvest Date: {str(data['min_harvest_date'])}"
+                    )
                 if data.get("max_harvest_date") is not None:
                     crops = crops.filter(harvest_date__lte=data["max_harvest_date"])
-                    active_filters.append(f"Max Harvest Date: {str(data['max_harvest_date'])}")
+                    active_filters.append(
+                        f"Max Harvest Date: {str(data['max_harvest_date'])}"
+                    )
         if data.get("expected_yield_mode"):
             if data.get("expected_yield_mode") == "range":
                 if data.get("min_expected_yield") is not None:
                     crops = crops.filter(expected_yield__gte=data["min_expected_yield"])
-                    active_filters.append(f"Min Expected Yield: {str(data['min_expected_yield'])}")
+                    active_filters.append(
+                        f"Min Expected Yield: {str(data['min_expected_yield'])}"
+                    )
                 if data.get("max_expected_yield") is not None:
                     crops = crops.filter(expected_yield__lte=data["max_expected_yield"])
-                    active_filters.append(f"Max Expected Yield: {str(data['max_expected_yield'])}")
+                    active_filters.append(
+                        f"Max Expected Yield: {str(data['max_expected_yield'])}"
+                    )
         if data.get("yield_efficiency_mode"):
             if data.get("yield_efficiency_mode") == "range":
                 if data.get("min_yield_efficiency") is not None:
-                    crops = crops.filter(yield_efficiency__gte=data["min_yield_efficiency"])
-                    active_filters.append(f"Min Yield Efficiency: {str(data['min_yield_efficiency'])}")
+                    crops = crops.filter(
+                        yield_efficiency__gte=data["min_yield_efficiency"]
+                    )
+                    active_filters.append(
+                        f"Min Yield Efficiency: {str(data['min_yield_efficiency'])}"
+                    )
                 if data.get("max_yield_efficiency") is not None:
-                    crops = crops.filter(yield_efficiency__lte=data["max_yield_efficiency"])
-                    active_filters.append(f"Max Yield Efficiency: {str(data['max_yield_efficiency'])}")
+                    crops = crops.filter(
+                        yield_efficiency__lte=data["max_yield_efficiency"]
+                    )
+                    active_filters.append(
+                        f"Max Yield Efficiency: {str(data['max_yield_efficiency'])}"
+                    )
         if data.get("water_usage_mode"):
             if data.get("water_usage_mode") == "range":
                 if data.get("min_water_usage") is not None:
-                    crops = crops.filter(water_usage_liters__gte=data["min_water_usage"])
-                    active_filters.append(f"Min Water Usage: {str(data['min_water_usage'])}")
+                    crops = crops.filter(
+                        water_usage_liters__gte=data["min_water_usage"]
+                    )
+                    active_filters.append(
+                        f"Min Water Usage: {str(data['min_water_usage'])}"
+                    )
                 if data.get("max_water_usage") is not None:
-                    crops = crops.filter(water_usage_liters__lte=data["max_water_usage"])
-                    active_filters.append(f"Max Water Usage: {str(data['max_water_usage'])}")
+                    crops = crops.filter(
+                        water_usage_liters__lte=data["max_water_usage"]
+                    )
+                    active_filters.append(
+                        f"Max Water Usage: {str(data['max_water_usage'])}"
+                    )
         if data.get("next_checkup_mode"):
             if data.get("next_checkup_mode") == "range":
                 if data.get("min_next_checkup") is not None:
                     crops = crops.filter(next_checkup__gte=data["min_next_checkup"])
-                    active_filters.append(f"Min Next Checkup: {str(data['min_next_checkup'])}")
+                    active_filters.append(
+                        f"Min Next Checkup: {str(data['min_next_checkup'])}"
+                    )
                 if data.get("max_next_checkup") is not None:
                     crops = crops.filter(next_checkup__lte=data["max_next_checkup"])
-                    active_filters.append(f"Max Next Checkup: {str(data['max_next_checkup'])}")
+                    active_filters.append(
+                        f"Max Next Checkup: {str(data['max_next_checkup'])}"
+                    )
         if data.get("region"):
             crops = crops.filter(region__icontains=data["region"])
             active_filters.append(f"Region: {str(data['region'])}")
@@ -211,7 +244,9 @@ def add_crop(request):
                 harvest_date=harvest_date if harvest_date else None,
                 expected_yield=float(expected_yield) if expected_yield else 0,
                 yield_efficiency=float(yield_efficiency) if yield_efficiency else 0,
-                water_usage_liters=float(water_usage_liters) if water_usage_liters else 0,
+                water_usage_liters=(
+                    float(water_usage_liters) if water_usage_liters else 0
+                ),
                 next_checkup=next_checkup if next_checkup else None,
                 region=region,
                 notes=notes,
@@ -230,7 +265,9 @@ def add_crop(request):
             return redirect("crop_list")
         except Exception as e:
             logger.log(f"Unexpected error during crop creation: {e}")
-            messages.error(request, "An unexpected error occurred while adding the crop.")
+            messages.error(
+                request, "An unexpected error occurred while adding the crop."
+            )
             return redirect("crop_list")
     return redirect("crop_list")
 
@@ -243,7 +280,7 @@ def edit_crop(request):
                 crop = get_object_or_404(Crop, id=request.POST.get("id"))
             except Http404:
                 raise CropEditException("Crop not found.")
-            
+
             old_name = crop.name
 
             (
@@ -263,7 +300,9 @@ def edit_crop(request):
 
             name_change_msg = editStockNameChange(old_name, crop.name)
 
-            logger.log(f"User {request.user} edited crop: {old_name} {name_change_msg} (ID: {crop.id}).")
+            logger.log(
+                f"User {request.user} edited crop: {old_name} {name_change_msg} (ID: {crop.id})."
+            )
             return redirect("crop_list")
 
         except CropEditException as e:
@@ -272,7 +311,9 @@ def edit_crop(request):
             return redirect("crop_list")
         except Exception as e:
             logger.log(f"Unexpected error during crop edit: {e}")
-            messages.error(request, "An unexpected error occurred while editing the crop.") 
+            messages.error(
+                request, "An unexpected error occurred while editing the crop."
+            )
             return redirect("crop_list")
     return redirect("crop_list")
 
@@ -290,7 +331,9 @@ def delete_crop(request):
             crop_id = crop.id or -1
             crop.delete()
 
-            logger.log(f"User {request.user} deleted crop: {crop_name} (ID: {crop_id}).")
+            logger.log(
+                f"User {request.user} deleted crop: {crop_name} (ID: {crop_id})."
+            )
             return redirect("crop_list")
 
         except CropDeleteException as e:
@@ -299,6 +342,8 @@ def delete_crop(request):
             return redirect("crop_list")
         except Exception as e:
             logger.log(f"Unexpected error during crop deletion: {e}")
-            messages.error(request, "An unexpected error occurred while deleting the crop.")
+            messages.error(
+                request, "An unexpected error occurred while deleting the crop."
+            )
             return redirect("crop_list")
     return redirect("crop_list")

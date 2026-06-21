@@ -117,6 +117,7 @@ class LivestockSearchForm(forms.Form):
         ),
     )
 
+
 class CropSearchForm(forms.Form):
     id = forms.IntegerField(required=False, label="Search by ID")
     name = forms.CharField(required=False, label="Search by Name")
@@ -171,8 +172,12 @@ class CropSearchForm(forms.Form):
         required=False,
         label="Yield Efficiency Filter",
     )
-    min_yield_efficiency = forms.FloatField(required=False, label="Min Yield Efficiency")
-    max_yield_efficiency = forms.FloatField(required=False, label="Max Yield Efficiency")
+    min_yield_efficiency = forms.FloatField(
+        required=False, label="Min Yield Efficiency"
+    )
+    max_yield_efficiency = forms.FloatField(
+        required=False, label="Max Yield Efficiency"
+    )
     water_usage_mode = forms.ChoiceField(
         choices=[("all", "Any Quantity"), ("range", "Specific Range")],
         required=False,
@@ -200,6 +205,7 @@ class CropSearchForm(forms.Form):
         ),
     )
     region = forms.CharField(required=False, label="Search by Region")
+
 
 class EquipmentSearchForm(forms.Form):
     id = forms.IntegerField(required=False, label="Search by ID")
@@ -307,15 +313,22 @@ class EquipmentSearchForm(forms.Form):
         required=False,
         label="Service Interval Days Filter",
     )
-    min_service_interval_days = forms.FloatField(required=False, label="Min Service Interval Days")
-    max_service_interval_days = forms.FloatField(required=False, label="Max Service Interval Days")
+    min_service_interval_days = forms.FloatField(
+        required=False, label="Min Service Interval Days"
+    )
+    max_service_interval_days = forms.FloatField(
+        required=False, label="Max Service Interval Days"
+    )
+
 
 class TransactionSearchForm(forms.Form):
     id = forms.IntegerField(required=False, label="Search by ID")
     item_type = forms.CharField(required=False, label="Search by Item Type")
     item_id = forms.IntegerField(required=False, label="Search by Item ID")
     item_name = forms.CharField(required=False, label="Search by Item Name")
-    transaction_type = forms.CharField(required=False, label="Search by Transaction Type")
+    transaction_type = forms.CharField(
+        required=False, label="Search by Transaction Type"
+    )
     qty_mode = forms.ChoiceField(
         choices=[("all", "Any Quantity"), ("range", "Specific Range")],
         required=False,
