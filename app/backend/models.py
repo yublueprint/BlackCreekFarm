@@ -19,7 +19,7 @@ class Record(models.Model):
 class Livestock(models.Model):
     name = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
     type = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
-    age = models.BigIntegerField(blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    age = models.BigIntegerField(blank=True, null=True)
     weight = models.FloatField(blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
     health_status = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
     purchase_price = models.FloatField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
@@ -67,7 +67,7 @@ class Equipment(models.Model):
     purchase_cost = models.FloatField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
     active = models.CharField(default=activeChoices.YES, choices=activeChoices, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
     last_service_by = models.CharField(default=DEFAULT_FILLER_TEXT, blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
-    service_interval_days = models.BigIntegerField(default=0, blank=True, null=True, max_length=UNIT_INPUT_MAX_LENGTH)
+    service_interval_days = models.BigIntegerField(default=0, blank=True, null=True)
     maintenance_history = models.TextField(blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
     notes = models.TextField(default="", blank=True, null=True, max_length=DEFAULT_TEXT_MAX_LENGTH)
 
@@ -104,11 +104,13 @@ class Transaction(models.Model):
         ("Return", "Return"),
     ]
 
-    item_type = models.CharField(max_length=20, choices=ITEM_TYPE_CHOICES)
+    item_type = models.CharField(choices=ITEM_TYPE_CHOICES, max_length=DEFAULT_TEXT_MAX_LENGTH)
     item_id = models.PositiveIntegerField()
-    transaction_type = models.CharField(max_length=20, choices=TRANSACTION_TYPE_CHOICES)
+    item_name = models.CharField(default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH)
+    transaction_type = models.CharField(choices=TRANSACTION_TYPE_CHOICES, max_length=DEFAULT_TEXT_MAX_LENGTH)
     quantity = models.PositiveIntegerField()
     date = models.DateField()
+    notes = models.TextField(blank=True, null=True, max_length=TEXTBOX_MAX_LENGTH)
 
     def __str__(self):
         return f"{self.transaction_type} of {self.item_type} (ID: {self.item_id})"

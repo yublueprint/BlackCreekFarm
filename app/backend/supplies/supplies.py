@@ -30,7 +30,7 @@ def get_properties(request, ExceptionToUse: Exception):
     minimum_required = request.POST.get("minimum_required") or None
     cost_per_unit = request.POST.get("cost_per_unit") or None
     procurement_date = request.POST.get("procurement_date") or None
-    notes = request.POST.get("notes") or None
+    notes = request.POST.get("notes") or ""
 
     required_inputs = {
         "name": name,

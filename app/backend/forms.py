@@ -309,3 +309,36 @@ class EquipmentSearchForm(forms.Form):
     )
     min_service_interval_days = forms.FloatField(required=False, label="Min Service Interval Days")
     max_service_interval_days = forms.FloatField(required=False, label="Max Service Interval Days")
+
+class TransactionSearchForm(forms.Form):
+    id = forms.IntegerField(required=False, label="Search by ID")
+    item_type = forms.CharField(required=False, label="Search by Item Type")
+    item_id = forms.IntegerField(required=False, label="Search by Item ID")
+    item_name = forms.CharField(required=False, label="Search by Item Name")
+    transaction_type = forms.CharField(required=False, label="Search by Transaction Type")
+    qty_mode = forms.ChoiceField(
+        choices=[("all", "Any Quantity"), ("range", "Specific Range")],
+        required=False,
+        label="Quantity Filter",
+    )
+    min_qty = forms.FloatField(required=False, label="Min Quantity")
+    max_qty = forms.FloatField(required=False, label="Max Quantity")
+    transaction_date_mode = forms.ChoiceField(
+        choices=[("all", "Any Date"), ("range", "Specific Range")],
+        required=False,
+        label="Transaction Date Filter",
+    )
+    min_transaction_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(
+            attrs={"type": "data"},
+            format="%Y-%m-%d",
+        ),
+    )
+    max_transaction_date = forms.DateField(
+        required=False,
+        widget=forms.DateInput(
+            attrs={"type": "data"},
+            format="%Y-%m-%d",
+        ),
+    )

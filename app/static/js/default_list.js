@@ -46,6 +46,7 @@ function clearSearchFilters() {
     const form = document.getElementById("searchForm");
     
     form.querySelectorAll('input').forEach(input => input.value = '');
+    form.querySelectorAll(`select[data-has-dropdown='N']`).forEach(select => select.value = 'None');
 }
 
 function toggleInputs(mode_id, container_id) {

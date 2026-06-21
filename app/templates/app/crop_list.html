@@ -18,12 +18,12 @@
         <!-- Search by ID -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Search by ID
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" id="idSearch" name="{{ form.id.name }}" placeholder="e.g., 102" value="{{ form.id.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
@@ -31,12 +31,12 @@
         <!-- Search by Name -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Search by Name
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -45,12 +45,12 @@
         <!-- Search by Crop Type -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Crop Type
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="cropTypeSearch" name="{{ form.crop_type.name }}" placeholder="Enter crop type" value="{{ form.crop_type.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -59,13 +59,13 @@
         <!-- Search by Planting Date -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="">
                         Planting Date
                     </p>
                 </div>
-                <div class="w-1/2">
-                    <select name="planting_date_mode" id="id_planting_date_mode" onchange="toggleInputs('id_planting_date_mode','planting_date_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="planting_date_mode" id="id_planting_date_mode" onchange="toggleInputs('id_planting_date_mode','planting_date_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.planting_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.planting_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -75,10 +75,10 @@
         <!-- Planting Date Dropdown. -->
         <div id="planting_date_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="min_planting_date" value="{{ form.min_planting_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="max_planting_date" value="{{ form.max_planting_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
@@ -86,13 +86,13 @@
         <!-- Search by Harvest Date -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="">
                         Harvest Date
                     </p>
                 </div>
-                <div class="w-1/2">
-                    <select name="harvest_date_mode" id="id_harvest_date_mode" onchange="toggleInputs('id_harvest_date_mode','harvest_date_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="harvest_date_mode" id="id_harvest_date_mode" onchange="toggleInputs('id_harvest_date_mode','harvest_date_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.harvest_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.harvest_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -102,10 +102,10 @@
         <!-- Harvest Date Dropdown. -->
         <div id="harvest_date_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="min_harvest_date" value="{{ form.min_harvest_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="max_harvest_date" value="{{ form.max_harvest_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
@@ -113,11 +113,11 @@
         <!-- Search by Expected Yield -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Expected Yield</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="expected_yield_mode" id="id_expected_yield_mode" onchange="toggleInputs('id_expected_yield_mode','expected_yield_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="expected_yield_mode" id="id_expected_yield_mode" onchange="toggleInputs('id_expected_yield_mode','expected_yield_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.expected_yield_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Expected Yield</option>
                         <option value="range" {% if form.expected_yield_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -127,11 +127,11 @@
         <!-- Expected Yield Dropdown. -->
         <div id="expected_yield_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_expected_yield" value="{{ form.min_expected_yield.value|default:'' }}" placeholder="Min Expected Yield"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_expected_yield" value="{{ form.max_expected_yield.value|default:'' }}" placeholder="Max Expected Yield"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -140,11 +140,11 @@
         <!-- Search by Yield Efficiency -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Yield Efficiency (%)</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="yield_efficiency_mode" id="id_yield_efficiency_mode" onchange="toggleInputs('id_yield_efficiency_mode','yield_efficiency_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="yield_efficiency_mode" id="id_yield_efficiency_mode" onchange="toggleInputs('id_yield_efficiency_mode','yield_efficiency_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.yield_efficiency_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Yield Efficiency</option>
                         <option value="range" {% if form.yield_efficiency_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -154,11 +154,11 @@
         <!-- Yield Efficiency Dropdown. -->
         <div id="yield_efficiency_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_yield_efficiency" value="{{ form.min_yield_efficiency.value|default:'' }}" placeholder="Min Yield Efficiency"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_yield_efficiency" value="{{ form.max_yield_efficiency.value|default:'' }}" placeholder="Max Yield Efficiency"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -167,11 +167,11 @@
         <!-- Search by Water Usage (liters) -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Water Usage (Liters)</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="water_usage_mode" id="id_water_usage_mode" onchange="toggleInputs('id_water_usage_mode','water_usage_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="water_usage_mode" id="id_water_usage_mode" onchange="toggleInputs('id_water_usage_mode','water_usage_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.water_usage_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Water Usage</option>
                         <option value="range" {% if form.water_usage_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -181,11 +181,11 @@
         <!-- Water Usage (liters) Dropdown. -->
         <div id="water_usage_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_water_usage" value="{{ form.min_water_usage.value|default:'' }}" placeholder="Min Water Usage"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_water_usage" value="{{ form.max_water_usage.value|default:'' }}" placeholder="Max Water Usage"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -194,13 +194,13 @@
         <!-- Search by Next Checkup Date -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="">
                         Next Checkup Date
                     </p>
                 </div>
-                <div class="w-1/2">
-                    <select name="next_checkup_mode" id="id_next_checkup_mode" onchange="toggleInputs('id_next_checkup_mode','next_checkup_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="next_checkup_mode" id="id_next_checkup_mode" onchange="toggleInputs('id_next_checkup_mode','next_checkup_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.next_checkup_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.next_checkup_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -210,10 +210,10 @@
         <!-- Next Checkup Date Dropdown. -->
         <div id="next_checkup_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="min_next_checkup" value="{{ form.min_next_checkup.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="max_next_checkup" value="{{ form.max_next_checkup.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
@@ -221,12 +221,12 @@
         <!-- Search by Region -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Region
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="regionSearch" name="{{ form.region.name }}" placeholder="Enter region" value="{{ form.region.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>

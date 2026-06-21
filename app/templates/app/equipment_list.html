@@ -18,12 +18,12 @@
         <!-- Search by ID -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Search by ID
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" id="idSearch" name="{{ form.id.name }}" placeholder="e.g., 102" value="{{ form.id.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
@@ -31,12 +31,12 @@
         <!-- Search by Name -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Search by Name
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -45,12 +45,12 @@
         <!-- Search by Category -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Category
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="categorySearch" name="{{ form.category.name }}" placeholder="Enter category name" value="{{ form.category.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -59,12 +59,12 @@
         <!-- Search by Type -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Type
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="typeSearch" name="{{ form.type.name }}" placeholder="Enter type" value="{{ form.type.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -73,12 +73,12 @@
         <!-- Search by Serial Number -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Serial Number
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="serialNumberSearch" name="{{ form.serial_number.name }}" placeholder="Enter serial number" value="{{ form.serial_number.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -87,13 +87,13 @@
         <!-- Search by Purchase Date -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="">
                         Purchase Date
                     </p>
                 </div>
-                <div class="w-1/2">
-                    <select name="purchase_date_mode" id="id_purchase_date_mode" onchange="toggleInputs('id_purchase_date_mode','purchase_date_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="purchase_date_mode" id="id_purchase_date_mode" onchange="toggleInputs('id_purchase_date_mode','purchase_date_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.purchase_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.purchase_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -103,10 +103,10 @@
         <!-- Purchase Date Dropdown. -->
         <div id="purchase_date_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="min_purchase_date" value="{{ form.min_purchase_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="max_purchase_date" value="{{ form.max_purchase_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
@@ -114,13 +114,13 @@
         <!-- Search by Maintenance Date -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="">
                         Maintenance Date
                     </p>
                 </div>
-                <div class="w-1/2">
-                    <select name="maintenance_date_mode" id="id_maintenance_date_mode" onchange="toggleInputs('id_maintenance_date_mode','maintenance_date_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="maintenance_date_mode" id="id_maintenance_date_mode" onchange="toggleInputs('id_maintenance_date_mode','maintenance_date_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.maintenance_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.maintenance_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -130,10 +130,10 @@
         <!-- Maintenance Date Dropdown. -->
         <div id="maintenance_date_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="min_maintenance_date" value="{{ form.min_maintenance_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="max_maintenance_date" value="{{ form.max_maintenance_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
@@ -141,13 +141,13 @@
         <!-- Search by Next Checkup -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="">
                         Next Checkup
                     </p>
                 </div>
-                <div class="w-1/2">
-                    <select name="next_checkup_mode" id="id_next_checkup_mode" onchange="toggleInputs('id_next_checkup_mode','next_checkup_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="next_checkup_mode" id="id_next_checkup_mode" onchange="toggleInputs('id_next_checkup_mode','next_checkup_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.next_checkup_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.next_checkup_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -157,10 +157,10 @@
         <!-- Next Checkup Dropdown. -->
         <div id="next_checkup_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="min_next_checkup" value="{{ form.min_next_checkup.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="max_next_checkup" value="{{ form.max_next_checkup.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
@@ -168,13 +168,13 @@
         <!-- Search by Warranty Expiration -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="">
                         Warranty Expiration
                     </p>
                 </div>
-                <div class="w-1/2">
-                    <select name="warranty_expiration_mode" id="id_warranty_expiration_mode" onchange="toggleInputs('id_warranty_expiration_mode','warranty_expiration_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="warranty_expiration_mode" id="id_warranty_expiration_mode" onchange="toggleInputs('id_warranty_expiration_mode','warranty_expiration_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.warranty_expiration_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.warranty_expiration_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -184,10 +184,10 @@
         <!-- Warranty Expiration Dropdown. -->
         <div id="warranty_expiration_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="min_warranty_expiration" value="{{ form.min_warranty_expiration.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="max_warranty_expiration" value="{{ form.max_warranty_expiration.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
@@ -195,12 +195,12 @@
         <!-- Search by Location -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Location
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="locationSearch" name="{{ form.location.name }}" placeholder="Enter location" value="{{ form.location.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -209,12 +209,12 @@
         <!-- Search by Supplier -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Supplier
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="supplierSearch" name="{{ form.supplier.name }}" placeholder="Enter supplier" value="{{ form.supplier.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -223,11 +223,11 @@
         <!-- Search by Hours Used -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Hours Used</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="hours_used_mode" id="id_hours_used_mode" onchange="toggleInputs('id_hours_used_mode','hours_used_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="hours_used_mode" id="id_hours_used_mode" onchange="toggleInputs('id_hours_used_mode','hours_used_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.hours_used_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Hours Used</option>
                         <option value="range" {% if form.hours_used_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -237,11 +237,11 @@
         <!-- Hours Used Dropdown. -->
         <div id="hours_used_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_hours_used" value="{{ form.min_hours_used.value|default:'' }}" placeholder="Min Hours Used"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_hours_used" value="{{ form.max_hours_used.value|default:'' }}" placeholder="Max Hours Used"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -250,12 +250,12 @@
         <!-- Search by Condition -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Condition
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="conditionSearch" name="{{ form.condition.name }}" placeholder="Enter condition" value="{{ form.condition.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -264,11 +264,11 @@
         <!-- Search by Purchase Cost -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Purchase Cost</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="purchase_cost_mode" id="id_purchase_cost_mode" onchange="toggleInputs('id_purchase_cost_mode','purchase_cost_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="purchase_cost_mode" id="id_purchase_cost_mode" onchange="toggleInputs('id_purchase_cost_mode','purchase_cost_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.purchase_cost_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Purchase Cost</option>
                         <option value="range" {% if form.purchase_cost_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -278,11 +278,11 @@
         <!-- Purchase Cost Dropdown. -->
         <div id="purchase_cost_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_purchase_cost" value="{{ form.min_purchase_cost.value|default:'' }}" placeholder="Min Purchase Cost"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_purchase_cost" value="{{ form.max_purchase_cost.value|default:'' }}" placeholder="Max Purchase Cost"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -291,12 +291,12 @@
         <!-- Search by Active -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Active</p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <!-- w-full border rounded px-3 py-2 mb-4 -->
-                    <select name="active" class="">
+                    <select name="active" data-has-dropdown="N" class="w-full border rounded px-3 py-2">
                         <option value="None" {% if form.active.value == 'None' %}selected{% endif %}>None Selected</option>
                         <option value="Yes" {% if form.active.value == 'Yes' %}selected{% endif %}>Yes</option>
                         <option value="No" {% if form.active.value == 'No' %}selected{% endif %}>No</option>
@@ -307,12 +307,12 @@
         <!-- Search by Last Service By -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Last Service By
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="lastServiceBySearch" name="{{ form.last_service_by.name }}" placeholder="Enter Last Service By" value="{{ form.last_service_by.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -321,11 +321,11 @@
         <!-- Search by Service Interval Days -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Service Interval Days</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="service_interval_days_mode" id="id_service_interval_days_mode" onchange="toggleInputs('id_service_interval_days_mode','service_interval_days_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="service_interval_days_mode" id="id_service_interval_days_mode" onchange="toggleInputs('id_service_interval_days_mode','service_interval_days_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.service_interval_days_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Service Interval Days</option>
                         <option value="range" {% if form.service_interval_days_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -335,11 +335,11 @@
         <!-- Service Interval Days Dropdown. -->
         <div id="service_interval_days_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_service_interval_days" value="{{ form.min_service_interval_days.value|default:'' }}" placeholder="Min Service Interval Days"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_service_interval_days" value="{{ form.max_service_interval_days.value|default:'' }}" placeholder="Max Service Interval Days"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -602,7 +602,7 @@
 
 {% block delete_popup %}
     {% include "partials/default_list/delete_popup.html" with stock_name="Equipment" %}
-{% endblock %}
+{% endblock %}xd
 
 {% block notes_popup %}
     {% include "partials/default_list/notes_popup.html" %}

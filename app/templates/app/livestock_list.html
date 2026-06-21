@@ -18,12 +18,12 @@
         <!-- Search by ID -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Search by ID
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" id="idSearch" name="{{ form.id.name }}" placeholder="e.g., 102" value="{{ form.id.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
@@ -31,12 +31,12 @@
         <!-- Search by Name -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Search by Name
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}" maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
@@ -44,12 +44,12 @@
         <!-- Search by Type -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Type
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="typeSearch" name="{{ form.type.name }}" placeholder="Enter type/species" value="{{ form.type.value|default:'' }}" maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
@@ -57,11 +57,11 @@
         <!-- Search by Age -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Age</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="age_mode" id="id_age_mode" onchange="toggleInputs('id_age_mode','age_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="age_mode" id="id_age_mode" onchange="toggleInputs('id_age_mode','age_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.age_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Age</option>
                         <option value="range" {% if form.age_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -71,11 +71,11 @@
         <!-- Age Dropdown. -->
         <div id="age_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_age" value="{{ form.min_age.value|default:'' }}" placeholder="Min Age" 
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_age" value="{{ form.max_age.value|default:'' }}" placeholder="Max Age"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -84,11 +84,11 @@
         <!-- Search by Weight -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Weight</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="weight_mode" id="id_weight_mode" onchange="toggleInputs('id_weight_mode','weight_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="weight_mode" id="id_weight_mode" onchange="toggleInputs('id_weight_mode','weight_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.weight_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Weight</option>
                         <option value="range" {% if form.weight_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -98,11 +98,11 @@
         <!-- Weight Dropdown. -->
         <div id="weight_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_weight" value="{{ form.min_weight.value|default:'' }}" placeholder="Min Weight"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_weight" value="{{ form.max_weight.value|default:'' }}" placeholder="Max Weight"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -111,12 +111,12 @@
         <!-- Search by Health Status -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Health Status
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="healthSearch" name="{{ form.health_status.name }}" placeholder="Enter health status" value="{{ form.health_status.value|default:'' }}"
                      maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -125,11 +125,11 @@
         <!-- Search by Purchase Price -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Purchase Price</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="purchase_price_mode" id="id_purchase_price_mode" onchange="toggleInputs('id_purchase_price_mode','purchase_price_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="purchase_price_mode" id="id_purchase_price_mode" onchange="toggleInputs('id_purchase_price_mode','purchase_price_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.purchase_price_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Purchase Price</option>
                         <option value="range" {% if form.purchase_price_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -139,11 +139,11 @@
         <!-- Purchase Price Dropdown. -->
         <div id="purchase_price_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_purchase_price" value="{{ form.min_purchase_price.value|default:'' }}" placeholder="Min Weight"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_purchase_price" value="{{ form.max_purchase_price.value|default:'' }}" placeholder="Max Weight"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -152,11 +152,11 @@
         <!-- Search by Current Value -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Current Value</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="current_value_mode" id="id_current_value_mode" onchange="toggleInputs('id_current_value_mode','current_value_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="current_value_mode" id="id_current_value_mode" onchange="toggleInputs('id_current_value_mode','current_value_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.purchase_price_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Current Value</option>
                         <option value="range" {% if form.purchase_price_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -166,11 +166,11 @@
         <!-- Current Value Dropdown. -->
         <div id="current_value_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_current_value" value="{{ form.min_current_value.value|default:'' }}" placeholder="Min Weight"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_current_value" value="{{ form.max_current_value.value|default:'' }}" placeholder="Max Weight"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -179,13 +179,13 @@
         <!-- Search by Next Vaccination Date -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="">
                         Next Vaccination Date
                     </p>
                 </div>
-                <div class="w-1/2">
-                    <select name="next_vaccination_mode" id="id_next_vaccination_mode" onchange="toggleInputs('id_next_vaccination_mode','next_vaccination_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="next_vaccination_mode" id="id_next_vaccination_mode" onchange="toggleInputs('id_next_vaccination_mode','next_vaccination_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.next_vaccination_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.next_vaccination_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -195,10 +195,10 @@
         <!-- Next Vaccination Date Dropdown. -->
         <div id="next_vaccination_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="min_next_vaccination" value="{{ form.min_next_vaccination.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="max_next_vaccination" value="{{ form.max_next_vaccination.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
@@ -318,19 +318,40 @@
 {% endblock %}
 
 {% block table %}
+    {% capture as custom_livestock_header %}
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Type of Animal (Species)</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Age</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Weight (kg)</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Health</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Purchase Price</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Value ($)</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Next Vaccination</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+    {% endcapture %}
     {% capture as custom_livestock_rows %}
         {% for object in page_obj %}
             <tr class="hover:bg-gray-50">
-                {% for attribute in object_attributes_given %}
-                    <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object|get_attr:attribute }}</td>
-                {% endfor %}
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.id }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.name|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.type|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.age|default:"0" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.weight|default:"0" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.health_status|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.purchase_price|default:"0" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.current_value|default:"0" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.next_vaccination_date|default:"—" }}</td>
 
-                {% if object|has_attr:"notes" %}
+                {% if object.notes %}
                     <td class="py-4 px-6 text-sm">
-                        <button onclick="openNotesPopup(`{{ object.notes }}`)" class="bg-[#b49494] text-white py-1 px-3 rounded text-sm hover:bg-amber-900">
+                        <button onclick="openNotesPopup(`Notes of Livestock`,`{{ object.notes }}`)" class="bg-[#b49494] text-white py-1 px-3 rounded text-sm hover:bg-amber-900">
                             View
                         </button>
                     </td>
+                {% else %}
+                    <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">—</td>
                 {% endif %}
                 
                 <td class="py-4 px-6 text-sm">
@@ -365,7 +386,7 @@
             </tr>
         {% endfor %}
     {% endcapture %}
-    {% include "partials/default_list/table.html" with table_rows_content=custom_livestock_rows %}
+    {% include "partials/default_list/table.html" with table_header_content=custom_livestock_header table_rows_content=custom_livestock_rows %}
 {% endblock %}
 
 {% block javascript %}

@@ -31,7 +31,7 @@ def get_properties(request, ExceptionToUse: Exception):
     water_usage_liters = request.POST.get("water_usage_liters") or None
     next_checkup = request.POST.get("next_checkup") or None
     region = (request.POST.get("region") or "").strip() or "Unknown"
-    notes = request.POST.get("notes") or None
+    notes = request.POST.get("notes") or ""
 
     required_inputs = {
         "name": name,

@@ -29,7 +29,7 @@ def get_properties(request, ExceptionToUse: Exception):
     purchase_price = request.POST.get("purchase_price") or None
     current_value = request.POST.get("current_value") or None
     next_vaccination_date = request.POST.get("next_vaccination_date") or None
-    notes = request.POST.get("notes") or None
+    notes = request.POST.get("notes") or ""
 
     required_inputs = {
         "name": name,
@@ -191,36 +191,8 @@ def livestock_list(request):
         livestock, page_number, 10
     )
 
-    # Livestock Fields, and Properties/Attributes.
-    fields_given = [
-        "ID",
-        "Name",
-        "Type of Animal (Species)",
-        "Age",
-        "Weight (kg)",
-        "Health",
-        "Purchase Price",
-        "Value ($)",
-        "Next Vaccination",
-        "Notes",
-        "Actions",
-    ]
-    object_attributes_given = [
-        "id",
-        "name",
-        "type",
-        "age",
-        "weight",
-        "health_status",
-        "purchase_price",
-        "current_value",
-        "next_vaccination_date",
-    ]
-
     context = {
         "form": form,
-        "fields_given": fields_given,
-        "object_attributes_given": object_attributes_given,
         "search_filters_applied": active_filters,
         "list_url_given": "livestock_list",
         "add_url_given": "add_livestock",

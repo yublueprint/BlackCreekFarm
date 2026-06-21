@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
+{% load dict_filters %}
 
 {% block title %}Recent Activities | BlackCreek Sync{% endblock %}
 
 {% block content %}
-<h2 class="text-3xl font-semibold mb-6">Recent Activities List</h2>
+{% block header_title %}
+    {% include 'partials/header_text.html' with text_given="Recent Activities List" %}
+{% endblock %}
 
 {% url 'download_all_activities' as download_activities_url %}
 {% include 'partials/url_button.html' with button_id="downloadAllRecentActivity" button_url=download_activities_url button_text="Download all activity logs." %}
@@ -15,33 +18,29 @@
 </div>
 {% endif %}
 
-<!-- bg-white rounded-lg shadow-md overflow-x-auto -->
-<div class="bg-white rounded-lg shadow-md overflow-x-auto">
-    <table class="min-w-full">
-        <thead class="bg-gray-50 border-b border-gray-200">
-            <tr>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Activity</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Details</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">User</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Time</th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-            {% for activity in page_obj %}
+{% block table %}
+    {% capture as custom_activities_header %}
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Activity</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Details</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">User</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Time</th>
+    {% endcapture %}
+    {% capture as custom_activities_rows %}
+        {% for activity in page_obj %}
             <tr class="hover:bg-gray-50">
                 <td class="py-4 px-6 text-sm text-gray-900">{{ activity.activity }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ activity.location }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ activity.user }}</td>
                 <td class="py-4 px-6 text-sm text-gray-900">{{ activity.time }}</td>
             </tr>
-            {% empty %}
+        {% empty %}
             <tr class="border-t">
                 <td class="py-4 px-6 text-sm text-gray-900">No recent activity found.</td>
             </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+        {% endfor %}
+    {% endcapture %}
+    {% include "partials/default_list/table.html" with table_header_content=custom_activities_header table_rows_content=custom_activities_rows %}
+{% endblock %}
 
 {% include 'partials/pagination.html' %}
 

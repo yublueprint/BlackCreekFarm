@@ -18,12 +18,12 @@
         <!-- Search by ID -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Search by ID
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" id="idSearch" name="{{ form.id.name }}" placeholder="e.g., 102" value="{{ form.id.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
@@ -31,12 +31,12 @@
         <!-- Search by Name -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Search by Name
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -45,12 +45,12 @@
         <!-- Search by Category -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Category
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" id="categorySearch" name="{{ form.category.name }}" placeholder="Enter category name" value="{{ form.category.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -59,11 +59,11 @@
         <!-- Search by Quantity -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p>Quantity</p>
                 </div>
-                <div class="w-1/2">
-                    <select name="qty_mode" id="id_qty_mode" onchange="toggleInputs('id_qty_mode','qty_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="qty_mode" id="id_qty_mode" onchange="toggleInputs('id_qty_mode','qty_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.qty_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Quantity</option>
                         <option value="range" {% if form.qty_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -73,11 +73,11 @@
         <!-- Quantity Dropdown. -->
         <div id="qty_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="min_qty" value="{{ form.min_qty.value|default:'' }}" placeholder="Min Quantity"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="max_qty" value="{{ form.max_qty.value|default:'' }}" placeholder="Max Quantity"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
@@ -86,12 +86,12 @@
         <!-- Search by Unit -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Unit
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="text" name="{{ form.unit.name }}" value="{{ form.unit.value|default:'' }}" placeholder="e.g., kg"
                      maxlength="{{ max_input_unit_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -100,12 +100,12 @@
         <!-- Search by Minimum Required -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Minimum Required
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="{{ form.minimum_required.name }}" value="{{ form.minimum_required.value|default:'' }}" placeholder="e.g., 1000"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -114,12 +114,12 @@
         <!-- Search by Cost Per Unit ($) -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="py-3">
                         Cost Per Unit ($)
                     </p>
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="number" name="{{ form.cost_per_unit.name }}" value="{{ form.cost_per_unit.value|default:'' }}" placeholder="e.g., 5"
                      maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
@@ -128,14 +128,13 @@
         <!-- Search by Last Restocked -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="">
                         Last Restocked
                     </p>
                 </div>
-                <div class="w-1/2">
-                    <!-- <input type="date" name="last_restocked" value="{{ form.last_restocked.value|date:'Y-m-d' }}" placeholder="e.g., kg" class="w-full rounded-lg p-2 border border-gray-800"> -->
-                    <select name="last_restocked_mode" id="id_last_restocked_mode" onchange="toggleInputs('id_last_restocked_mode','last_restocked_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="last_restocked_mode" id="id_last_restocked_mode" onchange="toggleInputs('id_last_restocked_mode','last_restocked_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.last_restocked_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.last_restocked_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -145,10 +144,10 @@
         <!-- Last Restocked Dropdown. -->
         <div id="last_restocked_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="min_last_restocked" value="{{ form.min_last_restocked.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="max_last_restocked" value="{{ form.max_last_restocked.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
@@ -156,13 +155,13 @@
         <!-- Search by Procurement Date -->
         <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <p class="">
                         Procurement Date
                     </p>
                 </div>
-                <div class="w-1/2">
-                    <select name="procurement_date_mode" id="id_procurement_date_mode" onchange="toggleInputs('id_procurement_date_mode','procurement_date_inputs_container')">
+                <div class="w-1/2 items-center">
+                    <select name="procurement_date_mode" id="id_procurement_date_mode" onchange="toggleInputs('id_procurement_date_mode','procurement_date_inputs_container')" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.procurement_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.procurement_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
                     </select>
@@ -172,10 +171,10 @@
         <!-- Procurement Date Dropdown. -->
         <div id="procurement_date_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="min_procurement_date" value="{{ form.min_procurement_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
+                <div class="w-1/2 items-center">
                     <input type="date" name="max_procurement_date" value="{{ form.max_procurement_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>

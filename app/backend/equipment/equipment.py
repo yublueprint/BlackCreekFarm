@@ -320,7 +320,7 @@ def add_equipment(request):
             messages.error(request, str(e))
             return redirect("equipment_list")
         except Exception as e:
-            logger.log(f"Unexpected error during equipment creation: {e}")
+            logger.log(f"Unexpected error during equipment creation by user {request.user}: {e}")
             messages.error(request, "An unexpected error occurred while adding the equipment.")
             return redirect("equipment_list")
     return redirect("equipment_list")
@@ -356,7 +356,7 @@ def edit_equipment(request):
                 equipment.service_interval_days,
                 equipment.maintenance_history,
                 equipment.notes,
-            ) = get_properties(request, EquipmentCreationException)
+            ) = get_properties(request, EquipmentEditException)
 
             equipment.save()
 
@@ -397,7 +397,7 @@ def delete_equipment(request):
             messages.error(request, str(e))
             return redirect("equipment_list")
         except Exception as e:
-            logger.log(f"Unexpected error during equipment deletion: {e}")
+            logger.log(f"Unexpected error during equipment deletion by user {request.user}: {e}")
             messages.error(request, "An unexpected error occurred while deleting the equipment.")
             return redirect("equipment_list")
     return redirect("equipment_list")
