@@ -1,333 +1,455 @@
-{% extends 'base.html' %}
+{% extends 'default_list.html' %}
+{% load dict_filters %}
 {% load static %}
 
 {% block title %}Crops | BlackCreek Sync{% endblock %}
 
-{% block content %}
-<h2 class="text-3xl font-semibold mb-6">Crop Management</h2>
+{% block header_title %}
+    {% include 'partials/header_text.html' with text_given="Crop Management" %}
+{% endblock %}
 
-<!-- Error Display -->
-{% if error %}
-<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-    <strong class="font-bold">Error: </strong>
-    <span class="block sm:inline">{{ error }}</span>
-</div>
-{% endif %}
+{% block add_list_button %}
+    {% include 'partials/default_list/add_button.html' with button_text="Add Crop" %}
+{% endblock %}
 
-<!-- Add Button with icon -->
-<button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-6 flex items-center gap-2"
-    style="background-color: #335D43;">
-    <i class="fas fa-plus"></i>
-    Add Crop
-</button>
-
-<!-- Add Popup -->
-<div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
-        <h3 class="text-xl font-bold mb-4">Add Crop</h3>
-        <form method="post" id="addCropForm" action="{% url 'add_crop' %}">
-            {% csrf_token %}
-
+{% block search_form_popup %}
+    {% capture as search_form_content %}
+        <!-- Search Form Content -->
+        <!-- Search by ID -->
+        <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
-                    <label class="block mb-2">Name:</label>
-                    <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+                <div class="w-1/2 items-center">
+                    <p class="py-3">
+                        Search by ID
+                    </p>
                 </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Crop Type:</label>
-                    <input type="text" name="crop_type" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+                <div class="w-1/2 items-center">
+                    <input type="number" id="idSearch" name="{{ form.id.name }}" placeholder="e.g., 102" value="{{ form.id.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
-
+        </div>
+        <!-- Search by Name -->
+        <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
-                    <label class="block mb-2">Planting Date:</label>
-                    <input type="date" name="planting_date" class="w-full border rounded px-3 py-2 mb-4" required />
+                <div class="w-1/2 items-center">
+                    <p class="py-3">
+                        Search by Name
+                    </p>
                 </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Harvest Date:</label>
-                    <input type="date" name="harvest_date" class="w-full border rounded px-3 py-2 mb-4" />
+                <div class="w-1/2 items-center">
+                    <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}"
+                    maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
-
+        </div>
+        <!-- Search by Crop Type -->
+        <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
-                    <label class="block mb-2">Expected Yield:</label>
-                    <input type="number" step="0.01" name="expected_yield" class="w-full border rounded px-3 py-2 mb-4" />
+                <div class="w-1/2 items-center">
+                    <p class="py-3">
+                        Crop Type
+                    </p>
                 </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Yield Efficiency (%):</label>
-                    <input type="number" step="0.01" name="yield_efficiency" class="w-full border rounded px-3 py-2 mb-4" value="0" />
+                <div class="w-1/2 items-center">
+                    <input type="text" id="cropTypeSearch" name="{{ form.crop_type.name }}" placeholder="Enter crop type" value="{{ form.crop_type.value|default:'' }}"
+                    maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
-
+        </div>
+        <!-- Search by Planting Date -->
+        <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
-                    <label class="block mb-2">Water Usage (Liters):</label>
-                    <input type="number" step="0.01" name="water_usage_liters" class="w-full border rounded px-3 py-2 mb-4" value="0" />
+                <div class="w-1/2 items-center">
+                    <p class="">
+                        Planting Date
+                    </p>
                 </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Next Checkup:</label>
-                    <input type="date" name="next_checkup" class="w-full border rounded px-3 py-2 mb-4" />
+                <div class="w-1/2 items-center">
+                    <select name="planting_date_mode" id="id_planting_date_mode" onchange="toggleInputs('id_planting_date_mode','planting_date_inputs_container')" class="w-full border rounded px-3 py-2">
+                        <option value="all" {% if form.planting_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
+                        <option value="range" {% if form.planting_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                    </select>
                 </div>
             </div>
-
+        </div>
+        <!-- Planting Date Dropdown. -->
+        <div id="planting_date_inputs_container" class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div class="w-1/2">
-                    <label class="block mb-2">Region:</label>
-                    <input type="text" name="region" class="w-full border rounded px-3 py-2 mb-4" maxlength="50" />
+                <div class="w-1/2 items-center">
+                    <input type="date" name="min_planting_date" value="{{ form.min_planting_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2"></div>
+                <div class="w-1/2 items-center">
+                    <input type="date" name="max_planting_date" value="{{ form.max_planting_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
             </div>
-
-            <label class="block mb-2">Notes:</label>
-            <textarea name="notes" class="w-full border rounded px-3 py-2 mb-4" rows="6"></textarea>
-
+        </div>
+        <!-- Search by Harvest Date -->
+        <div class="w-full">
             <div class="flex space-x-2 justify-between w-full">
-                <div>
-                    <button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
-                        style="background-color: #335D43;">
-                        Save
-                    </button>
+                <div class="w-1/2 items-center">
+                    <p class="">
+                        Harvest Date
+                    </p>
                 </div>
-                <div>
-                    <button type="button" id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-                        Cancel
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Edit Popup -->
-<div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
-        <h3 class="text-xl font-bold mb-4">Edit Crop</h3>
-        <form method="post" id="editCropForm" action="{% url 'edit_crop' %}">
-            {% csrf_token %}
-            <input type="hidden" name="id" id="editId" />
-
-            <div class="w-full flex justify-between space-x-2">
-                <div class="w-1/2">
-                    <label class="block mb-2">Name:</label>
-                    <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
-                </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Crop Type:</label>
-                    <input type="text" name="crop_type" id="editCropType" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+                <div class="w-1/2 items-center">
+                    <select name="harvest_date_mode" id="id_harvest_date_mode" onchange="toggleInputs('id_harvest_date_mode','harvest_date_inputs_container')" class="w-full border rounded px-3 py-2">
+                        <option value="all" {% if form.harvest_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
+                        <option value="range" {% if form.harvest_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                    </select>
                 </div>
             </div>
-
-            <div class="w-full flex justify-between space-x-2">
-                <div class="w-1/2">
-                    <label class="block mb-2">Planting Date:</label>
-                    <input type="date" name="planting_date" id="editPlantingDate" class="w-full border rounded px-3 py-2 mb-4" required />
+        </div>
+        <!-- Harvest Date Dropdown. -->
+        <div id="harvest_date_inputs_container" class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <input type="date" name="min_harvest_date" value="{{ form.min_harvest_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Harvest Date:</label>
-                    <input type="date" name="harvest_date" id="editHarvestDate" class="w-full border rounded px-3 py-2 mb-4" />
-                </div>
-            </div>
-
-            <div class="w-full flex justify-between space-x-2">
-                <div class="w-1/2">
-                    <label class="block mb-2">Expected Yield:</label>
-                    <input type="number" step="0.01" name="expected_yield" id="editExpectedYield" class="w-full border rounded px-3 py-2 mb-4" />
-                </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Yield Efficiency (%):</label>
-                    <input type="number" step="0.01" name="yield_efficiency" id="editYieldEfficiency" class="w-full border rounded px-3 py-2 mb-4" />
+                <div class="w-1/2 items-center">
+                    <input type="date" name="max_harvest_date" value="{{ form.max_harvest_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
                 </div>
             </div>
-
-            <div class="w-full flex justify-between space-x-2">
-                <div class="w-1/2">
-                    <label class="block mb-2">Water Usage (Liters):</label>
-                    <input type="number" step="0.01" name="water_usage_liters" id="editWaterUsageLiters" class="w-full border rounded px-3 py-2 mb-4" />
+        </div>
+        <!-- Search by Expected Yield -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p>Expected Yield</p>
                 </div>
-                <div class="w-1/2">
-                    <label class="block mb-2">Next Checkup:</label>
-                    <input type="date" name="next_checkup" id="editNextCheckup" class="w-full border rounded px-3 py-2 mb-4" />
-                </div>
-            </div>
-
-            <div class="w-full flex justify-between space-x-2">
-                <div class="w-1/2">
-                    <label class="block mb-2">Region:</label>
-                    <input type="text" name="region" id="editRegion" class="w-full border rounded px-3 py-2 mb-4" maxlength="50" />
-                </div>
-                <div class="w-1/2"></div>
-            </div>
-
-            <label class="block mb-2">Notes:</label>
-            <textarea name="notes" id="editNotes" class="w-full border rounded px-3 py-2 mb-4" rows="6"></textarea>
-
-            <div class="w-full flex justify-between space-x-2">
-                <div>
-                    <button type="submit" class="text-white py-2 px-4 rounded hover:bg-green-700"
-                        style="background-color: #335D43;">
-                        Save Changes
-                    </button>
-                </div>
-                <div>
-                    <button type="button" id="closeEditButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-                        Cancel
-                    </button>
+                <div class="w-1/2 items-center">
+                    <select name="expected_yield_mode" id="id_expected_yield_mode" onchange="toggleInputs('id_expected_yield_mode','expected_yield_inputs_container')" class="w-full border rounded px-3 py-2">
+                        <option value="all" {% if form.expected_yield_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Expected Yield</option>
+                        <option value="range" {% if form.expected_yield_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                    </select>
                 </div>
             </div>
-        </form>
-    </div>
-</div>
-
-<!-- Delete Popup -->
-<div id="deletePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h3 class="text-xl font-bold mb-4">Delete Crop</h3>
-        <p class="mb-4">
-            Are you sure you want to delete this crop?
-            <strong id="deleteCropName"></strong>?
-        </p>
-        <form method="post" id="deleteCropForm" action="{% url 'delete_crop' %}">
-            {% csrf_token %}
-            <input type="hidden" name="id" id="deleteId" />
-            <div class="flex justify-center gap-x-4">
-                <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
-                    Delete
-                </button>
-                <button type="button" id="closeDeleteButton" class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">
-                    Cancel
-                </button>
+        </div>
+        <!-- Expected Yield Dropdown. -->
+        <div id="expected_yield_inputs_container" class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <input type="number" name="min_expected_yield" value="{{ form.min_expected_yield.value|default:'' }}" placeholder="Min Expected Yield"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="number" name="max_expected_yield" value="{{ form.max_expected_yield.value|default:'' }}" placeholder="Max Expected Yield"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
             </div>
-        </form>
-    </div>
-</div>
+        </div>
+        <!-- Search by Yield Efficiency -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p>Yield Efficiency (%)</p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <select name="yield_efficiency_mode" id="id_yield_efficiency_mode" onchange="toggleInputs('id_yield_efficiency_mode','yield_efficiency_inputs_container')" class="w-full border rounded px-3 py-2">
+                        <option value="all" {% if form.yield_efficiency_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Yield Efficiency</option>
+                        <option value="range" {% if form.yield_efficiency_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- Yield Efficiency Dropdown. -->
+        <div id="yield_efficiency_inputs_container" class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <input type="number" name="min_yield_efficiency" value="{{ form.min_yield_efficiency.value|default:'' }}" placeholder="Min Yield Efficiency"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="number" name="max_yield_efficiency" value="{{ form.max_yield_efficiency.value|default:'' }}" placeholder="Max Yield Efficiency"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Water Usage (liters) -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p>Water Usage (Liters)</p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <select name="water_usage_mode" id="id_water_usage_mode" onchange="toggleInputs('id_water_usage_mode','water_usage_inputs_container')" class="w-full border rounded px-3 py-2">
+                        <option value="all" {% if form.water_usage_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Water Usage</option>
+                        <option value="range" {% if form.water_usage_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- Water Usage (liters) Dropdown. -->
+        <div id="water_usage_inputs_container" class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <input type="number" name="min_water_usage" value="{{ form.min_water_usage.value|default:'' }}" placeholder="Min Water Usage"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="number" name="max_water_usage" value="{{ form.max_water_usage.value|default:'' }}" placeholder="Max Water Usage"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Next Checkup Date -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p class="">
+                        Next Checkup Date
+                    </p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <select name="next_checkup_mode" id="id_next_checkup_mode" onchange="toggleInputs('id_next_checkup_mode','next_checkup_inputs_container')" class="w-full border rounded px-3 py-2">
+                        <option value="all" {% if form.next_checkup_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
+                        <option value="range" {% if form.next_checkup_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- Next Checkup Date Dropdown. -->
+        <div id="next_checkup_inputs_container" class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <input type="date" name="min_next_checkup" value="{{ form.min_next_checkup.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="date" name="max_next_checkup" value="{{ form.max_next_checkup.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Region -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p class="py-3">
+                        Region
+                    </p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="text" id="regionSearch" name="{{ form.region.name }}" placeholder="Enter region" value="{{ form.region.value|default:'' }}"
+                    maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
+                </div>
+            </div>
+        </div>
+    {% endcapture %}
+    {% include "partials/default_list/search_filter_popup.html" with form_inside=search_form_content %}
+{% endblock %}
 
-<!-- Notes Popup -->
-<div id="notesPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl flex flex-col">
-        <h3 class="text-xl font-bold mb-4">Notes of Crop</h3>
-        <textarea id="notesOfCropOutput" rows="30" disabled
-            class="w-full px-3 py-2 mb-4 overflow-y-auto border rounded resize-none"></textarea>
-        <button type="button" id="closeNotesButton" class="mt-4 bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-            Close
-        </button>
-    </div>
-</div>
+{% block add_form_popup %}
+    {% capture as add_form_content %}
+        <!-- Add form content. -->
+        <div class="flex space-x-2 justify-between w-full">
+            <div class="w-1/2">
+                <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
+                <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4" maxlength="{{ max_input_text_length }}" required />
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-2">Crop Type: <span class="text-red-500">*</span></label>
+                <input type="text" name="crop_type" class="w-full border rounded px-3 py-2 mb-4" maxlength="{{ max_input_text_length }}" required />
+            </div>
+        </div>
 
-<!-- Table -->
-<div class="bg-white rounded-lg shadow-md overflow-x-auto">
-    <table class="min-w-full">
-        <thead class="bg-gray-50 border-b border-gray-200">
-            <tr>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Crop Type</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Planting Date</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Harvest Date</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Expected Yield</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Yield Efficiency</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Water Usage</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Next Checkup</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Region</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-            {% for crop in crops %}
+        <div class="flex space-x-2 justify-between w-full">
+            <div class="w-1/2">
+                <label class="block mb-2">Planting Date:</label>
+                <input type="date" name="planting_date" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-2">Harvest Date:</label>
+                <input type="date" name="harvest_date" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+        </div>
+
+        <div class="flex space-x-2 justify-between w-full">
+            <div class="w-1/2">
+                <label class="block mb-2">Expected Yield:</label>
+                <input type="number" step="0.01" name="expected_yield" oninput="limitInputLength(this)" 
+                 maxlength="{{ max_input_unit_length }}" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-2">Yield Efficiency (%):</label>
+                <input type="number" step="0.01" name="yield_efficiency" oninput="limitInputLength(this)"
+                 maxlength="{{ max_input_unit_length }}" class="w-full border rounded px-3 py-2 mb-4" value="0" />
+            </div>
+        </div>
+
+        <div class="flex space-x-2 justify-between w-full">
+            <div class="w-1/2">
+                <label class="block mb-2">Water Usage (Liters):</label>
+                <input type="number" step="0.01" name="water_usage_liters" oninput="limitInputLength(this)"
+                 maxlength="{{ max_input_unit_length }}" class="w-full border rounded px-3 py-2 mb-4" value="0" />
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-2">Next Checkup:</label>
+                <input type="date" name="next_checkup" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+        </div>
+
+        <div class="flex space-x-2 justify-between w-full">
+            <div class="w-1/2">
+                <label class="block mb-2">Region:</label>
+                <input type="text" name="region" maxlength="{{ max_input_text_length }}" class="w-full border rounded px-3 py-2 mb-4" maxlength="50" />
+            </div>
+            <div class="w-1/2"></div>
+        </div>
+
+        <!-- Notes for the Crop. -->
+        <label class="block mb-2">Notes:</label>
+        <textarea name="notes" rows="10" maxlength="{{ max_textbox_length }}" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"></textarea>
+    {% endcapture %}
+    {% include "partials/default_list/add_form_popup.html" with stock_name="Crop" form_inside=add_form_content %}
+{% endblock %}
+
+{% block edit_form_popup %}
+    {% capture as edit_form_content %}
+        <!-- Edit Popup -->
+        <div class="w-full flex justify-between space-x-2">
+            <div class="w-1/2">
+                <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
+                <input type="text" name="name" id="editName" maxlength="{{ max_input_text_length }}" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-2">Crop Type: <span class="text-red-500">*</span></label>
+                <input type="text" name="crop_type" id="editCropType" maxlength="{{ max_input_text_length }}" class="w-full border rounded px-3 py-2 mb-4" maxlength="100" required />
+            </div>
+        </div>
+
+        <div class="w-full flex justify-between space-x-2">
+            <div class="w-1/2">
+                <label class="block mb-2">Planting Date:</label>
+                <input type="date" name="planting_date" id="editPlantingDate" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-2">Harvest Date:</label>
+                <input type="date" name="harvest_date" id="editHarvestDate" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+        </div>
+
+        <div class="w-full flex justify-between space-x-2">
+            <div class="w-1/2">
+                <label class="block mb-2">Expected Yield:</label>
+                <input type="number" step="0.01" name="expected_yield" id="editExpectedYield" oninput="limitInputLength(this)" 
+                 maxlength="{{ max_input_unit_length }}" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-2">Yield Efficiency (%):</label>
+                <input type="number" step="0.01" name="yield_efficiency" id="editYieldEfficiency" oninput="limitInputLength(this)"
+                 maxlength="{{ max_input_unit_length }}" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+        </div>
+
+        <div class="w-full flex justify-between space-x-2">
+            <div class="w-1/2">
+                <label class="block mb-2">Water Usage (Liters):</label>
+                <input type="number" step="0.01" name="water_usage_liters" id="editWaterUsageLiters" oninput="limitInputLength(this)" 
+                 maxlength="{{ max_input_unit_length }}" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+            <div class="w-1/2">
+                <label class="block mb-2">Next Checkup:</label>
+                <input type="date" name="next_checkup" id="editNextCheckup" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+        </div>
+
+        <div class="w-full flex justify-between space-x-2">
+            <div class="w-1/2">
+                <label class="block mb-2">Region:</label>
+                <input type="text" name="region" id="editRegion" maxlength="{{ max_input_text_length }}" class="w-full border rounded px-3 py-2 mb-4" maxlength="50" />
+            </div>
+            <div class="w-1/2"></div>
+        </div>
+
+        <label class="block mb-2">Notes:</label>
+        <textarea name="notes" id="editNotes" rows="10" maxlength="{{ max_textbox_length }}" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"></textarea>
+    {% endcapture %}
+    {% include "partials/default_list/edit_form_popup.html" with stock_name="Crop" form_inside=edit_form_content %}
+{% endblock %}
+
+{% block delete_popup %}
+    {% include "partials/default_list/delete_popup.html" with stock_name="Crop" %}
+{% endblock %}
+
+{% block notes_popup %}
+    {% include "partials/default_list/notes_popup.html" with stock_name="Crop" %}
+{% endblock %}
+
+{% block table %}
+    {% capture as custom_crop_header %}
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Crop Type</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Planting Date</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Harvest Date</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Expected Yield</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Yield Efficiency</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Water Usage</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Next Checkup</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Region</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+    {% endcapture %}
+    {% capture as custom_crop_rows %}
+        {% for object in page_obj %}
             <tr class="hover:bg-gray-50">
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.id }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.name }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.crop_type }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.planting_date }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.harvest_date|default:"—" }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.expected_yield|default:"0" }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.yield_efficiency|default:"0" }}%</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.water_usage_liters|default:"0" }}L</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.next_checkup|default:"—" }}</td>
-                <td class="py-4 px-6 text-sm text-gray-900">{{ crop.region|default:"—" }}</td>
-                <td class="py-4 px-6 text-sm">
-                    {% if crop.notes %}
-                    <button
-                        onclick="openNotesPopup('{{ crop.notes|escapejs }}')"
-                        class="text-white py-1 px-3 rounded text-sm hover:bg-amber-900"
-                        style="background-color: #b49494;">
-                        Open Notes
-                    </button>
-                    {% else %}
-                    —
-                    {% endif %}
-                </td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.id }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.name|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.crop_type|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.planting_date|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.harvest_date|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.expected_yield|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.yield_efficiency|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.water_usage_liters|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.next_checkup|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.region|default:"—" }}</td>
+
+                {% if object.notes %}
+                    <td class="py-4 px-6 text-sm">
+                        <button onclick="openNotesPopup(`Notes of Crop`,`{{ object.notes }}`)" class="bg-[#b49494] text-white py-1 px-3 rounded text-sm hover:bg-amber-900">
+                            View
+                        </button>
+                    </td>
+                {% else %}
+                    <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">—</td>
+                {% endif %}
+                
                 <td class="py-4 px-6 text-sm">
                     <div class="flex space-x-2">
                         <button
-                            onclick='openEditPopup(
-                                "{{ crop.id }}",
-                                "{{ crop.name|escapejs }}",
-                                "{{ crop.crop_type|escapejs }}",
-                                "{{ crop.planting_date|date:"Y-m-d" }}",
-                                {% if crop.harvest_date %}"{{ crop.harvest_date|date:"Y-m-d" }}"{% else %}null{% endif %},
-                                "{{ crop.expected_yield|default:"0" }}",
-                                "{{ crop.yield_efficiency|default:"0" }}",
-                                "{{ crop.water_usage_liters|default:"0" }}",
-                                {% if crop.next_checkup %}"{{ crop.next_checkup|date:"Y-m-d" }}"{% else %}null{% endif %},
-                                "{{ crop.region|default:""|escapejs }}",
-                                "{{ crop.notes|default:""|escapejs }}"
-                            )'
-                            class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
-                            style="background-color: #0D65A0;">
+                        onclick="openEditPopup(
+                            ['editId','{{ object.id }}'],
+                            ['editName','{{ object.name|escapejs }}'],
+                            ['editCropType','{{ object.crop_type|escapejs }}'],
+                            ['editPlantingDate','{{ object.planting_date|date:'Y-m-d' }}'],
+                            ['editHarvestDate','{{ object.harvest_date|date:'Y-m-d' }}'],
+                            ['editExpectedYield','{{ object.expected_yield }}'],
+                            ['editYieldEfficiency','{{ object.yield_efficiency }}'],
+                            ['editWaterUsageLiters','{{ object.water_usage_liters }}'],
+                            ['editNextCheckup','{{ object.harvest_date|date:'Y-m-d' }}'],
+                            ['editRegion','{{ object.region|escapejs }}'],
+                            ['editNotes','{{ object.notes|escapejs }}']
+                        )"
+                        class="bg-[#0D65A0] text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
+                        >
                             Edit
                         </button>
-                        <button
-                            onclick='openDeletePopup("{{ crop.id }}", "{{ crop.name|escapejs }}")'
+
+                        <button onclick="openDeletePopup('{{ object.id }}', '{{ object.name|escapejs }}')"
                             class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
                             Delete
                         </button>
                     </div>
                 </td>
             </tr>
-            {% empty %}
+        {% empty %}
             <tr>
-                <td colspan="12" class="py-8 px-6 text-center text-gray-500">No crop records found</td>
+                <td colspan="11" class="py-8 px-6 text-center text-gray-500">No crop records found.</td>
             </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<!-- Pagination -->
-{% if crops.has_other_pages %}
-<div class="mt-6 flex justify-center">
-    <nav class="flex items-center space-x-2">
-        {% if crops.has_previous %}
-        <a href="?page={{ crops.previous_page_number }}" class="px-3 py-2 border rounded text-sm hover:bg-gray-100">
-            Previous
-        </a>
-        {% endif %}
-
-        {% for num in crops.paginator.page_range %}
-            {% if crops.number == num %}
-            <span class="px-3 py-2 border rounded text-sm bg-gray-200">{{ num }}</span>
-            {% elif num > crops.number|add:'-3' and num < crops.number|add:'3' %}
-            <a href="?page={{ num }}" class="px-3 py-2 border rounded text-sm hover:bg-gray-100">
-                {{ num }}
-            </a>
-            {% endif %}
         {% endfor %}
+    {% endcapture %}
+    {% include "partials/default_list/table.html" with table_header_content=custom_crop_header table_rows_content=custom_crop_rows %}
+{% endblock %}
 
-        {% if crops.has_next %}
-        <a href="?page={{ crops.next_page_number }}" class="px-3 py-2 border rounded text-sm hover:bg-gray-100">
-            Next
-        </a>
-        {% endif %}
-
-        <span class="text-sm text-gray-600 ml-4">
-            Page {{ crops.number }} of {{ crops.paginator.num_pages }}
-        </span>
-    </nav>
-</div>
-{% endif %}
-
+{% block javascript %}
+{{ block.super }}
 <script src="{% static 'js/crop_list.js' %}"></script>
 {% endblock %}

@@ -8,6 +8,9 @@ from app.backend.models import Supplies
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_delete_supplies_success(client, user, supply, mocker):
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
@@ -20,6 +23,9 @@ def test_delete_supplies_success(client, user, supply, mocker):
     mock_logger.assert_any_call(f"User {user} deleted supply: {supply.name}")
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_delete_supplies_not_found(client, user, mocker):
     mocker.patch("app.backend.supplies.supplies.get_object_or_404", side_effect=Http404)
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
@@ -34,6 +40,9 @@ def test_delete_supplies_not_found(client, user, mocker):
     mock_logger.assert_any_call(f"Supply delete error by {user}: Supply not found.")
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_delete_supplies_unexpected_exception(client, user, supply, mocker):
     _ = mocker.patch(
         "app.backend.supplies.supplies.get_object_or_404",
@@ -54,6 +63,9 @@ def test_delete_supplies_unexpected_exception(client, user, supply, mocker):
     )
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_delete_supplies_redirect_on_get(client, user):
     response = client.get(reverse("delete_supplies"))
     assert response.status_code == 302

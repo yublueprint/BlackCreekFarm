@@ -1,0 +1,24 @@
+<!-- Delete Popup -->
+<div id="deletePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
+    <div class="flex flex-col bg-white p-6 rounded shadow-md w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <h3 class="text-xl font-bold mb-4">Delete {{ stock_name }}</h3>
+        <div class="break-words flex flex-col space-y-1 mb-6">
+            <p>Are you sure you want to delete this {{ stock_name }}?</p>
+            <strong id="deleteObjectName"></strong>
+        </div>
+        <form method="post" id="deleteObjectForm" action="{% url delete_url_given %}">
+            {% csrf_token %}
+            <input type="hidden" name="id" id="deleteId" />
+            <!-- Action Buttons -->
+            <div class="flex justify-center gap-x-4">
+                <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
+                    Delete
+                </button>
+                <div id="closeDeleteButton"
+                    class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">
+                    Cancel
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

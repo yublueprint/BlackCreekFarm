@@ -1,313 +1,402 @@
 {% extends 'default_list.html' %}
+{% load dict_filters %}
 {% load static %}
 
 {% block title %}Supplies | BlackCreek Sync{% endblock %}
 
-<!-- Search Form Content -->
-{% block search_form_content %}
-
-<!-- Search by ID -->
-<div class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <p class="py-3">
-                Search by ID
-            </p>
-        </div>
-        <div class="w-1/2">
-            <input type="number" id="idSearch" name="{{ form.id.name }}" placeholder="e.g., 102" value="{{ form.id.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
-        </div>
-    </div>
-</div>
-<!-- Search by Name -->
-<div class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <p class="py-3">
-                Search by Name
-            </p>
-        </div>
-        <div class="w-1/2">
-            <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
-        </div>
-    </div>
-</div>
-<!-- Search by Category -->
-<div class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <p class="py-3">
-                Category
-            </p>
-        </div>
-        <div class="w-1/2">
-            <input type="text" id="categorySearch" name="{{ form.category.name }}" placeholder="Enter category name" value="{{ form.category.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
-        </div>
-    </div>
-</div>
-<!-- Search by Quantity -->
-<div class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <p>Quantity</p>
-        </div>
-        <div class="w-1/2">
-            <select name="qty_mode" id="id_qty_mode" onchange="toggleInputs('id_qty_mode','qty_inputs_container')">
-                <option value="all" {% if form.qty_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Quantity</option>
-                <option value="range" {% if form.qty_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
-            </select>
-        </div>
-    </div>
-</div>
-<!-- Quantity Dropdown. -->
-<div id="qty_inputs_container" class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <input type="number" name="min_qty" value="{{ form.min_qty.value|default:'' }}" placeholder="Min Quantity" class="w-full rounded-lg p-1 border border-gray-800">
-        </div>
-        <div class="w-1/2">
-            <input type="number" name="max_qty" value="{{ form.max_qty.value|default:'' }}" placeholder="Max Quantity" class="w-full rounded-lg p-1 border border-gray-800">
-        </div>
-    </div>
-</div>
-<!-- Search by Unit -->
-<div class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <p class="py-3">
-                Unit
-            </p>
-        </div>
-        <div class="w-1/2">
-            <input type="text" name="{{ form.unit.name }}" value="{{ form.unit.value|default:'' }}" placeholder="e.g., kg" class="w-full rounded-lg p-2 border border-gray-800">
-        </div>
-    </div>
-</div>
-<!-- Search by Minimum Required -->
-<div class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <p class="py-3">
-                Minimum Required
-            </p>
-        </div>
-        <div class="w-1/2">
-            <input type="number" name="{{ form.minimum_required.name }}" value="{{ form.minimum_required.value|default:'' }}" placeholder="e.g., 1000" class="w-full rounded-lg p-2 border border-gray-800">
-        </div>
-    </div>
-</div>
-<!-- Search by Cost Per Unit ($) -->
-<div class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <p class="py-3">
-                Cost Per Unit ( $ )
-            </p>
-        </div>
-        <div class="w-1/2">
-            <input type="number" name="{{ form.cost_per_unit.name }}" value="{{ form.cost_per_unit.value|default:'' }}" placeholder="e.g., 5" class="w-full rounded-lg p-2 border border-gray-800">
-        </div>
-    </div>
-</div>
-<!-- Search by Last Restocked -->
-<div class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <p class="">
-                Last Restocked
-            </p>
-        </div>
-        <div class="w-1/2">
-            <!-- <input type="date" name="last_restocked" value="{{ form.last_restocked.value|date:'Y-m-d' }}" placeholder="e.g., kg" class="w-full rounded-lg p-2 border border-gray-800"> -->
-            <select name="last_restocked_mode" id="id_last_restocked_mode" onchange="toggleInputs('id_last_restocked_mode','last_restocked_inputs_container')">
-                <option value="all" {% if form.last_restocked_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
-                <option value="range" {% if form.last_restocked_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
-            </select>
-        </div>
-    </div>
-</div>
-<!-- Last Restocked Dropdown. -->
-<div id="last_restocked_inputs_container" class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <input type="date" name="min_last_restocked" value="{{ form.min_last_restocked.value }}" class="w-full rounded-lg p-1 border border-gray-800">
-        </div>
-        <div class="w-1/2">
-            <input type="date" name="max_last_restocked" value="{{ form.max_last_restocked.value }}" class="w-full rounded-lg p-1 border border-gray-800">
-        </div>
-    </div>
-</div>
-<!-- Search by Procurement Date -->
-<div class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <p class="">
-                Procurement Date
-            </p>
-        </div>
-        <div class="w-1/2">
-            <select name="procurement_date_mode" id="id_procurement_date_mode" onchange="toggleInputs('id_procurement_date_mode','procurement_date_inputs_container')">
-                <option value="all" {% if form.procurement_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
-                <option value="range" {% if form.procurement_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
-            </select>
-        </div>
-    </div>
-</div>
-<!-- Procurement Date Dropdown. -->
-<div id="procurement_date_inputs_container" class="w-full">
-    <div class="flex space-x-2 justify-between w-full">
-        <div class="w-1/2">
-            <input type="date" name="min_procurement_date" value="{{ form.min_procurement_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
-        </div>
-        <div class="w-1/2">
-            <input type="date" name="max_procurement_date" value="{{ form.max_procurement_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
-        </div>
-    </div>
-</div>
+{% block header_title %}
+    {% include 'partials/header_text.html' with text_given="Supplies Management" %}
 {% endblock %}
 
-<!-- Add form content. -->
-{% block add_form_content %}
-<div class="flex space-x-2 justify-between w-full">
-    <div class="w-1/2">
-        <!-- Name of the Supply (required) -->
-        <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
-        <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4"
-        maxlength="{{ max_input_text_length }}" required />
-    </div>
-    <div class="w-1/2">
-        <!-- Category of the Supply (required) -->
-        <label class="block mb-2">Category: <span class="text-red-500">*</span></label>
-        <input type="text" name="supply_category" class="w-full border rounded px-3 py-2 mb-4"
-        maxlength="{{ max_input_text_length }}" required />
-    </div>
-    
-</div>
-<div class="flex space-x-2 justify-between w-full">
-    <div class="w-1/2">
-        <!-- Quantity of the Supply (required) -->
-        <label class="block mb-2">Quantity: <span class="text-red-500">*</span></label>
-        <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4" required />
-    </div>
-    <div class="w-1/2">
-        <!-- Type of Unit of Quantity of the Supply (optional) -->
-        <label class="block mb-2">Unit:</label>
-        <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4"
-        maxlength="{{ max_input_unit_length }}" />
-    </div>
-    
-</div>
-<div class="flex space-x-2">
-    <div class="w-1/2">
-        <!-- Minimum required amount of the Supply (optional) -->
-        <label class="block mb-2">Minimum required:</label>
-        <input type="number" name="minimum_required" class="w-full border rounded px-3 py-2 mb-4" />
-    </div>
-    <div class="w-1/2">
-        <!-- Cost per unit of the Supply (optional) -->
-        <label class="block mb-2">Cost per unit:</label>
-        <input type="number" name="cost_per_unit" class="w-full border rounded px-3 py-2 mb-4" />
-    </div>
-</div>
-
-<div class="flex space-x-2 justify-between w-full">
-    <div class="w-1/2">
-        <!-- Last Restocking Date of the Supply (optional) -->
-        <label class="block mb-2">Last restocked:</label>
-        <input type="date" name="last_restocked" class="w-full border rounded px-3 py-2 mb-4" />
-    </div>
-    <div class="w-1/2">
-        <!-- Procurement date of the Supply (optional) -->
-        <label class="block mb-2">Procurement date:</label>
-        <input type="date" name="procurement_date" class="w-full border rounded px-3 py-2 mb-4" />
-    </div>
-</div>
-
-<!-- Notes for the Supply (optional) -->
-<label class="block mb-2">Notes:</label>
-<textarea name="notes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
-maxlength="{{ max_textbox_length }}"></textarea>
+{% block add_list_button %}
+    {% include 'partials/default_list/add_button.html' with button_text="Add Supply" %}
 {% endblock %}
 
-<!-- Edit form content. -->
-{% block edit_form_content %}
-<div class="w-full flex justify-between space-x-2">
-    <div class="w-1/2">
-        <!-- Name of the Supply (required) -->
-        <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
-        <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4"
-        maxlength="{{ max_input_text_length }}" required />
-        
-    </div>
-    <div class="w-1/2">
-        <!-- Category of the Supply (required) -->
-        <label class="block mb-2">Category: <span class="text-red-500">*</span></label>
-        <input type="text" name="supply_category" id="editCategory" class="w-full border rounded px-3 py-2 mb-4"
-        maxlength="{{ max_input_text_length }}" required />
-    </div>
-</div>
-<div class="w-full flex justify-between space-x-2">
-    <div class="w-1/2">
-        <!-- Quantity of the Supply (required) -->
-        <label class="block mb-2">Quantity: <span class="text-red-500">*</span></label>
-        <input type="number" name="quantity" id="editQuantity" class="w-full border rounded px-3 py-2 mb-4" required />
-    </div>
-    <div class="w-1/2">
-        <!-- Type of Unit of Quantity of the Supply (optional) -->
-        <label class="block mb-2">Unit:</label>
-        <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4"
-        maxlength="{{ max_input_unit_length }}" />
-    </div>
-</div>
-<div class="w-full flex justify-between space-x-2">
-    <div class="w-1/2">
-        <!-- Last Restocking Date of the Supply (optional) -->
-        <label class="block mb-2">Last restocked:</label>
-        <input type="date" name="last_restocked" id="editLastRestocked" class="w-full border rounded px-3 py-2 mb-4" />
-    </div>
-    <div class="w-1/2">
-        <!-- Procurement date of the Supply (optional) -->
-        <label class="block mb-2">Procurement date:</label>
-        <input type="date" name="procurement_date" id="editProcurementDate" class="w-full border rounded px-3 py-2 mb-4" />
-    </div>
-</div>
-<div class="w-full flex justify-between space-x-2">
-    <div class="w-1/2">
-        <!-- Minimum required amount of the Supply (optional) -->
-        <label class="block mb-2">Minimum required:</label>
-        <input type="number" name="minimum_required" id="editMinimumRequired" class="w-full border rounded px-3 py-2 mb-4" />
-    </div>
-    <div class="w-1/2">
-        <!-- Cost per unit of the Supply (optional) -->
-        <label class="block mb-2">Cost per unit:</label>
-        <input type="number" name="cost_per_unit" id="editCostPerUnit" class="w-full border rounded px-3 py-2 mb-4" />
-    </div>
-</div>
-
-<!-- Notes for the Supply (optional) -->
-<label class="block mb-2">Notes:</label>
-<textarea name="notes" id="editNotes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
-maxlength="{{ max_textbox_length }}"></textarea>
+{% block search_form_popup %}
+    {% capture as search_form_content %}
+        <!-- Search Form Content -->
+        <!-- Search by ID -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p class="py-3">
+                        Search by ID
+                    </p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="number" id="idSearch" name="{{ form.id.name }}" placeholder="e.g., 102" value="{{ form.id.value|default:'' }}" class="w-full rounded-lg p-2 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Name -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p class="py-3">
+                        Search by Name
+                    </p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="text" id="nameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}"
+                    maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Category -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p class="py-3">
+                        Category
+                    </p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="text" id="categorySearch" name="{{ form.category.name }}" placeholder="Enter category name" value="{{ form.category.value|default:'' }}"
+                    maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Quantity -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p>Quantity</p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <select name="qty_mode" id="id_qty_mode" onchange="toggleInputs('id_qty_mode','qty_inputs_container')" class="w-full border rounded px-3 py-2">
+                        <option value="all" {% if form.qty_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Quantity</option>
+                        <option value="range" {% if form.qty_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- Quantity Dropdown. -->
+        <div id="qty_inputs_container" class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <input type="number" name="min_qty" value="{{ form.min_qty.value|default:'' }}" placeholder="Min Quantity"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="number" name="max_qty" value="{{ form.max_qty.value|default:'' }}" placeholder="Max Quantity"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Unit -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p class="py-3">
+                        Unit
+                    </p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="text" name="{{ form.unit.name }}" value="{{ form.unit.value|default:'' }}" placeholder="e.g., kg"
+                     maxlength="{{ max_input_unit_length }}" class="w-full rounded-lg p-2 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Minimum Required -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p class="py-3">
+                        Minimum Required
+                    </p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="number" name="{{ form.minimum_required.name }}" value="{{ form.minimum_required.value|default:'' }}" placeholder="e.g., 1000"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-2 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Cost Per Unit ($) -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p class="py-3">
+                        Cost Per Unit ($)
+                    </p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="number" name="{{ form.cost_per_unit.name }}" value="{{ form.cost_per_unit.value|default:'' }}" placeholder="e.g., 5"
+                     maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full rounded-lg p-2 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Last Restocked -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p class="">
+                        Last Restocked
+                    </p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <select name="last_restocked_mode" id="id_last_restocked_mode" onchange="toggleInputs('id_last_restocked_mode','last_restocked_inputs_container')" class="w-full border rounded px-3 py-2">
+                        <option value="all" {% if form.last_restocked_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
+                        <option value="range" {% if form.last_restocked_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- Last Restocked Dropdown. -->
+        <div id="last_restocked_inputs_container" class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <input type="date" name="min_last_restocked" value="{{ form.min_last_restocked.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="date" name="max_last_restocked" value="{{ form.max_last_restocked.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+            </div>
+        </div>
+        <!-- Search by Procurement Date -->
+        <div class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <p class="">
+                        Procurement Date
+                    </p>
+                </div>
+                <div class="w-1/2 items-center">
+                    <select name="procurement_date_mode" id="id_procurement_date_mode" onchange="toggleInputs('id_procurement_date_mode','procurement_date_inputs_container')" class="w-full border rounded px-3 py-2">
+                        <option value="all" {% if form.procurement_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
+                        <option value="range" {% if form.procurement_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- Procurement Date Dropdown. -->
+        <div id="procurement_date_inputs_container" class="w-full">
+            <div class="flex space-x-2 justify-between w-full">
+                <div class="w-1/2 items-center">
+                    <input type="date" name="min_procurement_date" value="{{ form.min_procurement_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+                <div class="w-1/2 items-center">
+                    <input type="date" name="max_procurement_date" value="{{ form.max_procurement_date.value }}" class="w-full rounded-lg p-1 border border-gray-800">
+                </div>
+            </div>
+        </div>
+    {% endcapture %}
+    {% include "partials/default_list/search_filter_popup.html" with form_inside=search_form_content %}
 {% endblock %}
 
-{% block editButton %}
-<button
-  onclick="openEditPopup(
-    ['editId','{{ object.id }}'],
-    ['editName','{{ object.name }}'],
-    ['editCategory','{{ object.category }}'],
-    ['editQuantity','{{ object.quantity }}'],
-    ['editUnit','{{ object.unit }}'],
-    ['editLastRestocked','{{ object.last_restocked|date:'Y-m-d' }}'],
-    ['editMinimumRequired','{{ object.minimum_required }}'],
-    ['editCostPerUnit','{{ object.cost_per_unit }}'],
-    ['editProcurementDate','{{ object.procurement_date|date:'Y-m-d' }}'],
-    ['editNotes','{{ object.notes|escapejs }}']
-  )"
-  class="text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
-  style="background-color: #0D65A0;">
-    Edit
-</button>
+{% block add_form_popup %}
+    {% capture as add_form_content %}
+        <!-- Add form content. -->
+        <div class="flex space-x-2 justify-between w-full">
+            <div class="w-1/2">
+                <!-- Name of the Supply (required) -->
+                <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
+                <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_text_length }}" required />
+            </div>
+            <div class="w-1/2">
+                <!-- Category of the Supply (required) -->
+                <label class="block mb-2">Category: <span class="text-red-500">*</span></label>
+                <input type="text" name="supply_category" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_text_length }}" required />
+            </div>
+        </div>
+        <div class="flex space-x-2 justify-between w-full">
+            <div class="w-1/2">
+                <!-- Quantity of the Supply (required) -->
+                <label class="block mb-2">Quantity: <span class="text-red-500">*</span></label>
+                <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" required />
+            </div>
+            <div class="w-1/2">
+                <!-- Type of Unit of Quantity of the Supply (optional) -->
+                <label class="block mb-2">Unit:</label>
+                <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4"
+                maxlength="{{ max_input_unit_length }}" />
+            </div>
+            
+        </div>
+        <div class="flex space-x-2">
+            <div class="w-1/2">
+                <!-- Minimum required amount of the Supply (optional) -->
+                <label class="block mb-2">Minimum required:</label>
+                <input type="number" name="minimum_required"
+                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4"/>
+            </div>
+            <div class="w-1/2">
+                <!-- Cost per unit of the Supply (optional) -->
+                <label class="block mb-2">Cost per unit ($):</label>
+                <input type="number" name="cost_per_unit"
+                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+        </div>
+
+        <div class="flex space-x-2 justify-between w-full">
+            <div class="w-1/2">
+                <!-- Last Restocking Date of the Supply (optional) -->
+                <label class="block mb-2">Last restocked:</label>
+                <input type="date" name="last_restocked" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+            <div class="w-1/2">
+                <!-- Procurement date of the Supply (optional) -->
+                <label class="block mb-2">Procurement date:</label>
+                <input type="date" name="procurement_date" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+        </div>
+
+        <!-- Notes for the Supply (optional) -->
+        <label class="block mb-2">Notes:</label>
+        <textarea name="notes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
+        maxlength="{{ max_textbox_length }}"></textarea>
+    {% endcapture %}
+    {% include "partials/default_list/add_form_popup.html" with stock_name="Supply" form_inside=add_form_content %}
+{% endblock %}
+
+{% block edit_form_popup %}
+    {% capture as edit_form_content %}
+        <!-- Edit form content. -->
+        <div class="w-full flex justify-between space-x-2">
+            <div class="w-1/2">
+                <!-- Name of the Supply (required) -->
+                <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
+                <input type="text" name="name" id="editName" class="w-full border rounded px-3 py-2 mb-4"
+                 maxlength="{{ max_input_text_length }}" required />
+                
+            </div>
+            <div class="w-1/2">
+                <!-- Category of the Supply (required) -->
+                <label class="block mb-2">Category: <span class="text-red-500">*</span></label>
+                <input type="text" name="supply_category" id="editCategory" class="w-full border rounded px-3 py-2 mb-4"
+                 maxlength="{{ max_input_text_length }}" required />
+            </div>
+        </div>
+        <div class="w-full flex justify-between space-x-2">
+            <div class="w-1/2">
+                <!-- Quantity of the Supply (required) -->
+                <label class="block mb-2">Quantity: <span class="text-red-500">*</span></label>
+                <input type="number" name="quantity" id="editQuantity"
+                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4" required />
+            </div>
+            <div class="w-1/2">
+                <!-- Type of Unit of Quantity of the Supply (optional) -->
+                <label class="block mb-2">Unit:</label>
+                <input type="text" name="unit" id="editUnit" class="w-full border rounded px-3 py-2 mb-4"
+                 maxlength="{{ max_input_unit_length }}" />
+            </div>
+        </div>
+        <div class="w-full flex justify-between space-x-2">
+            <div class="w-1/2">
+                <!-- Last Restocking Date of the Supply (optional) -->
+                <label class="block mb-2">Last restocked:</label>
+                <input type="date" name="last_restocked" id="editLastRestocked" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+            <div class="w-1/2">
+                <!-- Procurement date of the Supply (optional) -->
+                <label class="block mb-2">Procurement date:</label>
+                <input type="date" name="procurement_date" id="editProcurementDate" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+        </div>
+        <div class="w-full flex justify-between space-x-2">
+            <div class="w-1/2">
+                <!-- Minimum required amount of the Supply (optional) -->
+                <label class="block mb-2">Minimum required:</label>
+                <input type="number" name="minimum_required" id="editMinimumRequired"
+                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+            <div class="w-1/2">
+                <!-- Cost per unit of the Supply (optional) -->
+                <label class="block mb-2">Cost per unit ($):</label>
+                <input type="number" name="cost_per_unit" id="editCostPerUnit" 
+                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4" />
+            </div>
+        </div>
+
+        <!-- Notes for the Supply (optional) -->
+        <label class="block mb-2">Notes:</label>
+        <textarea name="notes" id="editNotes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
+         maxlength="{{ max_textbox_length }}"></textarea>
+    {% endcapture %}
+    {% include "partials/default_list/edit_form_popup.html" with stock_name="Supply" form_inside=edit_form_content %}
+{% endblock %}
+
+{% block delete_popup %}
+    {% include "partials/default_list/delete_popup.html" with stock_name="Supply" %}
+{% endblock %}
+
+{% block notes_popup %}
+    {% include "partials/default_list/notes_popup.html" with stock_name="Supply" %}
+{% endblock %}
+
+{% block table %}
+    {% capture as custom_supplies_header %}
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Name</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Category</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Quantity</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Unit</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Last Restocked</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Minimum Required</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Cost Per Unit ($)</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Procurement Date</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
+    {% endcapture %}
+    {% capture as custom_supplies_rows %}
+        {% for object in page_obj %}
+            <tr class="hover:bg-gray-50">
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.id }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.name|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.category|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.quantity|default:"0" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.unit|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.last_restocked|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.minimum_required|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.cost_per_unit|default:"—" }}</td>
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">{{ object.procurement_date|default:"—" }}</td>
+
+                {% if object.notes %}
+                    <td class="py-4 px-6 text-sm">
+                        <button onclick="openNotesPopup(`Notes of Supply`,`{{ object.notes }}`)" class="bg-[#b49494] text-white py-1 px-3 rounded text-sm hover:bg-amber-900">
+                            View
+                        </button>
+                    </td>
+                {% else %}
+                    <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">—</td>
+                {% endif %}
+                
+                <td class="py-4 px-6 text-sm">
+                    <div class="flex space-x-2">
+                        <button
+                        onclick="openEditPopup(
+                            ['editId','{{ object.id }}'],
+                            ['editName','{{ object.name|escapejs }}'],
+                            ['editCategory','{{ object.category|escapejs }}'],
+                            ['editQuantity','{{ object.quantity }}'],
+                            ['editUnit','{{ object.unit|escapejs }}'],
+                            ['editLastRestocked','{{ object.last_restocked|date:'Y-m-d' }}'],
+                            ['editMinimumRequired','{{ object.minimum_required }}'],
+                            ['editCostPerUnit','{{ object.cost_per_unit }}'],
+                            ['editProcurementDate','{{ object.procurement_date|date:'Y-m-d' }}'],
+                            ['editNotes','{{ object.notes|escapejs }}']
+                        )"
+                        class="bg-[#0D65A0] text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
+                        >
+                            Edit
+                        </button>
+
+                        <button onclick="openDeletePopup('{{ object.id }}', '{{ object.name|escapejs }}')"
+                            class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
+                            Delete
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="11" class="py-8 px-6 text-center text-gray-500">No supply records found.</td>
+            </tr>
+        {% endfor %}
+    {% endcapture %}
+    {% include "partials/default_list/table.html" with table_header_content=custom_supplies_header table_rows_content=custom_supplies_rows %}
 {% endblock %}
 
 {% block javascript %}

@@ -121,15 +121,14 @@ class Logger:
                         break
 
                 del lines
-
+            return recent_activity_array
         except Exception as e:
             full_error_message = f"Error: {e}"
             Logger.log(full_error_message)
-
+            return recent_activity_array
         finally:
             # Free memory after reading lines
             gc.collect()
-            return recent_activity_array
 
     def download_all_activity_logs(self):
         folder_path = self.modification_logs_directory

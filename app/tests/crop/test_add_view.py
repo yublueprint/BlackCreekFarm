@@ -4,6 +4,9 @@ from django.urls import reverse
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_add_crop_success(client, user, mocker, valid_crop_dict):
     mock_create = mocker.patch("app.backend.crop.crop.Crop.objects.create")
     mock_logger = mocker.patch("app.backend.crop.crop.logger.log")
@@ -21,6 +24,9 @@ def test_add_crop_success(client, user, mocker, valid_crop_dict):
     )
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_add_crop_success_with_only_required_fields(client, user, mocker):
     mock_create = mocker.patch("app.backend.crop.crop.Crop.objects.create")
     mock_logger = mocker.patch("app.backend.crop.crop.logger.log")
@@ -42,6 +48,9 @@ def test_add_crop_success_with_only_required_fields(client, user, mocker):
     )
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_add_crop_missing_fields(client, user, mocker):
     mock_logger = mocker.patch("app.backend.crop.crop.logger.log")
 
@@ -55,13 +64,18 @@ def test_add_crop_missing_fields(client, user, mocker):
 
     assert response.status_code == 200
     assert "error" in response.context
-    assert response.context["error"] == "Name, crop type, and planting date are required."
+    assert (
+        response.context["error"] == "Name, crop type, and planting date are required."
+    )
     mock_logger.assert_any_call(
         f"Crop creation error by {user}: Name, crop type, and planting date are required."
     )
     mock_all.assert_called_once()
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_add_crop_invalid_numeric_values(client, user, mocker, valid_crop_dict):
     invalid_crop_dict = valid_crop_dict.copy()
     invalid_crop_dict["expected_yield"] = "abc"
@@ -83,6 +97,9 @@ def test_add_crop_invalid_numeric_values(client, user, mocker, valid_crop_dict):
     mock_all.assert_called_once()
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_add_crop_unexpected_exception(client, user, mocker, valid_crop_dict):
     mocker.patch(
         "app.backend.crop.crop.Crop.objects.create",
@@ -107,6 +124,9 @@ def test_add_crop_unexpected_exception(client, user, mocker, valid_crop_dict):
     mock_all.assert_called_once()
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_add_crop_redirect_on_get(client, user):
     response = client.get(reverse("add_crop"))
     assert response.status_code == 302

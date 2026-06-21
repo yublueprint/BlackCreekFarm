@@ -1,17 +1,28 @@
 /*
+Form validation.
+*/
+function limitInputLength(element) {
+    if (element.value.length > element.maxLength) {
+        element.value = element.value.slice(0, element.maxLength);
+    }
+}
+
+/*
 Opening notes of a category object.
 */
-const notesPopup = document.getElementById("notesPopup");
-const closeNotesButton = document.getElementById("closeNotesButton");
-const outputNotes = document.getElementById("notesOfObjectOutput");
-// Button for it.
-closeNotesButton.addEventListener("click", () => {
-    notesPopup.classList.add("hidden");
-});
 
 // Function for it.
-function openNotesPopup(notesToShow) {
+function openNotesPopup(noteHeaderText="Note Popup", notesToShow) {
     // console.log(notesToShow);
+    const notesPopup = document.getElementById("notesPopup");
+    const closeNotesButton = document.getElementById("closeNotesButton");
+    const outputNotes = document.getElementById("notesOfObjectOutput");
+    const noteHeader = document.getElementById("noteHeader");
+    // Button for it.
+    closeNotesButton.addEventListener("click", () => {
+        notesPopup.classList.add("hidden");
+    });
+    noteHeader.textContent = noteHeaderText;
     outputNotes.value = `${notesToShow}`;
     notesPopup.classList.remove("hidden");
 }
@@ -35,6 +46,7 @@ function clearSearchFilters() {
     const form = document.getElementById("searchForm");
     
     form.querySelectorAll('input').forEach(input => input.value = '');
+    form.querySelectorAll(`select[data-has-dropdown='N']`).forEach(select => select.value = 'None');
 }
 
 function toggleInputs(mode_id, container_id) {
@@ -70,7 +82,7 @@ closeButton.addEventListener("click", () => {
 const deletePopup = document.getElementById("deletePopup");
 const closeDeleteButton = document.getElementById("closeDeleteButton");
 
-function openDeletePopup(id, name) {
+function openDeletePopup(id, name="item") {
     document.getElementById("deleteId").value = id;
     document.getElementById("deleteObjectName").textContent = name;
     deletePopup.classList.remove("hidden");
@@ -93,7 +105,11 @@ function openEditPopup(...pairs) {
         
         if (element) {
             // Check if it's an input/select or just a text container
-            if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA') {
+            if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA' || element.tagName === '') {
+                if (element.type === 'checkbox') {
+                    console.log(element.type, element.checked, element.value)
+                    element.checked = value;
+                }
                 element.value = value;
             } else {
                 element.textContent = value;

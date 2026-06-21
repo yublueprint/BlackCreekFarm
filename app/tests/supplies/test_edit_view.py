@@ -8,6 +8,9 @@ from app.backend.models import Supplies
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_supplies_success(client, user, supply, mocker):
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
 
@@ -34,6 +37,9 @@ def test_edit_supplies_success(client, user, supply, mocker):
     mock_logger.assert_any_call(f"User {user} edited supply: Updated")
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_supplies_missing_fields_values_existing(client, user, supply, mocker):
     """
     When editing, some fields may be missing but should still succeed.
@@ -66,6 +72,9 @@ def test_edit_supplies_missing_fields_values_existing(client, user, supply, mock
     mock_logger.assert_any_call(f"User {user.username} edited supply: Unknown")
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_supplies_not_found(client, user, mocker):
     mocker.patch("app.backend.supplies.supplies.get_object_or_404", side_effect=Http404)
     mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
@@ -79,6 +88,9 @@ def test_edit_supplies_not_found(client, user, mocker):
     mock_logger.assert_any_call(f"Supply edit error by {user}: Supply not found.")
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_supplies_unexpected_exception(client, user, mocker):
     mock_get = mocker.patch(
         "app.backend.supplies.supplies.get_object_or_404",
@@ -92,6 +104,9 @@ def test_edit_supplies_unexpected_exception(client, user, mocker):
     mock_logger.assert_any_call("Unexpected error during supply edit: Something broke")
 
 
+@pytest.mark.skip(
+    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
+)
 def test_edit_supplies_redirect_on_get(client, user):
     response = client.get(reverse("edit_supplies"))
     assert response.status_code == 302

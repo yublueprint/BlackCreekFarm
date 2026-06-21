@@ -9,7 +9,7 @@ from app.exceptions.supplies.exception import (SupplyCreationException,
 from app.logging.logging import Logger
 
 from ..forms import SuppliesSearchForm
-from ..functions import paginationFunction
+from ..functions import editStockNameChange, paginationFunction
 from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Supplies)
 
@@ -30,7 +30,7 @@ def get_properties(request, ExceptionToUse: Exception):
     minimum_required = request.POST.get("minimum_required") or None
     cost_per_unit = request.POST.get("cost_per_unit") or None
     procurement_date = request.POST.get("procurement_date") or None
-    notes = request.POST.get("notes") or None
+    notes = request.POST.get("notes") or ""
 
     required_inputs = {
         "name": name,
@@ -83,15 +83,8 @@ def get_properties(request, ExceptionToUse: Exception):
     )
 
 
-@login_required
-def supplies_list(request):
-    form = SuppliesSearchForm(request.GET)
-
+def search_filtering(form):
     supplies = Supplies.objects.all().order_by("-id")
-
-    # FOR SEARCH FILTERING.
-    nameToSearch = request.GET.get("firstNameSearch")
-
     active_filters = []
 
     if form.is_valid():
@@ -100,7 +93,6 @@ def supplies_list(request):
         if data.get("id"):
             supplies = supplies.filter(id=data["id"])
             active_filters.append(f"ID: {str(data['id'])}")
-            # supplies = Supplies.objects.filter(id=data['id'])
         if data.get("name"):
             supplies = supplies.filter(name__icontains=data["name"])
             active_filters.append(f"Name: {str(data['name'])}")
@@ -156,51 +148,23 @@ def supplies_list(request):
                     active_filters.append(
                         f"Max Procurement Date: {str(data['max_procurement_date'])}"
                     )
+    return active_filters, supplies
 
-    if nameToSearch:
-        supplies = supplies.filter(name__icontains=nameToSearch)
-        active_filters.append(f"Name: {nameToSearch}")
+
+@login_required
+def supplies_list(request):
+    # FOR SEARCH FILTERING.
+    form = SuppliesSearchForm(request.GET)
+    active_filters, supplies = search_filtering(form)
 
     # FOR PAGINATION.
     page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages = paginationFunction(
+    page_obj, backward_pages, forward_pages, page_number = paginationFunction(
         supplies, page_number, 10
     )
 
-    # Supply Titles, Fields, and Properties.
-    category_given = ["Supply", "supply", "supplies"]
-    fields_given = [
-        "ID",
-        "Name",
-        "Category",
-        "Quantity",
-        "Unit",
-        "Last Restocked",
-        "Minimum Required",
-        "Cost Per Unit",
-        "Procurement Date",
-        "Notes",
-        "Actions",
-    ]
-    object_attributes_given = [
-        "id",
-        "name",
-        "category",
-        "quantity",
-        "unit",
-        "last_restocked",
-        "minimum_required",
-        "cost_per_unit",
-        "procurement_date",
-    ]
-
-    logger.log(f"User {request.user} viewed supplies list.")
     context = {
         "form": form,
-        "supplies": supplies,
-        "category_given": category_given,
-        "fields_given": fields_given,
-        "object_attributes_given": object_attributes_given,
         "search_filters_applied": active_filters,
         "list_url_given": "supplies_list",
         "add_url_given": "add_supplies",
@@ -214,6 +178,7 @@ def supplies_list(request):
         "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
     }
 
+    logger.log(f"User {request.user} viewed supplies list (page {page_number}).")
     return render(request, "app/supplies_list.html", context)
 
 
@@ -233,7 +198,7 @@ def add_supplies(request):
                 notes,
             ) = get_properties(request, SupplyCreationException)
 
-            Supplies.objects.create(
+            supply = Supplies.objects.create(
                 name=name,
                 category=supply_category,
                 quantity=quantity,
@@ -245,7 +210,7 @@ def add_supplies(request):
                 notes=notes,
             )
 
-            logger.log(f"User {request.user} added supply: {name}")
+            logger.log(f"User {request.user} added supply: {name} (ID: {supply.id}).")
             return redirect("supplies_list")
 
         except SupplyCreationException as e:
@@ -270,6 +235,8 @@ def edit_supplies(request):
             except Http404:
                 raise SupplyEditException("Supply not found.")
 
+            old_name = supply.name
+
             (
                 supply.name,
                 supply.category,
@@ -284,7 +251,11 @@ def edit_supplies(request):
 
             supply.save()
 
-            logger.log(f"User {request.user} edited supply: {supply.name}")
+            name_change_msg = editStockNameChange(old_name, supply.name)
+
+            logger.log(
+                f"User {request.user} edited supply: {old_name} {name_change_msg} (ID: {supply.id})."
+            )
             return redirect("supplies_list")
 
         except SupplyEditException as e:
@@ -310,9 +281,12 @@ def delete_supplies(request):
                 raise SupplyDeleteException("Supply not found.")
 
             supply_name = supply.name or "Unknown"
+            supply_id = supply.id or -1
             supply.delete()
 
-            logger.log(f"User {request.user} deleted supply: {supply_name}")
+            logger.log(
+                f"User {request.user} deleted supply: {supply_name} (ID: {supply_id})."
+            )
             return redirect("supplies_list")
 
         except SupplyDeleteException as e:

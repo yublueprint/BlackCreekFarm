@@ -5,107 +5,21 @@
 {% block title %}{% endblock %}
 
 {% block content %}
-<h2 class="text-3xl font-semibold mb-6">{{ category_given.0 }} Management</h2>
 
-<!-- Add Button with icon -->
-<button id="addButton" class="text-white py-2 px-4 rounded hover:bg-green-700 mb-4 flex items-center gap-2"
-    style="background-color: #335D43;">
-    <i class="fas fa-plus"></i>
-    Add {{ category_given.0 }}
-</button>
+{% block header_title %}
+    {% include 'partials/header_text.html' with text_given="Item Management" %}
+{% endblock %}
 
-<!-- Search Field Box -->
-<form action="{% url list_url_given %}" method="get" class="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 w-fit mb-4">
-    <!-- Search Icon -->
-    <svg
-    xmlns="http://www.w3.org/2000/svg"
-    class="h-4 w-4 text-gray-400"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-    >
-    <path
-    stroke-linecap="round"
-    stroke-linejoin="round"
-    stroke-width="2"
-    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-    />
-    </svg>
+{% block add_list_button %}
+    {% include 'partials/default_list/add_button.html' with button_text="Add Item" %}
+{% endblock %}
 
-    <!-- Input -->
-    <input
-    type="text"
-    name="firstNameSearch"
-    placeholder="Search in database"
-    class="bg-transparent text-sm text-gray-600 placeholder-gray-400 outline-none"
-    />
-    
-    <!-- Filter Button -->
-    <div id="searchFilterButton" class="text-gray-400 hover:text-gray-600">
-        <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-4 w-4"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        >
-        <path
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        stroke-width="2"
-        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-        />
-        </svg>
-    </div>
-</form>
+{% include 'partials/default_list/search_field_box.html' %}
 
-<!-- Search Filter Popup Form -->
-<div id="searchFilterPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <div class="flex justify-between w-full mb-5">
-            <div class="w-1/2">
-                <h3 class="text-2xl py-1 mb-4">Filters</h3>
-            </div>
-            <div class="">
-                <div id="closeSearchFormButton">
-                    <div class="bg-gray-300 text-gray-800 py-2 px-4 shadow-sm rounded-full hover:bg-gray-400 cursor-pointer">
-                        x
-                    </div>
-                </div>
-            </div>
-        </div>
-        <form method="get" action="{% url list_url_given %}">
-            <div id="searchForm" class="flex-col space-y-2">
-                {% block search_form_content %}{% endblock %}
-            </div>
+{% block search_form_popup %}
+{% endblock %}
 
-            <!-- Action Buttons -->
-            <div class="flex space-x-2 justify-between w-full mt-8">
-                <div>
-                    <button type="submit" class="bg-green-800 text-white py-2 px-4 rounded hover:bg-green-700">
-                        Apply Filters
-                    </button>
-                </div>
-                <div id="clearAllSearchFiltersButton" onclick="clearSearchFilters()">
-                    <div class="bg-transparent text-gray-800 py-2 px-4 rounded hover:bg-gray-400 cursor-pointer">
-                        Clear Filters
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Display Search Filters Used -->
-<div class="mb-4">
-    <div class="flex space-x-2">
-        {% for search_filter in search_filters_applied %}
-        <div class="border border-green-700 shadow-sm bg-green-100 text-green-700 rounded-3xl px-3 py-1 font-medium text-center text-sm min-w-[48px]">
-            {{ search_filter }}
-        </div>
-        {% endfor %}
-    </div>
-</div>
+{% include 'partials/default_list/search_filter_display.html' %}
 
 <!-- Display Error Message if Error occurs-->
 {% for message in messages %}
@@ -116,206 +30,22 @@
     {% endif %}
 {% endfor %}
 
-<!-- Add Button Popup Form -->
-<div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
-        <h3 class="text-xl font-bold mb-4">Add {{ category_given.0 }}</h3>
-        <form method="post" id="addForm" action="{% url add_url_given %}">
-            {% csrf_token %}
-            {% block add_form_content %}{% endblock %}
+{% block add_form_popup %}
+{% endblock %}
 
-            <!-- Action Buttons. -->
-            <div class="flex space-x-2 justify-between w-full">
-                <div>
-                    <!-- Submit Information Button -->
-                    <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-                        Save
-                    </button>
-                </div>
-                <div>
-                    <div id="closeButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 cursor-pointer">
-                        Cancel
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+{% block edit_form_popup %}
+{% endblock %}
 
-<!-- Edit Popup -->
-<div id="editPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl">
-        <h3 class="text-xl font-bold mb-4">Edit {{ category_given.0 }}</h3>
-        <form method="post" id="editForm" action="{% url edit_url_given %}">
-            {% csrf_token %}
+{% block delete_popup %}
+{% endblock %}
 
-            <!-- ID (ignore)-->
-            <input type="hidden" name="id" id="editId">
+{% block notes_popup %}
+{% endblock %}
 
-            {% block edit_form_content %}{% endblock %}
+{% block table %}
+{% endblock %}
 
-            <!-- Action Buttons. -->
-            <div class="w-full flex justify-between space-x-2">
-                <div>
-                    <!-- Save Changes -->
-                    <button type="submit" class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700">
-                        Save Changes
-                    </button>
-                </div>
-                <div>
-                    <div id="closeEditButton" class="bg-gray-300 text-gray-800 py-2 px-4 rounded hover:bg-gray-400 cursor-pointer">
-                        Cancel
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Delete Popup -->
-<div id="deletePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
-        <h3 class="text-xl font-bold mb-4">Delete {{ category_given.0 }}</h3>
-        <p class="mb-4">
-            Are you sure you want to delete this {{ category_given.0 }}?
-            <strong id="deleteObjectName"></strong>?
-        </p>
-        <form method="post" id="deleteObjectForm" action="{% url delete_url_given %}">
-            {% csrf_token %}
-            <input type="hidden" name="id" id="deleteId" />
-            <!-- Action Buttons -->
-            <div class="flex justify-center gap-x-4">
-                <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700">
-                    Delete
-                </button>
-                <div id="closeDeleteButton"
-                    class="bg-gray-600 text-white py-2 px-4 rounded hover:bg-gray-700">
-                    Cancel
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Notes popup for a category object. -->
-<div id="notesPopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center overflow-y-auto">
-    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl flex flex-col">
-        <!-- Header -->
-        <h3 class="text-xl font-bold mb-4">Notes of {{ category_given.0 }}</h3>
-        <textarea name="notesOfObject" id="notesOfObjectOutput" rows="30" disabled class="w-full px-3 py-2 mb-4 overflow-y-auto border rounded resize-none"></textarea>
-        <!-- Close popup button. -->
-        <div id="closeNotesButton" class="mt-4 bg-gray-300 text-center text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
-            Close
-        </div>
-    </div>
-</div>
-
-<!-- Table -->
-<div class="bg-white rounded-lg shadow-md overflow-x-auto">
-    <table class="min-w-full">
-        <thead class="bg-gray-50 border-b border-gray-200">
-            <tr>
-                {% for field in fields_given %}
-                <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">{{ field }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-            {% for object in page_obj %}
-            <tr class="hover:bg-gray-50">
-                {% for attribute in object_attributes_given %}
-                <td class="py-4 px-6 text-sm text-gray-900">{{ object|get_attr:attribute }}</td>
-                {% endfor %}
-
-                {% if object|has_attr:"notes" %}
-                <!-- Notes column: View button -->
-                <td class="py-4 px-6 text-sm">
-                    <div class="flex space-x-2">
-                        <button
-                            onclick="openNotesPopup(
-                                `{{ object.notes }}`)"
-                            class="text-white py-1 px-3 rounded text-sm hover:bg-amber-900"
-                            style="background-color: #b49494;">
-                            View
-                        </button>
-                    </div>
-                </td>
-                {% endif %}
-                
-                <!-- Action Buttons. -->
-                <td class="py-4 px-6 text-sm">
-                    <div class="flex space-x-2">
-                        <!-- Edit Button -->
-                        {% block editButton %}{% endblock %}
-                        <!-- Delete Button -->
-                        <button onclick="openDeletePopup('{{ object.id }}', '{{ object.name }}')"
-                            class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
-                            Delete
-                        </button>
-                    </div>
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="11" class="py-8 px-6 text-center text-gray-500">No {{ category_given.1 }} records found</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-
-<!-- Pagination. -->
-<div class="mt-3">
-    <span>
-        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-    </span>
-</div>
-
-<div class="mt-3">
-    <nav>
-        <ul class="flex space-x-1 list-none text-sm">
-            <!-- First and Previous. -->
-            {% if page_obj.has_previous %}
-                <a href="?page=1" class="border rounded-md bg-white font-medium text-black px-4 py-2"><li>&laquo; First</li></a>
-                <a href="?page={{ page_obj.previous_page_number }}" class="border rounded-md bg-white font-medium text-md text-black px-4 py-2"><li><<</li></a>
-            {% else %}    
-                <li class="border rounded-md bg-gray-200 text-gray-700 px-4 py-2">&laquo; First</li>
-                <li class="border rounded-md bg-gray-200 text-md text-gray-700 px-4 py-2"><<</li>
-            {% endif %}
-
-            <!-- Going backward from current page. -->
-            {% for page_number in backward_pages %}
-                <a href="?page={{ page_number }}" class="border bg-white rounded-md font-medium text-black px-4 py-2"><li>{{ page_number }}</li></a>
-            {% endfor %}
-                
-            <!-- Add current page number. -->
-            <a href="?page={{ page_obj.number }}" class="border bg-green-700 rounded-md font-medium text-white px-4 py-2"><li>{{ page_obj.number }}</li></a>
-            
-            
-            <!-- Going forward from current page. -->
-            {% for page_number in forward_pages %}
-                <a href="?page={{ page_number }}" class="border bg-white rounded-md font-medium text-black px-4 py-2"><li>{{ page_number }}</li></a>
-            {% endfor %}
-
-
-            <!-- Next and Last. --> 
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}" class="border bg-white rounded-md font-medium text-md text-black px-4 py-2"><li>>></li></a>
-                <a href="?page={{ page_obj.paginator.num_pages }}" class="border bg-white rounded-md font-medium text-black px-4 py-2"><li>Last &raquo;</li></a>
-            {% else %}
-                <li class="border rounded-md bg-gray-200 text-md text-gray-700 px-4 py-2">>></li>
-                <li class="border rounded-md bg-gray-200 text-gray-700 px-4 py-2">Last &raquo;</li>
-            {% endif %}
-
-            <div>
-                <form action="" method="GET">
-                    <input type="number" name="page" id="searchPageNumberID" min="1" class="border bg-white rounded-md font-medium text-md text-black px-2 py-2 w-1/3">
-                    <button type="submit" class="text-md ml-1">Go &raquo;</button>
-                </form>
-            </div>
-        </ul>
-    </nav>
-</div>
+{% include 'partials/pagination.html' %}
 
 {% block javascript %}
 <script src="{% static 'js/default_list.js' %}"></script>

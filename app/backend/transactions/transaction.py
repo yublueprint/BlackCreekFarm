@@ -1,66 +1,244 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
+from app.exceptions.transactions.exception import (
+    TransactionCreationException, TransactionDeleteException)
 from app.logging.logging import Logger
 
-from ..models import Transaction
+from ..forms import TransactionSearchForm
+from ..functions import paginationFunction
+from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+                      UNIT_INPUT_MAX_LENGTH, Transaction)
 
 logger = Logger("app/logging/app.log")
 
 
+def get_properties(request, ExceptionToUse: Exception):
+    """
+    Gets properties of equipment and validates the inputs.
+    """
+    # Mandatory fields.
+    item_type = (request.POST.get("item_type") or "").strip() or "Unknown"
+    item_id = request.POST.get("item_id") or -1
+    item_name = (request.POST.get("item_name") or "").strip() or "Unknown"
+    transaction_type = (request.POST.get("transaction_type") or "").strip() or "Unknown"
+    quantity = request.POST.get("quantity") or -1
+    date = request.POST.get("date") or None
+    # Optional fields.
+    notes = request.POST.get("notes") or ""
+
+    required_inputs = {
+        "item_type": item_type,
+        "item_id": item_id,
+        "item_name": item_name,
+        "transaction_type": transaction_type,
+        "quantity": quantity,
+        "date": date,
+    }
+
+    default_text_inputs_given = {
+        "item_type": item_type,
+        "item_name": item_name,
+        "transaction_type": transaction_type,
+    }
+
+    unit_inputs_given = {
+        "quantity": quantity,
+    }
+
+    textbox_inputs_given = {
+        "notes": notes,
+    }
+
+    # Raise an error if mandatory fields are missing.
+    for key, value in required_inputs.items():
+        if value is None:
+            raise ExceptionToUse(f"Missing {key} for equipment.")
+
+    inputs_given_list = [
+        (default_text_inputs_given, DEFAULT_TEXT_MAX_LENGTH),
+        (unit_inputs_given, UNIT_INPUT_MAX_LENGTH),
+        (textbox_inputs_given, TEXTBOX_MAX_LENGTH),
+    ]
+
+    # check length if the optional field was actually provided.
+    for input_given, max_length in inputs_given_list:
+        for key, value in input_given.items():
+            if value and len(value) > max_length:
+                raise ExceptionToUse(
+                    f"Equipment {key} input must be less or equal to {max_length} characters."
+                )
+
+    return (
+        item_type,
+        item_id,
+        item_name,
+        transaction_type,
+        quantity,
+        date,
+        notes,
+    )
+
+
+def search_filtering(form):
+    transactions = Transaction.objects.all().order_by("-id")
+    active_filters = []
+
+    if form.is_valid():
+        data = form.cleaned_data
+
+        if data.get("id"):
+            transactions = transactions.filter(id=data["id"])
+            active_filters.append(f"ID: {str(data['id'])}")
+        if data.get("item_type"):
+            if data.get("item_type") != "None":
+                transactions = transactions.filter(
+                    item_type__icontains=data["item_type"]
+                )
+                active_filters.append(f"Item Type: {str(data['item_type'])}")
+        if data.get("item_id"):
+            transactions = transactions.filter(item_id=data["item_id"])
+            active_filters.append(f"Item ID: {str(data['item_id'])}")
+        if data.get("item_name"):
+            transactions = transactions.filter(item_name__icontains=data["item_name"])
+            active_filters.append(f"Item Name: {str(data['item_name'])}")
+        if data.get("transaction_type"):
+            if data.get("transaction_type") != "None":
+                transactions = transactions.filter(
+                    transaction_type__icontains=data["transaction_type"]
+                )
+                active_filters.append(
+                    f"Transaction Type: {str(data['transaction_type'])}"
+                )
+        if data.get("qty_mode"):
+            if data.get("qty_mode") == "range":
+                if data.get("min_qty") is not None:
+                    transactions = transactions.filter(quantity__gte=data["min_qty"])
+                    active_filters.append(f"Min Quantity: {str(data['min_qty'])}")
+                if data.get("max_qty") is not None:
+                    transactions = transactions.filter(quantity__lte=data["max_qty"])
+                    active_filters.append(f"Max Quantity: {str(data['max_qty'])}")
+        if data.get("transaction_date_mode"):
+            if data.get("transaction_date_mode") == "range":
+                if data.get("min_transaction_date") is not None:
+                    transactions = transactions.filter(
+                        date__gte=data["min_transaction_date"]
+                    )
+                    active_filters.append(
+                        f"Min Transaction Date: {str(data['min_transaction_date'])}"
+                    )
+                if data.get("max_transaction_date") is not None:
+                    transactions = transactions.filter(
+                        date__lte=data["max_transaction_date"]
+                    )
+                    active_filters.append(
+                        f"Max Transaction Date: {str(data['max_transaction_date'])}"
+                    )
+    return active_filters, transactions
+
+
 @login_required
 def transaction_list(request):
-    logger.log(f"User {request.user} viewed transaction list.")
-    transactions = Transaction.objects.all()
-    return render(request, "app/transaction_list.html", {"transactions": transactions})
+    # FOR SEARCH FILTERING.
+    form = TransactionSearchForm(request.GET)
+    active_filters, transactions = search_filtering(form)
+
+    # FOR PAGINATION.
+    page_number = request.GET.get("page")
+    page_obj, backward_pages, forward_pages, page_number = paginationFunction(
+        transactions, page_number, 10
+    )
+
+    context = {
+        "form": form,
+        "search_filters_applied": active_filters,
+        "list_url_given": "transaction_list",
+        "add_url_given": "add_transaction",
+        "delete_url_given": "delete_transaction",
+        "page_obj": page_obj,
+        "backward_pages": backward_pages,
+        "forward_pages": forward_pages,
+        "max_textbox_length": TEXTBOX_MAX_LENGTH,
+        "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
+        "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
+    }
+
+    logger.log(f"User {request.user} viewed transaction list (page {page_number}).")
+    return render(request, "app/transaction_list.html", context)
 
 
 @login_required
 def add_transaction(request):
     if request.method == "POST":
         try:
-            item_type = request.POST.get("item_type")
-            item_id = request.POST.get("item_id")
-            transaction_type = request.POST.get("transaction_type")
-            quantity = request.POST.get("quantity")
-            date = request.POST.get("date")
+            (
+                item_type,
+                item_id,
+                item_name,
+                transaction_type,
+                quantity,
+                date,
+                notes,
+            ) = get_properties(request, TransactionCreationException)
 
-            Transaction.objects.create(
+            transaction = Transaction.objects.create(
                 item_type=item_type,
                 item_id=item_id,
+                item_name=item_name,
                 transaction_type=transaction_type,
                 quantity=quantity,
                 date=date,
+                notes=notes,
             )
-            logger.log(f"User {request.user} added a transaction.")
+            logger.log(
+                f"User {request.user} added transaction: {item_type} {item_id} (ID: {transaction.id})."
+            )
+            return redirect("transaction_list")
+        except TransactionCreationException as e:
+            logger.log(f"Transaction creation error by {request.user}: {e}")
+            messages.error(request, str(e))
             return redirect("transaction_list")
         except Exception as e:
-            logger.log(f"Error adding transaction by user {request.user}: {e}")
-            return render(
-                request,
-                "app/transaction_list.html",
-                {
-                    "transactions": Transaction.objects.all(),
-                    "error": "Failed to add transaction.",
-                },
+            logger.log(
+                f"Unexpected error during transaction creation by user {request.user}: {e}"
             )
+            messages.error(
+                request, "An unexpected error occurred while adding the transaction."
+            )
+            return redirect("transaction_list")
+    return redirect("transaction_list")
 
 
 @login_required
 def delete_transaction(request):
     if request.method == "POST":
         try:
-            transaction = get_object_or_404(Transaction, id=request.POST.get("id"))
+            try:
+                transaction = get_object_or_404(Transaction, id=request.POST.get("id"))
+            except Http404:
+                raise TransactionDeleteException("Transaction not found.")
+
+            transaction_item_type = transaction.item_type
+            transaction_item_id = transaction.item_id
+            transaction_id = transaction.id
             transaction.delete()
-            logger.log(f"User {request.user} deleted transaction.")
+
+            logger.log(
+                f"User {request.user} deleted transaction: {transaction_item_type} {transaction_item_id} (ID: {transaction_id})."
+            )
+            return redirect("transaction_list")
+        except TransactionDeleteException as e:
+            logger.log(f"Transaction delete error by {request.user}: {e}")
+            messages.error(request, str(e))
             return redirect("transaction_list")
         except Exception as e:
-            logger.log(f"Error deleting transaction by user {request.user}: {e}")
-            return render(
-                request,
-                "app/transaction_list.html",
-                {
-                    "transactions": Transaction.objects.all(),
-                    "error": "Failed to delete transaction.",
-                },
+            logger.log(
+                f"Unexpected error during transaction deletion by user {request.user}: {e}"
             )
+            messages.error(
+                request, "An unexpected error occured while deleting the transaction."
+            )
+            return redirect("transaction_list")
+    return redirect("transaction_list")
