@@ -61,9 +61,11 @@
                     <p>Age</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="age_mode" id="id_age_mode" onchange="toggleInputs('id_age_mode','age_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="age_mode" id="id_age_mode" onchange="toggleInputs('id_age_mode','age_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.age_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Age</option>
                         <option value="range" {% if form.age_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.age_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.age_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -88,9 +90,11 @@
                     <p>Weight</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="weight_mode" id="id_weight_mode" onchange="toggleInputs('id_weight_mode','weight_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="weight_mode" id="id_weight_mode" onchange="toggleInputs('id_weight_mode','weight_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.weight_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Weight</option>
                         <option value="range" {% if form.weight_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.weight_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.weight_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -129,9 +133,11 @@
                     <p>Purchase Price</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="purchase_price_mode" id="id_purchase_price_mode" onchange="toggleInputs('id_purchase_price_mode','purchase_price_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="purchase_price_mode" id="id_purchase_price_mode" onchange="toggleInputs('id_purchase_price_mode','purchase_price_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.purchase_price_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Purchase Price</option>
                         <option value="range" {% if form.purchase_price_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.purchase_price_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.purchase_price_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -156,9 +162,11 @@
                     <p>Current Value</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="current_value_mode" id="id_current_value_mode" onchange="toggleInputs('id_current_value_mode','current_value_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="current_value_mode" id="id_current_value_mode" onchange="toggleInputs('id_current_value_mode','current_value_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.purchase_price_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Current Value</option>
                         <option value="range" {% if form.purchase_price_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.purchase_price_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.purchase_price_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -185,9 +193,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="next_vaccination_mode" id="id_next_vaccination_mode" onchange="toggleInputs('id_next_vaccination_mode','next_vaccination_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="next_vaccination_mode" id="id_next_vaccination_mode" onchange="toggleInputs('id_next_vaccination_mode','next_vaccination_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.next_vaccination_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.next_vaccination_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.next_vaccination_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.next_vaccination_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>

@@ -107,29 +107,41 @@ def search_filtering(form):
             active_filters.append(f"Type: {str(data['type'])}")
         # AGE
         if data.get("age_mode"):
-            if data.get("age_mode") == "range":
+            if data.get("age_mode") != "all":
                 if data.get("min_age") is not None:
                     livestock = livestock.filter(age__gte=data["min_age"])
                     active_filters.append(f"Min Age: {str(data['min_age'])}")
                 if data.get("max_age") is not None:
                     livestock = livestock.filter(age__lte=data["max_age"])
                     active_filters.append(f"Max Age: {str(data['max_age'])}")
+                if data.get("age_mode") == "highest":
+                    livestock = livestock.order_by("-age")
+                    active_filters.append(f"Highest to Lowest Age")
+                if data.get("age_mode") == "lowest":
+                    livestock = livestock.order_by("age")
+                    active_filters.append(f"Lowest to Highest Age")
         # WEIGHT
         if data.get("weight_mode"):
-            if data.get("weight_mode") == "range":
+            if data.get("weight_mode") != "all":
                 if data.get("min_weight") is not None:
                     livestock = livestock.filter(weight__gte=data["min_weight"])
                     active_filters.append(f"Min Weight: {str(data['min_weight'])}")
                 if data.get("max_weight") is not None:
                     livestock = livestock.filter(weight__lte=data["max_weight"])
                     active_filters.append(f"Max Weight: {str(data['max_weight'])}")
+                if data.get("weight_mode") == "highest":
+                    livestock = livestock.order_by("-weight")
+                    active_filters.append(f"Highest to Lowest Weight")
+                if data.get("weight_mode") == "lowest":
+                    livestock = livestock.order_by("weight")
+                    active_filters.append(f"Lowest to Highest Weight")
         # HEALTH STATUS
         if data.get("health_status"):
             livestock = livestock.filter(health_status__icontains=data["health_status"])
             active_filters.append(f"Health Status: {str(data['health_status'])}")
         # PURCHASE PRICE
         if data.get("purchase_price_mode"):
-            if data.get("purchase_price_mode") == "range":
+            if data.get("purchase_price_mode") != "all":
                 if data.get("min_purchase_price") is not None:
                     livestock = livestock.filter(
                         purchase_price__gte=data["min_purchase_price"]
@@ -144,9 +156,15 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Purchase Price: {str(data['max_purchase_price'])}"
                     )
+                if data.get("purchase_price_mode") == "highest":
+                    livestock = livestock.order_by("-purchase_price")
+                    active_filters.append(f"Highest to Lowest Purchase Price")
+                if data.get("purchase_price_mode") == "lowest":
+                    livestock = livestock.order_by("purchase_price")
+                    active_filters.append(f"Lowest to Highest Purchase Price")
         # CURRENT VALUE
         if data.get("current_value_mode"):
-            if data.get("current_value_mode") == "range":
+            if data.get("current_value_mode") != "all":
                 if data.get("min_current_value") is not None:
                     livestock = livestock.filter(
                         current_value__gte=data["min_current_value"]
@@ -161,9 +179,15 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Current Value: {str(data['max_current_value'])}"
                     )
+                if data.get("current_value_mode") == "highest":
+                    livestock = livestock.order_by("-current_value")
+                    active_filters.append(f"Highest to Lowest Current Value")
+                if data.get("current_value_mode") == "lowest":
+                    livestock = livestock.order_by("current_value")
+                    active_filters.append(f"Lowest to Highest Current Value")
         # NEXT VACCINATION DATE
         if data.get("next_vaccination_mode"):
-            if data.get("next_vaccination_mode") == "range":
+            if data.get("next_vaccination_mode") != "all":
                 if data.get("min_next_vaccination") is not None:
                     livestock = livestock.filter(
                         next_vaccination_date__gte=data["min_next_vaccination"]
@@ -178,6 +202,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Next Vaccination: {str(data['max_next_vaccination'])}"
                     )
+                if data.get("next_vaccination_mode") == "highest":
+                    livestock = livestock.order_by("-next_vaccination_date")
+                    active_filters.append(f"Highest to Lowest Next Vaccination Date")
+                if data.get("next_vaccination_mode") == "lowest":
+                    livestock = livestock.order_by("next_vaccination_date")
+                    active_filters.append(f"Lowest to Highest Next Vaccination Date")
     return active_filters, livestock
 
 

@@ -47,13 +47,17 @@ function clearSearchFilters() {
     
     form.querySelectorAll('input').forEach(input => input.value = '');
     form.querySelectorAll(`select[data-has-dropdown='N']`).forEach(select => select.value = 'None');
+    form.querySelectorAll(`select[data-has-dropdown='Y']`).forEach(select => {
+        select.value = 'all';
+        select.dispatchEvent(new Event('change'));
+    });
 }
 
 function toggleInputs(mode_id, container_id) {
     const mode = document.getElementById(mode_id).value;
     const container = document.getElementById(container_id);
 
-    if (mode === 'range') {
+    if (mode === 'range' || mode === 'highest' || mode === 'lowest') {
         container.style.display = 'block';
     } else {
         container.style.display = 'none';

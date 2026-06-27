@@ -133,7 +133,7 @@ def search_filtering(form):
             equipment = equipment.filter(serial_number__icontains=data["serial_number"])
             active_filters.append(f"Serial Number: {str(data['serial_number'])}")
         if data.get("purchase_date_mode"):
-            if data.get("purchase_date_mode") == "range":
+            if data.get("purchase_date_mode") != "all":
                 if data.get("min_purchase_date") is not None:
                     equipment = equipment.filter(
                         purchase_date__gte=data["min_purchase_date"]
@@ -148,8 +148,14 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Purchase Date: {str(data['max_purchase_date'])}"
                     )
+                if data.get("purchase_date_mode") == "highest":
+                    equipment = equipment.order_by("-purchase_date")
+                    active_filters.append(f"Highest to Lowest Purchase Date")
+                if data.get("purchase_date_mode") == "lowest":
+                    equipment = equipment.order_by("purchase_date")
+                    active_filters.append(f"Lowest to Highest Purchase Date")
         if data.get("maintenance_date_mode"):
-            if data.get("maintenance_date_mode") == "range":
+            if data.get("maintenance_date_mode") != "all":
                 if data.get("min_maintenance_date") is not None:
                     equipment = equipment.filter(
                         maintenance_due__gte=data["min_maintenance_date"]
@@ -164,8 +170,14 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Maintenance Date: {str(data['max_maintenance_date'])}"
                     )
+                if data.get("maintenance_date_mode") == "highest":
+                    equipment = equipment.order_by("-maintenance_due")
+                    active_filters.append(f"Highest to Lowest Maintenance Date")
+                if data.get("maintenance_date_mode") == "lowest":
+                    equipment = equipment.order_by("maintenance_due")
+                    active_filters.append(f"Lowest to Highest Maintenance Date")
         if data.get("next_checkup_mode"):
-            if data.get("next_checkup_mode") == "range":
+            if data.get("next_checkup_mode") != "all":
                 if data.get("min_next_checkup") is not None:
                     equipment = equipment.filter(
                         next_checkup__gte=data["min_next_checkup"]
@@ -180,8 +192,14 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Next Checkup: {str(data['max_next_checkup'])}"
                     )
+                if data.get("next_checkup_mode") == "highest":
+                    equipment = equipment.order_by("-next_checkup")
+                    active_filters.append(f"Highest to Lowest Next Checkup")
+                if data.get("next_checkup_mode") == "lowest":
+                    equipment = equipment.order_by("next_checkup")
+                    active_filters.append(f"Lowest to Highest Next Checkup")
         if data.get("warranty_expiration_mode"):
-            if data.get("warranty_expiration_mode") == "range":
+            if data.get("warranty_expiration_mode") != "all":
                 if data.get("min_warranty_expiration") is not None:
                     equipment = equipment.filter(
                         warranty_expiry__gte=data["min_warranty_expiration"]
@@ -196,6 +214,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Warranty Expiration: {str(data['max_warranty_expiration'])}"
                     )
+                if data.get("warranty_expiration_mode") == "highest":
+                    equipment = equipment.order_by("-warranty_expiry")
+                    active_filters.append(f"Highest to Lowest Warranty Expiration")
+                if data.get("warranty_expiration_mode") == "lowest":
+                    equipment = equipment.order_by("warranty_expiry")
+                    active_filters.append(f"Lowest to Highest Warranty Expiration")
         if data.get("location"):
             equipment = equipment.filter(location__icontains=data["location"])
             active_filters.append(f"Location: {str(data['location'])}")
@@ -203,7 +227,7 @@ def search_filtering(form):
             equipment = equipment.filter(supplier__icontains=data["supplier"])
             active_filters.append(f"Supplier: {str(data['supplier'])}")
         if data.get("hours_used_mode"):
-            if data.get("hours_used_mode") == "range":
+            if data.get("hours_used_mode") != "all":
                 if data.get("min_hours_used") is not None:
                     equipment = equipment.filter(hours_used__gte=data["min_hours_used"])
                     active_filters.append(
@@ -214,11 +238,17 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Hours Used: {str(data['max_hours_used'])}"
                     )
+                if data.get("hours_used_mode") == "highest":
+                    equipment = equipment.order_by("-hours_used")
+                    active_filters.append(f"Highest to Lowest Hours Used")
+                if data.get("hours_used_mode") == "lowest":
+                    equipment = equipment.order_by("hours_used")
+                    active_filters.append(f"Lowest to Highest Hours Used")
         if data.get("condition"):
             equipment = equipment.filter(condition__icontains=data["condition"])
             active_filters.append(f"Condition: {str(data['condition'])}")
         if data.get("purchase_cost_mode"):
-            if data.get("purchase_cost_mode") == "range":
+            if data.get("purchase_cost_mode") != "all":
                 if data.get("min_purchase_cost") is not None:
                     equipment = equipment.filter(
                         purchase_cost__gte=data["min_purchase_cost"]
@@ -233,6 +263,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Purchase Cost: {str(data['max_purchase_cost'])}"
                     )
+                if data.get("purchase_cost_mode") == "highest":
+                    equipment = equipment.order_by("-purchase_cost")
+                    active_filters.append(f"Highest to Lowest Purchase Cost")
+                if data.get("purchase_cost_mode") == "lowest":
+                    equipment = equipment.order_by("purchase_cost")
+                    active_filters.append(f"Lowest to Highest Purchase Cost")
         if data.get("active"):
             if data.get("active") != "None":
                 equipment = equipment.filter(active__icontains=data["active"])
@@ -243,7 +279,7 @@ def search_filtering(form):
             )
             active_filters.append(f"Condition: {str(data['last_service_by'])}")
         if data.get("service_interval_days_mode"):
-            if data.get("service_interval_days_mode") == "range":
+            if data.get("service_interval_days_mode") != "all":
                 if data.get("min_service_interval_days") is not None:
                     equipment = equipment.filter(
                         service_interval_days__gte=data["min_service_interval_days"]
@@ -258,6 +294,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Service Interval Days: {str(data['max_service_interval_days'])}"
                     )
+                if data.get("service_interval_days_mode") == "highest":
+                    equipment = equipment.order_by("-service_interval_days")
+                    active_filters.append(f"Highest to Lowest Service Interval Days")
+                if data.get("service_interval_days_mode") == "lowest":
+                    equipment = equipment.order_by("service_interval_days")
+                    active_filters.append(f"Lowest to Highest Service Interval Days")
     return active_filters, equipment
 
 

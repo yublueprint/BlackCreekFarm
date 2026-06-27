@@ -69,7 +69,7 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <input type="text" id="itemNameSearch" name="{{ form.item_name.name }}" placeholder="Enter item name" value="{{ form.item_name.value|default:'' }}"
+                    <input type="text" id="itemNameSearch" name="{{ form.name.name }}" placeholder="Enter item name" value="{{ form.name.value|default:'' }}"
                     maxlength="{{ max_input_text_length }}" class="w-full rounded-lg p-2 border border-gray-800">
                 </div>
             </div>
@@ -99,9 +99,11 @@
                     <p>Quantity</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="qty_mode" id="id_qty_mode" onchange="toggleInputs('id_qty_mode','qty_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="qty_mode" id="id_qty_mode" onchange="toggleInputs('id_qty_mode','qty_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.qty_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Quantity</option>
                         <option value="range" {% if form.qty_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.qty_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.qty_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -128,9 +130,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="transaction_date_mode" id="id_transaction_date_mode" onchange="toggleInputs('id_transaction_date_mode','transaction_date_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="transaction_date_mode" id="id_transaction_date_mode" onchange="toggleInputs('id_transaction_date_mode','transaction_date_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.transaction_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.transaction_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.transaction_date_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.transaction_date_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -207,7 +211,15 @@
 {% endblock %}
 
 {% block edit_form_popup %}
-    <!-- EDIT FORM -->
+        {% capture as edit_form_content %}
+        <!-- Edit form content. -->
+
+        <!-- Notes for the Transaction (optional) -->
+        <label class="block mb-2">Notes:</label>
+        <textarea name="notes" id="editNotes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
+         maxlength="{{ max_textbox_length }}"></textarea>
+    {% endcapture %}
+    {% include "partials/default_list/edit_form_popup.html" with stock_name="Transaction" form_inside=edit_form_content %}
 {% endblock %}
 
 {% block delete_popup %}
@@ -252,10 +264,22 @@
                 {% endif %}
 
                 <td class="py-4 px-6 text-sm">
-                    <button onclick="openDeletePopup('{{ object.id }}', '{{ object.item_type|escapejs }} {{ object.item_id|escapejs }}')"
-                        class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
-                        Delete
-                    </button>
+                    <div class="flex space-x-2">
+                        <button
+                        onclick="openEditPopup(
+                            ['editId','{{ object.id }}'],
+                            ['editNotes','{{ object.notes|escapejs }}']
+                        )"
+                        class="bg-[#0D65A0] text-white py-1 px-3 rounded text-sm hover:bg-blue-700"
+                        >
+                            Edit
+                        </button>
+
+                        <button onclick="openDeletePopup('{{ object.id }}', '{{ object.item_type|escapejs }} ({{ object.item_name|escapejs }}) of ID {{ object.item_id|escapejs }}')"
+                            class="bg-red-600 text-white py-1 px-3 rounded text-sm hover:bg-red-700">
+                            Delete
+                        </button>
+                    </div>
                 </td>
             </tr>
         {% empty %}

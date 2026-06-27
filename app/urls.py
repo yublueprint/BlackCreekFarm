@@ -1,4 +1,5 @@
 from django.urls import path
+from django.contrib.auth.decorators import login_required
 
 from .backend.alerts.alerts import (alerts_list, mark_alert_read,
                                     mark_all_alerts_read)
@@ -14,11 +15,12 @@ from .backend.reports.reports import download_livestock_report, reports
 from .backend.supplies.supplies import (add_supplies, delete_supplies,
                                         edit_supplies, supplies_list)
 from .backend.transactions.transaction import (add_transaction,
+                                               edit_transaction,
                                                delete_transaction,
                                                transaction_list)
 
 urlpatterns = [
-    path("", dashboard, name="dashboard"),
+    path("", login_required(dashboard), name="dashboard"),
     # Livestock URLs
     path("livestock/", livestock_list, name="livestock_list"),
     path("livestock/add/", add_livestock, name="add_livestock"),
@@ -42,6 +44,7 @@ urlpatterns = [
     # Transaction URLs
     path("transactions/", transaction_list, name="transaction_list"),
     path("transactions/add/", add_transaction, name="add_transaction"),
+    path("transactions/edit/", edit_transaction, name="edit_transaction"),
     path("transactions/delete/", delete_transaction, name="delete_transaction"),
     # Reports URLs
     path("reports/", reports, name="reports"),

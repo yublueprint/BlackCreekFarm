@@ -100,13 +100,19 @@ def search_filtering(form):
             supplies = supplies.filter(category__icontains=data["category"])
             active_filters.append(f"Category: {str(data['category'])}")
         if data.get("qty_mode"):
-            if data.get("qty_mode") == "range":
+            if data.get("qty_mode") != "all":
                 if data.get("min_qty") is not None:
                     supplies = supplies.filter(quantity__gte=data["min_qty"])
                     active_filters.append(f"Min Qty: {str(data['min_qty'])}")
                 if data.get("max_qty") is not None:
                     supplies = supplies.filter(quantity__lte=data["max_qty"])
                     active_filters.append(f"Max Qty: {str(data['max_qty'])}")
+                if data.get("qty_mode") == "highest":
+                    supplies = supplies.order_by("-quantity")
+                    active_filters.append(f"Highest to Lowest Quantity")
+                if data.get("qty_mode") == "lowest":
+                    supplies = supplies.order_by("quantity")
+                    active_filters.append(f"Lowest to Highest Quantity")
         if data.get("unit"):
             supplies = supplies.filter(unit__icontains=data["unit"])
             active_filters.append(f"Unit: {str(data['unit'])}")
@@ -117,7 +123,7 @@ def search_filtering(form):
             supplies = supplies.filter(cost_per_unit=data["cost_per_unit"])
             active_filters.append(f"Cost Per Unit: {str(data['cost_per_unit'])}")
         if data.get("last_restocked_mode"):
-            if data.get("last_restocked_mode") == "range":
+            if data.get("last_restocked_mode") != "all":
                 if data.get("min_last_restocked") is not None:
                     supplies = supplies.filter(
                         last_restocked__gte=data["min_last_restocked"]
@@ -132,8 +138,15 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Last Restocked: {str(data['max_last_restocked'])}"
                     )
+                if data.get("last_restocked_mode") == "highest":
+                    supplies = supplies.order_by("-last_restocked")
+                    active_filters.append(f"Highest to Lowest Last Restocked Date")
+                if data.get("last_restocked_mode") == "lowest":
+                    supplies = supplies.order_by("last_restocked")
+                    active_filters.append(f"Lowest to Highest Last Restocked Date")
+                
         if data.get("procurement_date_mode"):
-            if data.get("procurement_date_mode") == "range":
+            if data.get("procurement_date_mode") != "all":
                 if data.get("min_procurement_date") is not None:
                     supplies = supplies.filter(
                         procurement_date__gte=data["min_procurement_date"]
@@ -148,6 +161,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Procurement Date: {str(data['max_procurement_date'])}"
                     )
+                if data.get("procurement_date_mode") == "highest":
+                    supplies = supplies.order_by("-procurement_date")
+                    active_filters.append(f"Highest to Lowest Procurement Date")
+                if data.get("procurement_date_mode") == "lowest":
+                    supplies = supplies.order_by("procurement_date")
+                    active_filters.append(f"Lowest to Highest Procurement Date")
     return active_filters, supplies
 
 

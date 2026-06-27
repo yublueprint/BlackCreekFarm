@@ -47,13 +47,20 @@
                 class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'equipment_list' %}bg-gray-200{% endif %}">
                 <i class="fas fa-cog mr-3"></i>Equipment
             </a>
-            <a href="/supplies/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'supplies_list' %}bg-gray-200{% endif %}">
+            <a href="{% url 'supplies_list' %}" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'supplies_list' %}bg-gray-200{% endif %}">
                 <i class="fas fa-truck mr-3"></i>Supplies
             </a>
-            <a href="/transactions/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'transaction_list' %}bg-gray-200{% endif %}">
+            <a href="{% url 'transaction_list' %}" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'transaction_list' %}bg-gray-200{% endif %}">
                 <i class="fas fa-dollar-sign mr-3"></i>Transactions
             </a>
-            <a href="/reports/" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'reports' %}bg-gray-200{% endif %}">
+
+            <!-- TOOLS category label -->
+            <div class="pt-2 pb-0 md:pt-4 md:pb-2">
+                <span class="text-xs font-semibold text-gray-500 uppercase tracking-wider">TOOLS</span>
+            </div>
+
+            <!-- Tool items. -->
+            <a href="{% url 'reports' %}" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'reports' %}bg-gray-200{% endif %}">
                 <i class="fas fa-folder mr-3"></i>Reports
             </a>
         </nav>

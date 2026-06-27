@@ -93,9 +93,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="purchase_date_mode" id="id_purchase_date_mode" onchange="toggleInputs('id_purchase_date_mode','purchase_date_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="purchase_date_mode" id="id_purchase_date_mode" onchange="toggleInputs('id_purchase_date_mode','purchase_date_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.purchase_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.purchase_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.purchase_date_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.purchase_date_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -120,9 +122,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="maintenance_date_mode" id="id_maintenance_date_mode" onchange="toggleInputs('id_maintenance_date_mode','maintenance_date_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="maintenance_date_mode" id="id_maintenance_date_mode" onchange="toggleInputs('id_maintenance_date_mode','maintenance_date_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.maintenance_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.maintenance_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.maintenance_date_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.maintenance_date_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -147,9 +151,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="next_checkup_mode" id="id_next_checkup_mode" onchange="toggleInputs('id_next_checkup_mode','next_checkup_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="next_checkup_mode" id="id_next_checkup_mode" onchange="toggleInputs('id_next_checkup_mode','next_checkup_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.next_checkup_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.next_checkup_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.next_checkup_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.next_checkup_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -174,9 +180,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="warranty_expiration_mode" id="id_warranty_expiration_mode" onchange="toggleInputs('id_warranty_expiration_mode','warranty_expiration_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="warranty_expiration_mode" id="id_warranty_expiration_mode" onchange="toggleInputs('id_warranty_expiration_mode','warranty_expiration_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.warranty_expiration_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.warranty_expiration_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.warranty_expiration_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.warranty_expiration_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -227,9 +235,11 @@
                     <p>Hours Used</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="hours_used_mode" id="id_hours_used_mode" onchange="toggleInputs('id_hours_used_mode','hours_used_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="hours_used_mode" id="id_hours_used_mode" onchange="toggleInputs('id_hours_used_mode','hours_used_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.hours_used_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Hours Used</option>
                         <option value="range" {% if form.hours_used_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.hours_used_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.hours_used_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -268,9 +278,11 @@
                     <p>Purchase Cost</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="purchase_cost_mode" id="id_purchase_cost_mode" onchange="toggleInputs('id_purchase_cost_mode','purchase_cost_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="purchase_cost_mode" id="id_purchase_cost_mode" onchange="toggleInputs('id_purchase_cost_mode','purchase_cost_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.purchase_cost_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Purchase Cost</option>
                         <option value="range" {% if form.purchase_cost_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.purchase_cost_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.purchase_cost_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -325,9 +337,11 @@
                     <p>Service Interval Days</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="service_interval_days_mode" id="id_service_interval_days_mode" onchange="toggleInputs('id_service_interval_days_mode','service_interval_days_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="service_interval_days_mode" id="id_service_interval_days_mode" onchange="toggleInputs('id_service_interval_days_mode','service_interval_days_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.service_interval_days_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Service Interval Days</option>
                         <option value="range" {% if form.service_interval_days_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.service_interval_days_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.service_interval_days_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
