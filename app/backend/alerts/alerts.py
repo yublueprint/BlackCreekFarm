@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
@@ -10,20 +11,24 @@ logger = Logger("app/logging/app.log")
 
 @login_required
 def alerts_list(request):
-    logger.log(f"User {request.user} viewed alerts history.")
+    try:
+        # Get all alerts, unread first, then by timestamp
+        alerts = Alert.objects.all().order_by("is_read", "-timestamp")
 
-    # Get all alerts, unread first, then by timestamp
-    alerts = Alert.objects.all().order_by("is_read", "-timestamp")
+        paginator = Paginator(alerts, 20)
+        page_number = request.GET.get("page")
+        page_obj = paginator.get_page(page_number)
 
-    paginator = Paginator(alerts, 20)
-    page_number = request.GET.get("page")
-    page_obj = paginator.get_page(page_number)
+        context = {
+            "page_obj": page_obj,
+        }
 
-    context = {
-        "page_obj": page_obj,
-    }
-
-    return render(request, "app/alerts_list.html", context)
+        logger.log(f"User {request.user} viewed alerts history.")
+        return render(request, "app/alerts_list.html", context)
+    except Exception as e:
+        logger.log(f"Error in alerts view by {request.user}: {e}")
+        messages.error(request, str(e))
+        return redirect("error_page")
 
 
 @login_required

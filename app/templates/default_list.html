@@ -6,29 +6,29 @@
 
 {% block content %}
 
-{% block header_title %}
-    {% include 'partials/header_text.html' with text_given="Item Management" %}
-{% endblock %}
+<div class="flex flex-col flex-wrap lg:flex-row justify-between">
+    <div>
+        {% block header_title %}
+            {% include 'partials/header_text.html' with text_given="Item Management" %}
+        {% endblock %}
+    </div>
+    <div class="flex flex-col lg:flex-row gap-x-2">
+        <!-- SEARCH BOX -->
+        {% include 'partials/default_list/search_field_box.html' %}
 
-{% block add_list_button %}
-    {% include 'partials/default_list/add_button.html' with button_text="Add Item" %}
-{% endblock %}
-
-{% include 'partials/default_list/search_field_box.html' %}
+        <!-- ADD BUTTON -->
+        {% block add_list_button %}
+            {% include 'partials/default_list/add_button.html' with button_text="Add Item" %}
+        {% endblock %}
+    </div>
+</div>
 
 {% block search_form_popup %}
 {% endblock %}
 
 {% include 'partials/default_list/search_filter_display.html' %}
 
-<!-- Display Error Message if Error occurs-->
-{% for message in messages %}
-    {% if message.level_tag == 'error' %}
-    <div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-        Error: {{ message }}
-    </div>
-    {% endif %}
-{% endfor %}
+{% include 'partials/error_messages.html' %}
 
 {% block add_form_popup %}
 {% endblock %}

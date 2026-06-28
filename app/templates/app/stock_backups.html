@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block title %}Stock Backups | BlackCreek Sync{% endblock %}
+
+{% block content %}
+
+{% include 'partials/error_messages.html' %}
+
+<div class="container text-center my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg border-0 rounded-lg p-8 bg-white p-10">
+                <h1 class="text-4xl font-bold mb-6 text-gray-800">Stock Backups</h1>
+                <div class="mb-8">
+                    <i class="fas fa-file-pdf fa-4x text-red-600 mb-4"></i>
+                </div>
+                <p class="text-xl text-gray-600 mb-8">Generate and download comprehensive PDFs and CSVs to backup your stock lists.</p>
+                
+                <form method="post" id="stockSelectorForm" action="{% url 'download_backup' %}" class="flex flex-col items-center p-4 border rounded-lg hover:shadow-md transition bg-gray-50">
+                    {% csrf_token %}
+                    <h3 class="font-bold text-lg mb-2">Choose Stock</h3>
+                    <p class="text-sm text-gray-600 mb-4">
+                        CSV and PDF Backup.
+                    </p>
+                    <select name="stock_selector" id="id_stock_selector" class="w-fit border rounded px-3 py-2 mb-4">
+                        <option value="Livestock">Livestock</option>
+                        <option value="Crop">Crop</option>
+                        <option value="Equipment">Equipment</option>
+                        <option value="Supplies">Supplies</option>
+                        <option value="Transactions">Transactions</option>
+                    </select>
+                    <button type="submit" class="flex flex-row w-fit items-center justify-center gap-x-2 inline-block bg-green-700 text-white px-5 py-2 rounded hover:bg-green-800 transition">
+                        <i class="fa-solid fa-download"></i> 
+                        <h1>
+                            Download
+                        </h1>
+                    </button>
+                </form>
+
+                <div class="mt-6">
+                    <a href="{% url 'dashboard' %}" class="text-green-700 hover:underline">← Return to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} 

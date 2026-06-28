@@ -63,6 +63,9 @@
             <a href="{% url 'reports' %}" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'reports' %}bg-gray-200{% endif %}">
                 <i class="fas fa-folder mr-3"></i>Reports
             </a>
+            <a href="{% url 'stock_backups' %}" class="block text-gray-700 hover:bg-gray-100 p-3 rounded {% if request.resolver_match.url_name == 'stock_backups' %}bg-gray-200{% endif %}">
+                <i class="fas fa-cloud-arrow-down mr-3"></i>Stock Backups
+            </a>
         </nav>
     </div>
 

@@ -18,6 +18,9 @@ from .backend.transactions.transaction import (add_transaction,
                                                edit_transaction,
                                                delete_transaction,
                                                transaction_list)
+from .backend.stock_backups.stock_backups import (stock_backups,
+                                                  download_backup)
+from .backend.error_page.error_page import error_page
 
 urlpatterns = [
     path("", login_required(dashboard), name="dashboard"),
@@ -53,6 +56,9 @@ urlpatterns = [
         download_livestock_report,
         name="download_livestock_report",
     ),
+    # Stock Backups URLs
+    path("stock_backups/", stock_backups, name="stock_backups"),
+    path("stock_backups/download", download_backup, name="download_backup"),
     # Alert URLs
     path("alerts/", alerts_list, name="alerts_list"),
     path("alerts/red/<int:alert_id>/", mark_alert_read, name="mark_alert_read"),
@@ -64,4 +70,6 @@ urlpatterns = [
         download_all_activities,
         name="download_all_activities",
     ),
+    # Error Page
+    path("errors/", error_page, name="error_page"),
 ]

@@ -7,10 +7,11 @@ flake8
 black 
 autoflake 
 isort
+whitenoise
+reportlab
+# Testing & coverage
 django-silk
 memory-profiler
-whitenoise
-# Testing & coverage
 psycopg2-binary
 pytest>=8.0.0
 pytest-cov

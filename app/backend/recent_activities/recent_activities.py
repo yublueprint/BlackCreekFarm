@@ -2,9 +2,10 @@ import io
 import os
 import zipfile
 
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from app.backend.functions import paginationFunction
 from app.logging.logging import Logger
@@ -14,26 +15,30 @@ logger = Logger("app/logging/app.log")
 
 @login_required
 def recent_activities_list(request):
+    try:
+        recent_activities = logger.retrieve_recent_activity(5, True)
 
-    recent_activities = logger.retrieve_recent_activity(5, True)
+        # PAGINATION
+        page_number = request.GET.get("page")
+        page_obj, backward_pages, forward_pages, page_number = paginationFunction(
+            recent_activities, page_number, 25
+        )
 
-    # PAGINATION
-    page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages, page_number = paginationFunction(
-        recent_activities, page_number, 25
-    )
+        context = {
+            "recent_activity": recent_activities,
+            "page_obj": page_obj,
+            "backward_pages": backward_pages,
+            "forward_pages": forward_pages,
+        }
 
-    context = {
-        "recent_activity": recent_activities,
-        "page_obj": page_obj,
-        "backward_pages": backward_pages,
-        "forward_pages": forward_pages,
-    }
-
-    logger.log(
-        f"User {request.user} viewed recent activities list (page {page_number})."
-    )
-    return render(request, "app/recent_activities_list.html", context)
+        logger.log(
+            f"User {request.user} viewed recent activities list (page {page_number})."
+        )
+        return render(request, "app/recent_activities_list.html", context)
+    except Exception as e:
+        logger.log(f"Error in recent activities view by {request.user}: {e}")
+        messages.error(request, str(e))
+        return redirect("error_page")
 
 
 @login_required
@@ -68,10 +73,7 @@ def download_all_activities(request):
         return response
     except Exception as e:
         logger.log(f"Unexpected error during log file download: {e}")
-        # response = redirect("recent_activities_list")
-        context = {
-            "recent_activity": logger.retrieve_recent_activity(5, True),
-            "error": str(e),
-        }
-        response = render(request, "app/recent_activities_list.html", context)
-        return response
+        messages.error(
+            request, "An unexpected error occurred while downloading the log files."
+        )
+        return redirect("recent_activities_list")

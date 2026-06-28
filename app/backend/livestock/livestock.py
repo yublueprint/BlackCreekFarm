@@ -213,33 +213,38 @@ def search_filtering(form):
 
 @login_required
 def livestock_list(request):
-    # FOR SEARCH FILTERING.
-    form = LivestockSearchForm(request.GET)
-    active_filters, livestock = search_filtering(form)
+    try:
+        # FOR SEARCH FILTERING.
+        form = LivestockSearchForm(request.GET)
+        active_filters, livestock = search_filtering(form)
 
-    # FOR PAGINATION.
-    page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages, page_number = paginationFunction(
-        livestock, page_number, 10
-    )
+        # FOR PAGINATION.
+        page_number = request.GET.get("page")
+        page_obj, backward_pages, forward_pages, page_number = paginationFunction(
+            livestock, page_number, 10
+        )
 
-    context = {
-        "form": form,
-        "search_filters_applied": active_filters,
-        "list_url_given": "livestock_list",
-        "add_url_given": "add_livestock",
-        "edit_url_given": "edit_livestock",
-        "delete_url_given": "delete_livestock",
-        "page_obj": page_obj,
-        "backward_pages": backward_pages,
-        "forward_pages": forward_pages,
-        "max_textbox_length": TEXTBOX_MAX_LENGTH,
-        "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
-        "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
-    }
+        context = {
+            "form": form,
+            "search_filters_applied": active_filters,
+            "list_url_given": "livestock_list",
+            "add_url_given": "add_livestock",
+            "edit_url_given": "edit_livestock",
+            "delete_url_given": "delete_livestock",
+            "page_obj": page_obj,
+            "backward_pages": backward_pages,
+            "forward_pages": forward_pages,
+            "max_textbox_length": TEXTBOX_MAX_LENGTH,
+            "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
+            "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
+        }
 
-    logger.log(f"User {request.user} viewed livestock list (page {page_number}).")
-    return render(request, "app/livestock_list.html", context)
+        logger.log(f"User {request.user} viewed livestock list (page {page_number}).")
+        return render(request, "app/livestock_list.html", context)
+    except Exception as e:
+        logger.log(f"Error in livestock view by {request.user}: {e}")
+        messages.error(request, str(e))
+        return redirect("error_page")
 
 
 @login_required

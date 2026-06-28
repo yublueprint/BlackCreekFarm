@@ -227,33 +227,38 @@ def search_filtering(form):
 
 @login_required
 def crop_list(request):
-    # FOR SEARCH FILTERING.
-    form = CropSearchForm(request.GET)
-    active_filters, crops = search_filtering(form)
+    try:
+        # FOR SEARCH FILTERING.
+        form = CropSearchForm(request.GET)
+        active_filters, crops = search_filtering(form)
 
-    # FOR PAGINATION.
-    page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages, page_number = paginationFunction(
-        crops, page_number, 10
-    )
+        # FOR PAGINATION.
+        page_number = request.GET.get("page")
+        page_obj, backward_pages, forward_pages, page_number = paginationFunction(
+            crops, page_number, 10
+        )
 
-    context = {
-        "form": form,
-        "search_filters_applied": active_filters,
-        "list_url_given": "crop_list",
-        "add_url_given": "add_crop",
-        "edit_url_given": "edit_crop",
-        "delete_url_given": "delete_crop",
-        "page_obj": page_obj,
-        "backward_pages": backward_pages,
-        "forward_pages": forward_pages,
-        "max_textbox_length": TEXTBOX_MAX_LENGTH,
-        "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
-        "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
-    }
+        context = {
+            "form": form,
+            "search_filters_applied": active_filters,
+            "list_url_given": "crop_list",
+            "add_url_given": "add_crop",
+            "edit_url_given": "edit_crop",
+            "delete_url_given": "delete_crop",
+            "page_obj": page_obj,
+            "backward_pages": backward_pages,
+            "forward_pages": forward_pages,
+            "max_textbox_length": TEXTBOX_MAX_LENGTH,
+            "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
+            "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
+        }
 
-    logger.log(f"User {request.user} viewed crop list (page {page_number}).")
-    return render(request, "app/crop_list.html", context)
+        logger.log(f"User {request.user} viewed crop list (page {page_number}).")
+        return render(request, "app/crop_list.html", context)
+    except Exception as e:
+        logger.log(f"Error in crops view by {request.user}: {e}")
+        messages.error(request, str(e))
+        return redirect("error_page")
 
 
 @login_required

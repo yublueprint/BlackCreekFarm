@@ -305,33 +305,38 @@ def search_filtering(form):
 
 @login_required
 def equipment_list(request):
-    # FOR SEARCH FILTERING.
-    form = EquipmentSearchForm(request.GET)
-    active_filters, equipment = search_filtering(form)
+    try:
+        # FOR SEARCH FILTERING.
+        form = EquipmentSearchForm(request.GET)
+        active_filters, equipment = search_filtering(form)
 
-    # FOR PAGINATION.
-    page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages, page_number = paginationFunction(
-        equipment, page_number, 10
-    )
+        # FOR PAGINATION.
+        page_number = request.GET.get("page")
+        page_obj, backward_pages, forward_pages, page_number = paginationFunction(
+            equipment, page_number, 10
+        )
 
-    context = {
-        "form": form,
-        "search_filters_applied": active_filters,
-        "list_url_given": "equipment_list",
-        "add_url_given": "add_equipment",
-        "edit_url_given": "edit_equipment",
-        "delete_url_given": "delete_equipment",
-        "page_obj": page_obj,
-        "backward_pages": backward_pages,
-        "forward_pages": forward_pages,
-        "max_textbox_length": TEXTBOX_MAX_LENGTH,
-        "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
-        "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
-    }
+        context = {
+            "form": form,
+            "search_filters_applied": active_filters,
+            "list_url_given": "equipment_list",
+            "add_url_given": "add_equipment",
+            "edit_url_given": "edit_equipment",
+            "delete_url_given": "delete_equipment",
+            "page_obj": page_obj,
+            "backward_pages": backward_pages,
+            "forward_pages": forward_pages,
+            "max_textbox_length": TEXTBOX_MAX_LENGTH,
+            "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
+            "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
+        }
 
-    logger.log(f"User {request.user} viewed equipment list (page {page_number}).")
-    return render(request, "app/equipment_list.html", context)
+        logger.log(f"User {request.user} viewed equipment list (page {page_number}).")
+        return render(request, "app/equipment_list.html", context)
+    except Exception as e:
+        logger.log(f"Error in equipment view by {request.user}: {e}")
+        messages.error(request, str(e))
+        return redirect("error_page")
 
 
 @login_required
