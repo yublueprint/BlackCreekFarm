@@ -144,7 +144,7 @@ def search_filtering(form):
                 if data.get("last_restocked_mode") == "lowest":
                     supplies = supplies.order_by("last_restocked")
                     active_filters.append(f"Lowest to Highest Last Restocked Date")
-                
+
         if data.get("procurement_date_mode"):
             if data.get("procurement_date_mode") != "all":
                 if data.get("min_procurement_date") is not None:

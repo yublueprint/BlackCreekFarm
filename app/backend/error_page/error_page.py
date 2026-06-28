@@ -5,11 +5,10 @@ from app.logging.logging import Logger
 
 logger = Logger("app/logging/app.log")
 
+
 @login_required
 def error_page(request):
-    context = {
-
-    }
+    context = {}
 
     logger.log(f"User {request.user} viewed error page.")
     return render(request, "app/error_page.html", context)

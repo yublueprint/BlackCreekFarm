@@ -3,9 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 
-from app.exceptions.transactions.exception import (TransactionCreationException,
-                                                   TransactionEditException,
-                                                   TransactionDeleteException)
+from app.exceptions.transactions.exception import (
+    TransactionCreationException, TransactionDeleteException,
+    TransactionEditException)
 from app.logging.logging import Logger
 
 from ..forms import TransactionSearchForm
@@ -82,6 +82,7 @@ def get_properties(request, ExceptionToUse: Exception):
         notes,
     )
 
+
 def get_edit_properties(request, ExceptionToUse: Exception):
     """
     Gets properties of transaction and validates the inputs.
@@ -91,14 +92,11 @@ def get_edit_properties(request, ExceptionToUse: Exception):
     # Optional fields.
     notes = request.POST.get("notes") or ""
 
-    required_inputs = {
-    }
+    required_inputs = {}
 
-    default_text_inputs_given = {
-    }
+    default_text_inputs_given = {}
 
-    unit_inputs_given = {
-    }
+    unit_inputs_given = {}
 
     textbox_inputs_given = {
         "notes": notes,
@@ -123,9 +121,7 @@ def get_edit_properties(request, ExceptionToUse: Exception):
                     f"Transaction {key} input must be less or equal to {max_length} characters."
                 )
 
-    return (
-        notes,
-    )
+    return (notes,)
 
 
 def search_filtering(form):
@@ -274,6 +270,7 @@ def add_transaction(request):
             return redirect("transaction_list")
     return redirect("transaction_list")
 
+
 @login_required
 def edit_transaction(request):
     if request.method == "POST":
@@ -285,9 +282,9 @@ def edit_transaction(request):
 
             old_name = transaction.item_name
 
-            (
-                transaction.notes,
-            ) = get_edit_properties(request, TransactionEditException)
+            (transaction.notes,) = get_edit_properties(
+                request, TransactionEditException
+            )
 
             transaction.save()
 

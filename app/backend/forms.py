@@ -1,7 +1,11 @@
 from django import forms
 
-search_dropdown_choices = [("all", "Any"), ("range", "Specific Range"),
-                           ("highest", "Highest to Lowest"), ("lowest", "Lowest to Highest")]
+search_dropdown_choices = [
+    ("all", "Any"),
+    ("range", "Specific Range"),
+    ("highest", "Highest to Lowest"),
+    ("lowest", "Lowest to Highest"),
+]
 
 
 class LivestockSearchForm(forms.Form):
@@ -269,6 +273,7 @@ class EquipmentSearchForm(forms.Form):
         required=False, label="Max Service Interval Days"
     )
 
+
 class SuppliesSearchForm(forms.Form):
     id = forms.IntegerField(required=False, label="Search by ID")
     name = forms.CharField(required=False, label="Search by Name")
@@ -321,6 +326,7 @@ class SuppliesSearchForm(forms.Form):
             format="%Y-%m-%d",
         ),
     )
+
 
 class TransactionSearchForm(forms.Form):
     id = forms.IntegerField(required=False, label="Search by ID")

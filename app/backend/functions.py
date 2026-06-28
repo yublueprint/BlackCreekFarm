@@ -5,6 +5,7 @@ from app.logging.logging import Logger
 # Initialize application logger
 logger = Logger("app/logging/app.log")
 
+
 def paginationFunction(objects, page_number=1, num_per_page=10):
     # FOR PAGINATION
     paginator = Paginator(objects, num_per_page)
@@ -21,10 +22,14 @@ def paginationFunction(objects, page_number=1, num_per_page=10):
         elif page_number > paginator.num_pages:
             page_number = paginator.num_pages
     except ValueError as e:
-        logger.log(f"Invalid value gotten for page number ({page_number}). Page number automatically set to 1. Error is: {e}")
+        logger.log(
+            f"Invalid value gotten for page number ({page_number}). Page number automatically set to 1. Error is: {e}"
+        )
         page_number = 1
     except Exception as e:
-        logger.log(f"An unexpected error has occured while attempting to get page number ({page_number}). Page number automatically set to 1. Error is: {e}")
+        logger.log(
+            f"An unexpected error has occured while attempting to get page number ({page_number}). Page number automatically set to 1. Error is: {e}"
+        )
         page_number = 1
 
     try:

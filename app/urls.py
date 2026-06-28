@@ -1,5 +1,5 @@
-from django.urls import path
 from django.contrib.auth.decorators import login_required
+from django.urls import path
 
 from .backend.alerts.alerts import (alerts_list, mark_alert_read,
                                     mark_all_alerts_read)
@@ -7,20 +7,19 @@ from .backend.crop.crop import add_crop, crop_list, delete_crop, edit_crop
 from .backend.dashboard.dashboard import dashboard
 from .backend.equipment.equipment import (add_equipment, delete_equipment,
                                           edit_equipment, equipment_list)
+from .backend.error_page.error_page import error_page
 from .backend.livestock.livestock import (add_livestock, delete_livestock,
                                           edit_livestock, livestock_list)
 from .backend.recent_activities.recent_activities import (
     download_all_activities, recent_activities_list)
 from .backend.reports.reports import download_livestock_report, reports
+from .backend.stock_backups.stock_backups import download_backup, stock_backups
 from .backend.supplies.supplies import (add_supplies, delete_supplies,
                                         edit_supplies, supplies_list)
 from .backend.transactions.transaction import (add_transaction,
-                                               edit_transaction,
                                                delete_transaction,
+                                               edit_transaction,
                                                transaction_list)
-from .backend.stock_backups.stock_backups import (stock_backups,
-                                                  download_backup)
-from .backend.error_page.error_page import error_page
 
 urlpatterns = [
     path("", login_required(dashboard), name="dashboard"),
