@@ -1,7 +1,8 @@
 import requests
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from app.logging.logging import Logger
 
@@ -17,10 +18,9 @@ def reports(request):
         logger.log(f"User {request.user} viewed livestock reports page.")
         return render(request, "app/reports.html", {"livestock": livestock})
     except Exception as e:
-        logger.log(f"Error in reports view: {e}")
-        return render(
-            request, "app/error.html", {"error": "Failed to retrieve livestock data"}
-        )
+        logger.log(f"Error in reports view by {request.user}: {e}")
+        messages.error(request, str(e))
+        return redirect("error_page")
 
 
 @login_required
@@ -33,11 +33,9 @@ def download_livestock_report(request):
             return HttpResponse(response.content, content_type="application/pdf")
         else:
             logger.log(f"Analytics engine returned status {response.status_code}")
-            return render(
-                request, "app/error.html", {"error": "Analytics engine error"}
-            )
+            messages.error(request, f"Analytics Engine is currently unavailable.")
+            return redirect("reports")
     except Exception as e:
         logger.log(f"Error calling analytics engine: {e}")
-        return render(
-            request, "app/error.html", {"error": "Analytics engine unavailable"}
-        )
+        messages.error(request, f"Analytics Engine Unavailable: {str(e)}")
+        return redirect("reports")

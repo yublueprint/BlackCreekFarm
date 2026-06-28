@@ -65,9 +65,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="planting_date_mode" id="id_planting_date_mode" onchange="toggleInputs('id_planting_date_mode','planting_date_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="planting_date_mode" id="id_planting_date_mode" onchange="toggleInputs('id_planting_date_mode','planting_date_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.planting_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.planting_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.planting_date_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.planting_date_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -92,9 +94,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="harvest_date_mode" id="id_harvest_date_mode" onchange="toggleInputs('id_harvest_date_mode','harvest_date_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="harvest_date_mode" id="id_harvest_date_mode" onchange="toggleInputs('id_harvest_date_mode','harvest_date_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.harvest_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.harvest_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.harvest_date_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.harvest_date_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -117,9 +121,11 @@
                     <p>Expected Yield</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="expected_yield_mode" id="id_expected_yield_mode" onchange="toggleInputs('id_expected_yield_mode','expected_yield_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="expected_yield_mode" id="id_expected_yield_mode" onchange="toggleInputs('id_expected_yield_mode','expected_yield_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.expected_yield_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Expected Yield</option>
                         <option value="range" {% if form.expected_yield_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.expected_yield_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.expected_yield_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -144,9 +150,11 @@
                     <p>Yield Efficiency (%)</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="yield_efficiency_mode" id="id_yield_efficiency_mode" onchange="toggleInputs('id_yield_efficiency_mode','yield_efficiency_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="yield_efficiency_mode" id="id_yield_efficiency_mode" onchange="toggleInputs('id_yield_efficiency_mode','yield_efficiency_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.yield_efficiency_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Yield Efficiency</option>
                         <option value="range" {% if form.yield_efficiency_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.yield_efficiency_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.yield_efficiency_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -171,9 +179,11 @@
                     <p>Water Usage (Liters)</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="water_usage_mode" id="id_water_usage_mode" onchange="toggleInputs('id_water_usage_mode','water_usage_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="water_usage_mode" id="id_water_usage_mode" onchange="toggleInputs('id_water_usage_mode','water_usage_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.water_usage_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Water Usage</option>
                         <option value="range" {% if form.water_usage_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.water_usage_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.water_usage_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -200,9 +210,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="next_checkup_mode" id="id_next_checkup_mode" onchange="toggleInputs('id_next_checkup_mode','next_checkup_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="next_checkup_mode" id="id_next_checkup_mode" onchange="toggleInputs('id_next_checkup_mode','next_checkup_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.next_checkup_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.next_checkup_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.next_checkup_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.next_checkup_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>

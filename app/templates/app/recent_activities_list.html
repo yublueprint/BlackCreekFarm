@@ -11,12 +11,7 @@
 {% url 'download_all_activities' as download_activities_url %}
 {% include 'partials/url_button.html' with button_id="downloadAllRecentActivity" button_url=download_activities_url button_text="Download all activity logs." %}
 
-<!-- Display Error Message if Error occurs-->
-{% if error %}
-<div class="mb-4 rounded border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-    Error: {{ error }}
-</div>
-{% endif %}
+{% include 'partials/error_messages.html' %}
 
 {% block table %}
     {% capture as custom_activities_header %}

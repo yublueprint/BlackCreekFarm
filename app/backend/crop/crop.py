@@ -115,6 +115,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Planting Date: {str(data['max_planting_date'])}"
                     )
+                if data.get("planting_date_mode") == "highest":
+                    crops = crops.order_by("-planting_date")
+                    active_filters.append(f"Highest to Lowest Planting Date")
+                if data.get("planting_date_mode") == "lowest":
+                    crops = crops.order_by("planting_date")
+                    active_filters.append(f"Lowest to Highest Planting Date")
         if data.get("harvest_date_mode"):
             if data.get("harvest_date_mode") == "range":
                 if data.get("min_harvest_date") is not None:
@@ -127,6 +133,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Harvest Date: {str(data['max_harvest_date'])}"
                     )
+                if data.get("harvest_date_mode") == "highest":
+                    crops = crops.order_by("-harvest_date")
+                    active_filters.append(f"Highest to Lowest Harvest Date")
+                if data.get("harvest_date_mode") == "lowest":
+                    crops = crops.order_by("harvest_date")
+                    active_filters.append(f"Lowest to Highest Harvest Date")
         if data.get("expected_yield_mode"):
             if data.get("expected_yield_mode") == "range":
                 if data.get("min_expected_yield") is not None:
@@ -139,6 +151,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Expected Yield: {str(data['max_expected_yield'])}"
                     )
+                if data.get("expected_yield_mode") == "highest":
+                    crops = crops.order_by("-expected_yield")
+                    active_filters.append(f"Highest to Lowest Expected Yield")
+                if data.get("expected_yield_mode") == "lowest":
+                    crops = crops.order_by("expected_yield")
+                    active_filters.append(f"Lowest to Highest Expected Yield")
         if data.get("yield_efficiency_mode"):
             if data.get("yield_efficiency_mode") == "range":
                 if data.get("min_yield_efficiency") is not None:
@@ -155,6 +173,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Yield Efficiency: {str(data['max_yield_efficiency'])}"
                     )
+                if data.get("yield_efficiency_mode") == "highest":
+                    crops = crops.order_by("-yield_efficiency")
+                    active_filters.append(f"Highest to Lowest Yield Efficiency")
+                if data.get("yield_efficiency_mode") == "lowest":
+                    crops = crops.order_by("yield_efficiency")
+                    active_filters.append(f"Lowest to Highest Yield Efficiency")
         if data.get("water_usage_mode"):
             if data.get("water_usage_mode") == "range":
                 if data.get("min_water_usage") is not None:
@@ -171,6 +195,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Water Usage: {str(data['max_water_usage'])}"
                     )
+                if data.get("water_usage_mode") == "highest":
+                    crops = crops.order_by("-water_usage")
+                    active_filters.append(f"Highest to Lowest Water Usage")
+                if data.get("water_usage_mode") == "lowest":
+                    crops = crops.order_by("water_usage")
+                    active_filters.append(f"Lowest to Highest Water Usage")
         if data.get("next_checkup_mode"):
             if data.get("next_checkup_mode") == "range":
                 if data.get("min_next_checkup") is not None:
@@ -183,6 +213,12 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Next Checkup: {str(data['max_next_checkup'])}"
                     )
+                if data.get("next_checkup_mode") == "highest":
+                    crops = crops.order_by("-next_checkup")
+                    active_filters.append(f"Highest to Lowest Next Checkup")
+                if data.get("next_checkup_mode") == "lowest":
+                    crops = crops.order_by("next_checkup")
+                    active_filters.append(f"Lowest to Highest Next Checkup")
         if data.get("region"):
             crops = crops.filter(region__icontains=data["region"])
             active_filters.append(f"Region: {str(data['region'])}")
@@ -191,33 +227,38 @@ def search_filtering(form):
 
 @login_required
 def crop_list(request):
-    # FOR SEARCH FILTERING.
-    form = CropSearchForm(request.GET)
-    active_filters, crops = search_filtering(form)
+    try:
+        # FOR SEARCH FILTERING.
+        form = CropSearchForm(request.GET)
+        active_filters, crops = search_filtering(form)
 
-    # FOR PAGINATION.
-    page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages, page_number = paginationFunction(
-        crops, page_number, 10
-    )
+        # FOR PAGINATION.
+        page_number = request.GET.get("page")
+        page_obj, backward_pages, forward_pages, page_number = paginationFunction(
+            crops, page_number, 10
+        )
 
-    context = {
-        "form": form,
-        "search_filters_applied": active_filters,
-        "list_url_given": "crop_list",
-        "add_url_given": "add_crop",
-        "edit_url_given": "edit_crop",
-        "delete_url_given": "delete_crop",
-        "page_obj": page_obj,
-        "backward_pages": backward_pages,
-        "forward_pages": forward_pages,
-        "max_textbox_length": TEXTBOX_MAX_LENGTH,
-        "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
-        "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
-    }
+        context = {
+            "form": form,
+            "search_filters_applied": active_filters,
+            "list_url_given": "crop_list",
+            "add_url_given": "add_crop",
+            "edit_url_given": "edit_crop",
+            "delete_url_given": "delete_crop",
+            "page_obj": page_obj,
+            "backward_pages": backward_pages,
+            "forward_pages": forward_pages,
+            "max_textbox_length": TEXTBOX_MAX_LENGTH,
+            "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
+            "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
+        }
 
-    logger.log(f"User {request.user} viewed crop list (page {page_number}).")
-    return render(request, "app/crop_list.html", context)
+        logger.log(f"User {request.user} viewed crop list (page {page_number}).")
+        return render(request, "app/crop_list.html", context)
+    except Exception as e:
+        logger.log(f"Error in crops view by {request.user}: {e}")
+        messages.error(request, str(e))
+        return redirect("error_page")
 
 
 @login_required

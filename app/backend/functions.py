@@ -1,20 +1,36 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
+from app.logging.logging import Logger
+
+# Initialize application logger
+logger = Logger("app/logging/app.log")
+
 
 def paginationFunction(objects, page_number=1, num_per_page=10):
     # FOR PAGINATION
     paginator = Paginator(objects, num_per_page)
 
-    # Cant do int(None).
-    if page_number:
-        page_number = int(page_number)
+    try:
+        # Cant do int(None).
+        if page_number:
+            page_number = int(page_number)
 
-    # If none or less than 1, make it 1.
-    # If it's higher than total amount of pages we have, set it to last page.
-    if not page_number or page_number < 1:
+        # If none or less than 1, make it 1.
+        # If it's higher than total amount of pages we have, set it to last page.
+        if not page_number or page_number < 1:
+            page_number = 1
+        elif page_number > paginator.num_pages:
+            page_number = paginator.num_pages
+    except ValueError as e:
+        logger.log(
+            f"Invalid value gotten for page number ({page_number}). Page number automatically set to 1. Error is: {e}"
+        )
         page_number = 1
-    elif page_number > paginator.num_pages:
-        page_number = paginator.num_pages
+    except Exception as e:
+        logger.log(
+            f"An unexpected error has occured while attempting to get page number ({page_number}). Page number automatically set to 1. Error is: {e}"
+        )
+        page_number = 1
 
     try:
         page_obj = paginator.get_page(page_number)

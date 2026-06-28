@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.urls import path
 
 from .backend.alerts.alerts import (alerts_list, mark_alert_read,
@@ -6,19 +7,22 @@ from .backend.crop.crop import add_crop, crop_list, delete_crop, edit_crop
 from .backend.dashboard.dashboard import dashboard
 from .backend.equipment.equipment import (add_equipment, delete_equipment,
                                           edit_equipment, equipment_list)
+from .backend.error_page.error_page import error_page
 from .backend.livestock.livestock import (add_livestock, delete_livestock,
                                           edit_livestock, livestock_list)
 from .backend.recent_activities.recent_activities import (
     download_all_activities, recent_activities_list)
 from .backend.reports.reports import download_livestock_report, reports
+from .backend.stock_backups.stock_backups import download_backup, stock_backups
 from .backend.supplies.supplies import (add_supplies, delete_supplies,
                                         edit_supplies, supplies_list)
 from .backend.transactions.transaction import (add_transaction,
                                                delete_transaction,
+                                               edit_transaction,
                                                transaction_list)
 
 urlpatterns = [
-    path("", dashboard, name="dashboard"),
+    path("", login_required(dashboard), name="dashboard"),
     # Livestock URLs
     path("livestock/", livestock_list, name="livestock_list"),
     path("livestock/add/", add_livestock, name="add_livestock"),
@@ -42,6 +46,7 @@ urlpatterns = [
     # Transaction URLs
     path("transactions/", transaction_list, name="transaction_list"),
     path("transactions/add/", add_transaction, name="add_transaction"),
+    path("transactions/edit/", edit_transaction, name="edit_transaction"),
     path("transactions/delete/", delete_transaction, name="delete_transaction"),
     # Reports URLs
     path("reports/", reports, name="reports"),
@@ -50,6 +55,9 @@ urlpatterns = [
         download_livestock_report,
         name="download_livestock_report",
     ),
+    # Stock Backups URLs
+    path("stock_backups/", stock_backups, name="stock_backups"),
+    path("stock_backups/download", download_backup, name="download_backup"),
     # Alert URLs
     path("alerts/", alerts_list, name="alerts_list"),
     path("alerts/red/<int:alert_id>/", mark_alert_read, name="mark_alert_read"),
@@ -61,4 +69,6 @@ urlpatterns = [
         download_all_activities,
         name="download_all_activities",
     ),
+    # Error Page
+    path("errors/", error_page, name="error_page"),
 ]

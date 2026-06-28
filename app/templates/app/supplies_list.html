@@ -63,9 +63,11 @@
                     <p>Quantity</p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="qty_mode" id="id_qty_mode" onchange="toggleInputs('id_qty_mode','qty_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="qty_mode" id="id_qty_mode" onchange="toggleInputs('id_qty_mode','qty_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.qty_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Quantity</option>
                         <option value="range" {% if form.qty_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.qty_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.qty_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -134,9 +136,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="last_restocked_mode" id="id_last_restocked_mode" onchange="toggleInputs('id_last_restocked_mode','last_restocked_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="last_restocked_mode" id="id_last_restocked_mode" onchange="toggleInputs('id_last_restocked_mode','last_restocked_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.last_restocked_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.last_restocked_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.last_restocked_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.last_restocked_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>
@@ -161,9 +165,11 @@
                     </p>
                 </div>
                 <div class="w-1/2 items-center">
-                    <select name="procurement_date_mode" id="id_procurement_date_mode" onchange="toggleInputs('id_procurement_date_mode','procurement_date_inputs_container')" class="w-full border rounded px-3 py-2">
+                    <select name="procurement_date_mode" id="id_procurement_date_mode" onchange="toggleInputs('id_procurement_date_mode','procurement_date_inputs_container')" data-has-dropdown="Y" class="w-full border rounded px-3 py-2">
                         <option value="all" {% if form.procurement_date_mode.value == 'all' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Any Date</option>
                         <option value="range" {% if form.procurement_date_mode.value == 'range' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Specific Range</option>
+                        <option value="highest" {% if form.procurement_date_mode.value == 'highest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Highest to Lowest</option>
+                        <option value="lowest" {% if form.procurement_date_mode.value == 'lowest' %}selected{% endif %} class="w-full rounded-lg p-1 border border-gray-800">Lowest to Highest</option>
                     </select>
                 </div>
             </div>

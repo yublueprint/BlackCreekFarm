@@ -100,13 +100,19 @@ def search_filtering(form):
             supplies = supplies.filter(category__icontains=data["category"])
             active_filters.append(f"Category: {str(data['category'])}")
         if data.get("qty_mode"):
-            if data.get("qty_mode") == "range":
+            if data.get("qty_mode") != "all":
                 if data.get("min_qty") is not None:
                     supplies = supplies.filter(quantity__gte=data["min_qty"])
                     active_filters.append(f"Min Qty: {str(data['min_qty'])}")
                 if data.get("max_qty") is not None:
                     supplies = supplies.filter(quantity__lte=data["max_qty"])
                     active_filters.append(f"Max Qty: {str(data['max_qty'])}")
+                if data.get("qty_mode") == "highest":
+                    supplies = supplies.order_by("-quantity")
+                    active_filters.append(f"Highest to Lowest Quantity")
+                if data.get("qty_mode") == "lowest":
+                    supplies = supplies.order_by("quantity")
+                    active_filters.append(f"Lowest to Highest Quantity")
         if data.get("unit"):
             supplies = supplies.filter(unit__icontains=data["unit"])
             active_filters.append(f"Unit: {str(data['unit'])}")
@@ -117,7 +123,7 @@ def search_filtering(form):
             supplies = supplies.filter(cost_per_unit=data["cost_per_unit"])
             active_filters.append(f"Cost Per Unit: {str(data['cost_per_unit'])}")
         if data.get("last_restocked_mode"):
-            if data.get("last_restocked_mode") == "range":
+            if data.get("last_restocked_mode") != "all":
                 if data.get("min_last_restocked") is not None:
                     supplies = supplies.filter(
                         last_restocked__gte=data["min_last_restocked"]
@@ -132,8 +138,15 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Last Restocked: {str(data['max_last_restocked'])}"
                     )
+                if data.get("last_restocked_mode") == "highest":
+                    supplies = supplies.order_by("-last_restocked")
+                    active_filters.append(f"Highest to Lowest Last Restocked Date")
+                if data.get("last_restocked_mode") == "lowest":
+                    supplies = supplies.order_by("last_restocked")
+                    active_filters.append(f"Lowest to Highest Last Restocked Date")
+
         if data.get("procurement_date_mode"):
-            if data.get("procurement_date_mode") == "range":
+            if data.get("procurement_date_mode") != "all":
                 if data.get("min_procurement_date") is not None:
                     supplies = supplies.filter(
                         procurement_date__gte=data["min_procurement_date"]
@@ -148,38 +161,49 @@ def search_filtering(form):
                     active_filters.append(
                         f"Max Procurement Date: {str(data['max_procurement_date'])}"
                     )
+                if data.get("procurement_date_mode") == "highest":
+                    supplies = supplies.order_by("-procurement_date")
+                    active_filters.append(f"Highest to Lowest Procurement Date")
+                if data.get("procurement_date_mode") == "lowest":
+                    supplies = supplies.order_by("procurement_date")
+                    active_filters.append(f"Lowest to Highest Procurement Date")
     return active_filters, supplies
 
 
 @login_required
 def supplies_list(request):
-    # FOR SEARCH FILTERING.
-    form = SuppliesSearchForm(request.GET)
-    active_filters, supplies = search_filtering(form)
+    try:
+        # FOR SEARCH FILTERING.
+        form = SuppliesSearchForm(request.GET)
+        active_filters, supplies = search_filtering(form)
 
-    # FOR PAGINATION.
-    page_number = request.GET.get("page")
-    page_obj, backward_pages, forward_pages, page_number = paginationFunction(
-        supplies, page_number, 10
-    )
+        # FOR PAGINATION.
+        page_number = request.GET.get("page")
+        page_obj, backward_pages, forward_pages, page_number = paginationFunction(
+            supplies, page_number, 10
+        )
 
-    context = {
-        "form": form,
-        "search_filters_applied": active_filters,
-        "list_url_given": "supplies_list",
-        "add_url_given": "add_supplies",
-        "edit_url_given": "edit_supplies",
-        "delete_url_given": "delete_supplies",
-        "page_obj": page_obj,
-        "backward_pages": backward_pages,
-        "forward_pages": forward_pages,
-        "max_textbox_length": TEXTBOX_MAX_LENGTH,
-        "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
-        "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
-    }
+        context = {
+            "form": form,
+            "search_filters_applied": active_filters,
+            "list_url_given": "supplies_list",
+            "add_url_given": "add_supplies",
+            "edit_url_given": "edit_supplies",
+            "delete_url_given": "delete_supplies",
+            "page_obj": page_obj,
+            "backward_pages": backward_pages,
+            "forward_pages": forward_pages,
+            "max_textbox_length": TEXTBOX_MAX_LENGTH,
+            "max_input_text_length": DEFAULT_TEXT_MAX_LENGTH,
+            "max_input_unit_length": UNIT_INPUT_MAX_LENGTH,
+        }
 
-    logger.log(f"User {request.user} viewed supplies list (page {page_number}).")
-    return render(request, "app/supplies_list.html", context)
+        logger.log(f"User {request.user} viewed supplies list (page {page_number}).")
+        return render(request, "app/supplies_list.html", context)
+    except Exception as e:
+        logger.log(f"Error in supplies view by {request.user}: {e}")
+        messages.error(request, str(e))
+        return redirect("error_page")
 
 
 @login_required

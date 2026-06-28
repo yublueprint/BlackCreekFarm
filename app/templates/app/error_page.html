@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Error Page | BlackCreek Sync{% endblock %}
+
+{% block content %}
+
+{% include 'partials/header_text.html' with text_given="Error Page" %}
+
+<div class="mb-6">
+    <h1>If you are here, there was an error trying to load the page.</h1>
+</div>
+
+{% include 'partials/error_messages.html' %}
+
+
+{% endblock %} 
