@@ -1,0 +1,24 @@
+<!-- QR Code popup for a category object. -->
+<div id="qrcodePopup" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl flex flex-col flex-1 max-h-[90vh] overflow-y-auto">
+        <!-- Header -->
+        <h3 id="qrcodeHeader" class="text-xl font-bold mb-4">QR Code</h3>
+        <div class="flex flex-row items-center justify-center">
+            <img id="qrcodeImage" src="" alt="Item QR Code" width="290px" height="290px">
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="grid grid-cols-2 text-center items-center justify-center gap-3 mb-4">
+            <button onclick="downloadQR()" class="flex text-center items-center justify-center text-white py-2 px-4 rounded bg-green-700 hover:bg-green-800 mb-4 flex w-full gap-2">
+                <i class="fa-solid fa-download"></i> Download
+            </button>
+            <button onclick="printQR()" class="flex text-center items-center justify-center text-white py-2 px-4 rounded bg-green-700 hover:bg-green-800 mb-4 flex w-full gap-2">
+                <i class="fa-solid fa-print"></i> Print
+            </button>
+        </div>
+        <!-- Close popup button. -->
+        <div id="closeQRCodeButton" class="mt-4 bg-gray-300 text-center text-gray-800 py-2 px-4 rounded hover:bg-gray-400">
+            Close
+        </div>
+    </div>
+</div>

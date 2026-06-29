@@ -327,6 +327,10 @@
     {% include "partials/default_list/notes_popup.html" with stock_name="Livestock" %}
 {% endblock %}
 
+{% block qrcode_popup %}
+    {% include "partials/default_list/qrcode_popup.html" with stock_name="Livestock" %}
+{% endblock %}
+
 {% block table %}
     {% capture as custom_livestock_header %}
         <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
@@ -339,6 +343,7 @@
         <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Value ($)</th>
         <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Next Vaccination</th>
         <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Notes</th>
+        <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">QR Code</th>
         <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">Actions</th>
     {% endcapture %}
     {% capture as custom_livestock_rows %}
@@ -363,6 +368,16 @@
                 {% else %}
                     <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">—</td>
                 {% endif %}
+
+                <!-- QR Code -->
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">
+                    <button onclick="openQRCodePopup(`QR Code of Livestock ID {{ object.id}}`,`Livestock`,`{{ object.id }}`)" class="bg-[#b49494] text-white py-1 px-3 rounded text-sm hover:bg-amber-900">
+                        View
+                    </button>
+                </td>
+                <div class="hidden">
+                    <span id="qr-source-{{ object.id }}">{% generate_raw_qr 'Livestock' object.id %}</span>
+                </div>
                 
                 <td class="py-4 px-6 text-sm">
                     <div class="flex space-x-2">

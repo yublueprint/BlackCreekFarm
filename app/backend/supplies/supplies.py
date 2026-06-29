@@ -171,11 +171,23 @@ def search_filtering(form):
 
 
 @login_required
-def supplies_list(request):
+def supplies_list(request, id=None):
     try:
         # FOR SEARCH FILTERING.
         form = SuppliesSearchForm(request.GET)
         active_filters, supplies = search_filtering(form)
+
+        # If ID was given in URL. Ex: supplies/id/<int>
+        try:
+            if (id):
+                supplies = Supplies.objects.filter(id=id)
+
+                if not supplies.exists():
+                    raise Exception(f"Supply of ID {id} does not exist.")
+        except Exception as e:
+            logger.log(f"Error in supplies view by {request.user}: {e}")
+            messages.error(request, str(e))
+            return redirect("supplies_list")
 
         # FOR PAGINATION.
         page_number = request.GET.get("page")
@@ -204,7 +216,6 @@ def supplies_list(request):
         logger.log(f"Error in supplies view by {request.user}: {e}")
         messages.error(request, str(e))
         return redirect("error_page")
-
 
 @login_required
 def add_supplies(request):

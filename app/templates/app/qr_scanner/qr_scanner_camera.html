@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Inventory QR Scanner</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="max-w-md w-full bg-white p-6 rounded-xl shadow-md text-center">
+        <h1 class="text-xl font-bold mb-4">Scan Inventory QR</h1>
+        
+        <div id="reader" class="w-full bg-black rounded-lg overflow-hidden"></div>
+        
+        <div class="my-4 flex items-center justify-between text-gray-400 text-sm">
+            <hr class="w-full border-gray-300 mr-2">
+            <span>OR</span>
+            <hr class="w-full border-gray-300 ml-2">
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Upload QR Code Image</label>
+            <input type="file" id="qr-input-file" accept="image/*" 
+                   class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+        </div>
+        
+        <div id="result" class="mt-4 text-sm text-gray-600 font-mono bg-gray-50 p-3 rounded border">
+            Awaiting scan or upload...
+        </div>
+    </div>
+
+    <div class="mt-6">
+        <a href="{% url 'dashboard' %}" class="text-green-700 hover:underline">← Return to Dashboard</a>
+    </div>
+
+    <script>
+        // Centralized URL routing map
+        const urlMap = {
+            'livestock': (id) => `/livestock/?id=${id}`,
+            'crop': (id) => `/crops/?id=${id}`,
+            'equipment': (id) => `/equipment/?id=${id}`,
+            'supplies': (id) => `/supplies/?id=${id}`,
+            'transactions': (id) => `/transactions/?id=${id}`,
+        };
+
+        const resultDiv = document.getElementById('result');
+
+        // 1. Centralized Parsing Logic
+        function handleDecodedText(decodedText) {
+            resultDiv.innerText = `Scanned raw data: ${decodedText}`;
+
+            if (decodedText.includes(':')) {
+                const parts = decodedText.split(':');
+                const category = parts[0].trim().toLowerCase();
+                const id = parts[1].trim();
+
+                if (urlMap[category]) {
+                    resultDiv.innerText = `Redirecting to ${category} #${id}...`;
+                    // Redirect to the appropriate Django view path
+                    window.location.href = urlMap[category](id);
+                } else {
+                    resultDiv.innerText = `Unknown category: ${category}`;
+                }
+            } else {
+                resultDiv.innerText = "Invalid QR format. Expected 'Category:ID'.";
+            }
+        }
+
+        // 2. Initialize Camera Scanner
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "reader", 
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            /* verbose= */ false
+        );
+        
+        html5QrcodeScanner.render(
+            (decodedText) => {
+                // On success, clear camera then redirect
+                html5QrcodeScanner.clear().then(() => {
+                    handleDecodedText(decodedText);
+                }).catch(err => console.error(err));
+            }, 
+            (error) => { /* Camera frame scanning failures can be ignored */ }
+        );
+
+        // 3. Handle File Upload Scanning
+        // We initialize a separate engine instance specifically for parsing files on-demand
+        const html5LocalQrDecoder = new Html5Qrcode("reader");
+
+        document.getElementById('qr-input-file').addEventListener('change', e => {
+            if (e.target.files.length === 0) return;
+            
+            const imageFile = e.target.files[0];
+            resultDiv.innerText = "Processing image...";
+
+            // Scan the file directly in the browser
+            html5LocalQrDecoder.scanFile(imageFile, true)
+                .then(decodedText => {
+                    // Try to stop the camera stream if it's currently running
+                    html5QrcodeScanner.clear().catch(() => {});
+                    // Handle the payload
+                    handleDecodedText(decodedText);
+                })
+                .catch(err => {
+                    resultDiv.innerText = "Error: Could not find a valid QR code in this image.";
+                    console.error(`Error scanning file: ${err}`);
+                });
+        });
+    </script>
+</body>
+</html>

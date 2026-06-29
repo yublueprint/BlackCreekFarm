@@ -194,11 +194,23 @@ def search_filtering(form):
 
 
 @login_required
-def transaction_list(request):
+def transaction_list(request, id=None):
     try:
         # FOR SEARCH FILTERING.
         form = TransactionSearchForm(request.GET)
         active_filters, transactions = search_filtering(form)
+
+        # If ID was given in URL. Ex: transactions/id/<int>
+        try:
+            if (id):
+                transactions = Transaction.objects.filter(id=id)
+
+                if not transactions.exists():
+                    raise Exception(f"Transaction of ID {id} does not exist.")
+        except Exception as e:
+            logger.log(f"Error in transactions view by {request.user}: {e}")
+            messages.error(request, str(e))
+            return redirect("transaction_list")
 
         # FOR PAGINATION.
         page_number = request.GET.get("page")

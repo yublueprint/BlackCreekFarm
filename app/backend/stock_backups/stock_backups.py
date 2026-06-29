@@ -8,13 +8,14 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import landscape, letter
+from reportlab.lib.units import inch
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.platypus import (Paragraph, SimpleDocTemplate, Spacer, Table,
                                 TableStyle)
 
 from app.logging.logging import Logger
 
-from ..models import Crop, Equipment, Livestock, Supplies, Transaction
+from ..models import (Crop, Equipment, Livestock, Supplies, Transaction)
 
 logger = Logger("app/logging/app.log")
 
@@ -42,6 +43,7 @@ def download_backup(request):
         model = None
         headers_given = []
         properties_given = []
+        explicit_widths = []
 
         if stock_chosen in valid_options:
             if stock_chosen == "Livestock":
@@ -194,6 +196,8 @@ def download_backup(request):
             raise Exception(f"{stock_chosen} is not a valid option.")
 
         queryset = model.objects.all().order_by("-id")
+        num_cols = len(headers_given)
+        explicit_widths = [10.0 / num_cols * inch] * num_cols
 
         # Creating ZIP file to contain both CSV and PDF.
         zip_buffer = io.BytesIO()
@@ -228,7 +232,11 @@ def download_backup(request):
             styles = getSampleStyleSheet()
 
             cell_style = ParagraphStyle(
-                "CellText", parent=styles["Normal"], fontSize=9, leading=11
+                "CellText",
+                parent=styles["Normal"],
+                fontSize=9,
+                leading=11,
+                wordWrap='CJK'
             )
             header_style = ParagraphStyle(
                 "HeaderText",
@@ -251,7 +259,7 @@ def download_backup(request):
                     ]
                 )
 
-            pdf_table = Table(table_data, colWidths=None, hAlign="LEFT")
+            pdf_table = Table(table_data, colWidths=explicit_widths, hAlign="LEFT")
 
             pdf_table.setStyle(
                 TableStyle(
