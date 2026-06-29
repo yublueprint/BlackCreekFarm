@@ -28,6 +28,76 @@ function openNotesPopup(noteHeaderText="Note Popup", notesToShow) {
 }
 
 /*
+Opening QR Code Popup of a category object.
+*/
+let currentItemName = "";
+let currentQRBase64 = "";
+
+function openQRCodePopup(QRCodeHeaderText="QR Code Popup", category_given, id_given) {
+    currentItemName = `${category_given}-${id_given}`;
+    currentQRBase64 = document.getElementById(`qr-source-${id_given}`).innerText;
+
+    const QRCodePopup = document.getElementById("qrcodePopup");
+    const closeQRCodeButton = document.getElementById("closeQRCodeButton");
+    const qrcodeImage = document.getElementById("qrcodeImage");
+    const qrcodeHeader = document.getElementById("qrcodeHeader");
+    // Button for it.
+    closeQRCodeButton.addEventListener("click", () => {
+        QRCodePopup.classList.add("hidden");
+    });
+    qrcodeHeader.textContent = QRCodeHeaderText;
+    qrcodeImage.src = currentQRBase64;
+    QRCodePopup.classList.remove("hidden");
+}
+
+function downloadQR() {
+    const link = document.createElement('a');
+    link.href = currentQRBase64;
+    // Cleans up the item name to make it a safe filename
+    const safeName = currentItemName.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    link.download = `qr-${safeName}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Action: Isolated Printable View
+function printQR() {
+    // Open a temporary blank window
+    const printWindow = window.open('', '_blank', 'width=400,height=400');
+    
+    // Write an ultra-minimal HTML document containing just the image and text label
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print QR - ${currentItemName}</title>
+            <style>
+                body { 
+                    font-family: sans-serif; 
+                    text-align: center; 
+                    padding: 40px; 
+                }
+                img { width: 250px; height: 250px; }
+                h2 { margin-top: 15px; font-size: 20px; color: #333; }
+            </style>
+        </head>
+        <body>
+            <img src="${currentQRBase64}" />
+            <h2>${currentItemName}</h2>
+            <script>
+                // Auto trigger print setup as soon as image loads, then self-close
+                window.onload = function() {
+                    window.print();
+                    window.close();
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+}
+
+/*
 For searching.
 */
 const searchFilterButton = document.getElementById("searchFilterButton");

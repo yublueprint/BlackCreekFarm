@@ -304,11 +304,23 @@ def search_filtering(form):
 
 
 @login_required
-def equipment_list(request):
+def equipment_list(request, id=None):
     try:
         # FOR SEARCH FILTERING.
         form = EquipmentSearchForm(request.GET)
         active_filters, equipment = search_filtering(form)
+
+        # If ID was given in URL. Ex: equipment/id/<int>
+        try:
+            if (id):
+                equipment = Equipment.objects.filter(id=id)
+
+                if not equipment.exists():
+                    raise Exception(f"Equipment of ID {id} does not exist.")
+        except Exception as e:
+            logger.log(f"Error in equipment view by {request.user}: {e}")
+            messages.error(request, str(e))
+            return redirect("equipment_list")
 
         # FOR PAGINATION.
         page_number = request.GET.get("page")

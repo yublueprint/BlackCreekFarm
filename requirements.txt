@@ -9,6 +9,7 @@ autoflake
 isort
 whitenoise
 reportlab
+qrcode[pil]
 # Testing & coverage
 django-silk
 memory-profiler

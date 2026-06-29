@@ -1,3 +1,6 @@
+import qrcode
+import io
+import base64
 from django import template
 
 register = template.Library()
@@ -48,3 +51,22 @@ def do_capture(parser, token):
     nodelist = parser.parse(("endcapture",))
     parser.delete_first_token()
     return CaptureNode(nodelist, varname)
+
+@register.simple_tag
+def generate_raw_qr(category, obj_id):
+    # Construct the raw data string, e.g., "Supplies:4"
+    raw_data = f"{category}:{obj_id}"
+    
+    # Generate the QR Code
+    qr = qrcode.QRCode(version=1, box_size=10, border=4)
+    qr.add_data(raw_data)
+    qr.make(fit=True)
+    
+    # Save to an in-memory buffer
+    img = qr.make_image(fill_color="black", back_color="white")
+    buffer = io.BytesIO()
+    img.save(buffer, format="PNG")
+    
+    # Encode to base64 string
+    qr_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    return f"data:image/png;base64,{qr_base64}"

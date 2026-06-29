@@ -226,11 +226,23 @@ def search_filtering(form):
 
 
 @login_required
-def crop_list(request):
+def crop_list(request, id=None):
     try:
         # FOR SEARCH FILTERING.
         form = CropSearchForm(request.GET)
         active_filters, crops = search_filtering(form)
+
+        # If ID was given in URL. Ex: supplies/id/<int>
+        try:
+            if (id):
+                crop = Crop.objects.filter(id=id)
+
+                if not crop.exists():
+                    raise Exception(f"Crop of ID {id} does not exist.")
+        except Exception as e:
+            logger.log(f"Error in crops view by {request.user}: {e}")
+            messages.error(request, str(e))
+            return redirect("crop_list")
 
         # FOR PAGINATION.
         page_number = request.GET.get("page")

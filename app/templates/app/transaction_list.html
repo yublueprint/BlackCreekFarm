@@ -230,6 +230,10 @@
     {% include "partials/default_list/notes_popup.html" %}
 {% endblock %}
 
+{% block qrcode_popup %}
+    {% include "partials/default_list/qrcode_popup.html" with stock_name="Transactions" %}
+{% endblock %}
+
 {% block table %}
     {% capture as custom_transaction_header %}
         <th class="py-4 px-6 text-left text-sm font-medium text-gray-700 uppercase tracking-wider">ID</th>
@@ -262,6 +266,16 @@
                 {% else %}
                     <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">—</td>
                 {% endif %}
+
+                <!-- QR Code -->
+                <td class="break-words max-w-sm py-4 px-6 text-sm text-gray-900">
+                    <button onclick="openQRCodePopup(`QR Code of Transaction ID {{ object.id}}`,`Transactions`,`{{ object.id }}`)" class="bg-[#b49494] text-white py-1 px-3 rounded text-sm hover:bg-amber-900">
+                        View
+                    </button>
+                </td>
+                <div class="hidden">
+                    <span id="qr-source-{{ object.id }}">{% generate_raw_qr 'Transactions' object.id %}</span>
+                </div>
 
                 <td class="py-4 px-6 text-sm">
                     <div class="flex space-x-2">

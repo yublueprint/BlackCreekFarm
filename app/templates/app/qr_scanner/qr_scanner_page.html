@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block title %}QR Scanner | BlackCreek Sync{% endblock %}
+
+{% block content %}
+
+{% include 'partials/error_messages.html' %}
+
+<div class="container text-center my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg border-0 rounded-lg p-8 bg-white p-10">
+                <h1 class="text-4xl font-bold mb-6 text-gray-800">QR Scanner</h1>
+                <div class="mb-8">
+                    <i class="fas fa-qrcode fa-4x text-red-600 mb-4"></i>
+                </div>
+                <p class="text-xl text-gray-600 mb-8">Scan QR Code to load up a stock item either through camera, image upload, or manually selecting a stock and ID.</p>
+                
+                <!-- Scan QR Code using Camera or Upload QR Code Image -->
+                <div class="flex justify-center w-full">
+                    <div class="flex flex-col items-center p-4 border rounded-lg hover:shadow-md transition bg-gray-50">
+                        <h3 class="font-bold text-lg mb-2">Scan QR Code or Upload QR Code Image</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            Find a stock item by scanning QR Code through camera or uploading an image of the QR Code.
+                        </p>
+                        <a href="{% url 'qr_scanner_camera' %}" class="mt-4 flex flex-row w-fit items-center justify-center gap-x-2 inline-block bg-green-700 text-white px-5 py-2 rounded hover:bg-green-800 transition">
+                            <div class="flex flex-row gap-x-1">
+                                <i class="fa-solid fa-camera"></i>
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <h1>
+                                Scan or Upload QR Code
+                            </h1>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Manually select a Stock and enter an ID -->
+                <div class="flex justify-center w-full mt-4">
+                    <form method="post" id="stockSelectorForm" action="{% url 'manually_find_item' %}" class="w-fit flex flex-col items-center p-4 border rounded-lg hover:shadow-md transition bg-gray-50">
+                        {% csrf_token %}
+                        <h3 class="font-bold text-lg mb-2">Manually Choose Stock and Enter ID</h3>
+                        <p class="text-sm text-gray-600 mb-4">
+                            Find a stock item through type of stock and ID.
+                        </p>
+                        <div class="flex flex-col">
+                            <div class="w-full">
+                                <div class="flex space-x-2 justify-between w-full">
+                                    <div class="w-1/2 items-center">
+                                        <p class="py-3">Select Stock</p>
+                                    </div>
+                                    <div class="w-1/2 items-center">
+                                        <select name="stock_selector" id="id_stock_selector" class="w-fit border rounded px-3 py-2 mb-4">
+                                            <option value="Livestock">Livestock</option>
+                                            <option value="Crop">Crop</option>
+                                            <option value="Equipment">Equipment</option>
+                                            <option value="Supplies">Supplies</option>
+                                            <option value="Transactions">Transactions</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full">
+                                <div class="flex space-x-2 justify-between w-full">
+                                    <div class="w-1/2 items-center">
+                                        <p class="py-3">Enter ID</p>
+                                    </div>
+                                    <div class="w-1/2 items-center">
+                                        <input type="number" name="stock_id" id="id_stock_id" class="w-full rounded-lg p-2 border border-gray-800">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="mt-4 flex flex-row w-fit items-center justify-center gap-x-2 inline-block bg-green-700 text-white px-5 py-2 rounded hover:bg-green-800 transition">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <h1>
+                                Find Item
+                            </h1>
+                        </button>
+                    </form>
+                </div>
+
+                <div class="mt-6">
+                    <a href="{% url 'dashboard' %}" class="text-green-700 hover:underline">← Return to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %} 
