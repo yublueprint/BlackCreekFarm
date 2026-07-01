@@ -2,15 +2,18 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from urllib.parse import urlencode
 
+from ...functions.paginationFunction import paginationFunction
 from app.exceptions.crop.exception import (CropCreationException,
                                            CropDeleteException,
                                            CropEditException)
 from app.logging.logging import Logger
 
-from ..forms import CropSearchForm
-from ..functions import editStockNameChange, paginationFunction
-from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+from ...forms.search_filtering_forms.CropSearchForm import CropSearchForm
+from ...functions.editStockNameChange import editStockNameChange
+from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Crop)
 
 logger = Logger("app/logging/app.log")
@@ -232,17 +235,11 @@ def crop_list(request, id=None):
         form = CropSearchForm(request.GET)
         active_filters, crops = search_filtering(form)
 
-        # If ID was given in URL. Ex: supplies/id/<int>
-        try:
-            if (id):
-                crop = Crop.objects.filter(id=id)
-
-                if not crop.exists():
-                    raise Exception(f"Crop of ID {id} does not exist.")
-        except Exception as e:
-            logger.log(f"Error in crops view by {request.user}: {e}")
-            messages.error(request, str(e))
-            return redirect("crop_list")
+        # If ID was given in URL. Ex: crops/id/<int>
+        if (id):
+            base_url = reverse("crop_list")
+            query_string = urlencode({"id":id})
+            return redirect(f"{base_url}?{query_string}")
 
         # FOR PAGINATION.
         page_number = request.GET.get("page")
@@ -305,7 +302,7 @@ def add_crop(request):
                 notes=notes,
             )
 
-            logger.log(f"User {request.user} added crop: {name} (ID: {crop.id}).")
+            logger.log(f"User {request.user} added crop: {crop.name} (ID: {crop.id}).")
             return redirect("crop_list")
 
         except CropCreationException as e:

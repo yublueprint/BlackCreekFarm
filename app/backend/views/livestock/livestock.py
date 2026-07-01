@@ -2,15 +2,18 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from urllib.parse import urlencode
 
+from ...functions.paginationFunction import paginationFunction
 from app.exceptions.livestock.exception import (LivestockCreationException,
                                                 LivestockDeleteException,
                                                 LivestockEditException)
 from app.logging.logging import Logger
 
-from ..forms import LivestockSearchForm
-from ..functions import editStockNameChange, paginationFunction
-from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+from ...forms.search_filtering_forms.LivestockSearchForm import LivestockSearchForm
+from ...functions.editStockNameChange import editStockNameChange
+from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Livestock)
 
 logger = Logger("app/logging/app.log")
@@ -219,16 +222,10 @@ def livestock_list(request, id=None):
         active_filters, livestock = search_filtering(form)
 
         # If ID was given in URL. Ex: livestock/id/<int>
-        try:
-            if (id):
-                livestock = Livestock.objects.filter(id=id)
-
-                if not livestock.exists():
-                    raise Exception(f"Livestock of ID {id} does not exist.")
-        except Exception as e:
-            logger.log(f"Error in livestock view by {request.user}: {e}")
-            messages.error(request, str(e))
-            return redirect("livestock_list")
+        if (id):
+            base_url = reverse("livestock_list")
+            query_string = urlencode({"id":id})
+            return redirect(f"{base_url}?{query_string}")
 
         # FOR PAGINATION.
         page_number = request.GET.get("page")
@@ -288,7 +285,7 @@ def add_livestock(request):
             )
 
             logger.log(
-                f"User {request.user} added livestock: {name} (ID: {livestock.id})."
+                f"User {request.user} added livestock: {livestock.name} (ID: {livestock.id})."
             )
             return redirect("livestock_list")
 

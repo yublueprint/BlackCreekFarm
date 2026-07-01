@@ -2,15 +2,18 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from urllib.parse import urlencode
 
+from ...functions.paginationFunction import paginationFunction
 from app.exceptions.transactions.exception import (
     TransactionCreationException, TransactionDeleteException,
     TransactionEditException)
 from app.logging.logging import Logger
 
-from ..forms import TransactionSearchForm
-from ..functions import editStockNameChange, paginationFunction
-from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+from ...forms.search_filtering_forms.TransactionSearchForm import TransactionSearchForm
+from ...functions.editStockNameChange import editStockNameChange
+from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Transaction)
 
 logger = Logger("app/logging/app.log")
@@ -201,16 +204,10 @@ def transaction_list(request, id=None):
         active_filters, transactions = search_filtering(form)
 
         # If ID was given in URL. Ex: transactions/id/<int>
-        try:
-            if (id):
-                transactions = Transaction.objects.filter(id=id)
-
-                if not transactions.exists():
-                    raise Exception(f"Transaction of ID {id} does not exist.")
-        except Exception as e:
-            logger.log(f"Error in transactions view by {request.user}: {e}")
-            messages.error(request, str(e))
-            return redirect("transaction_list")
+        if (id):
+            base_url = reverse("transaction_list")
+            query_string = urlencode({"id":id})
+            return redirect(f"{base_url}?{query_string}")
 
         # FOR PAGINATION.
         page_number = request.GET.get("page")

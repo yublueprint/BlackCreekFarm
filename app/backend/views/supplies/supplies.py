@@ -2,16 +2,19 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from urllib.parse import urlencode
 
+from ...functions.paginationFunction import paginationFunction
 from app.exceptions.supplies.exception import (SupplyCreationException,
                                                SupplyDeleteException,
                                                SupplyEditException)
 from app.logging.logging import Logger
 
-from ..forms import SuppliesSearchForm
-from ..functions import editStockNameChange, paginationFunction
-from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, Supplies)
+from ...forms.search_filtering_forms.SuppliesSearchForm import SuppliesSearchForm
+from ...functions.editStockNameChange import editStockNameChange
+from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+                      UNIT_INPUT_MAX_LENGTH, DEFAULT_FILLER_TEXT, Supplies)
 
 logger = Logger("app/logging/app.log")
 
@@ -21,11 +24,11 @@ def get_properties(request, ExceptionToUse: Exception):
     Gets properties of supplies and validates the inputs.
     """
     # Mandatory fields.
-    name = (request.POST.get("name") or "").strip() or "Unknown"
-    supply_category = (request.POST.get("supply_category") or "").strip() or "Unknown"
+    name = (request.POST.get("name") or "").strip() or DEFAULT_FILLER_TEXT
+    supply_category = (request.POST.get("supply_category") or "").strip() or DEFAULT_FILLER_TEXT
     quantity = request.POST.get("quantity") or -1
     # Optional fields.
-    unit = (request.POST.get("unit") or "").strip() or "Unknown"
+    unit = (request.POST.get("unit") or "").strip() or DEFAULT_FILLER_TEXT
     last_restocked = request.POST.get("last_restocked") or None
     minimum_required = request.POST.get("minimum_required") or None
     cost_per_unit = request.POST.get("cost_per_unit") or None
@@ -67,7 +70,7 @@ def get_properties(request, ExceptionToUse: Exception):
         for key, value in input_given.items():
             if value and len(value) > max_length:
                 raise ExceptionToUse(
-                    f"Supply {key} input must be less or equal to {max_length} characters."
+                    f"Supply {key} input must be less than or equal to {max_length} characters."
                 )
 
     return (
@@ -178,16 +181,10 @@ def supplies_list(request, id=None):
         active_filters, supplies = search_filtering(form)
 
         # If ID was given in URL. Ex: supplies/id/<int>
-        try:
-            if (id):
-                supplies = Supplies.objects.filter(id=id)
-
-                if not supplies.exists():
-                    raise Exception(f"Supply of ID {id} does not exist.")
-        except Exception as e:
-            logger.log(f"Error in supplies view by {request.user}: {e}")
-            messages.error(request, str(e))
-            return redirect("supplies_list")
+        if (id):
+            base_url = reverse("supplies_list")
+            query_string = urlencode({"id":id})
+            return redirect(f"{base_url}?{query_string}")
 
         # FOR PAGINATION.
         page_number = request.GET.get("page")
@@ -245,7 +242,7 @@ def add_supplies(request):
                 notes=notes,
             )
 
-            logger.log(f"User {request.user} added supply: {name} (ID: {supply.id}).")
+            logger.log(f"User {request.user} added supply: {supply.name} (ID: {supply.id}).")
             return redirect("supplies_list")
 
         except SupplyCreationException as e:
@@ -289,7 +286,7 @@ def edit_supplies(request):
             name_change_msg = editStockNameChange(old_name, supply.name)
 
             logger.log(
-                f"User {request.user} edited supply: {old_name} {name_change_msg} (ID: {supply.id})."
+                f"User {request.user} edited supply: {old_name}{name_change_msg} (ID: {supply.id})."
             )
             return redirect("supplies_list")
 
@@ -315,7 +312,7 @@ def delete_supplies(request):
             except Http404:
                 raise SupplyDeleteException("Supply not found.")
 
-            supply_name = supply.name or "Unknown"
+            supply_name = supply.name or DEFAULT_FILLER_TEXT
             supply_id = supply.id or -1
             supply.delete()
 

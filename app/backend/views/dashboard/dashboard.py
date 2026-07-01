@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 
 from app.logging.logging import Logger
 
-from ..models import Alert, Crop, Equipment, Livestock
+from ...models import Alert, Crop, Equipment, Livestock
 
 # Initialize application logger
 logger = Logger("app/logging/app.log")

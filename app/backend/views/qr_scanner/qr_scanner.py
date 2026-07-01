@@ -1,10 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.urls import reverse
+from urllib.parse import urlencode
 
 from app.logging.logging import Logger
 
-from ..models import (Crop, Equipment, Livestock, Supplies, Transaction)
+from ...models import (Crop, Equipment, Livestock, Supplies, Transaction)
 
 logger = Logger("app/logging/app.log")
 
@@ -47,15 +49,25 @@ def manually_find_item(request):
 
         if stock_chosen in valid_options:
             if stock_chosen == "Livestock":
-                return redirect(f"/livestock/?id={id_chosen}")
+                base_url = reverse("livestock_list")
+                query_string = urlencode({"id":id_chosen})
+                return redirect(f"{base_url}?{query_string}")
             elif stock_chosen == "Crop":
-                return redirect(f"/crops/?id={id_chosen}")
+                base_url = reverse("crop_list")
+                query_string = urlencode({"id":id_chosen})
+                return redirect(f"{base_url}?{query_string}")
             elif stock_chosen == "Equipment":
-                return redirect(f"/equipment/?id={id_chosen}")
+                base_url = reverse("equipment_list")
+                query_string = urlencode({"id":id_chosen})
+                return redirect(f"{base_url}?{query_string}")
             elif stock_chosen == "Supplies":
-                return redirect(f"/supplies/?id={id_chosen}")
+                base_url = reverse("supplies_list")
+                query_string = urlencode({"id":id_chosen})
+                return redirect(f"{base_url}?{query_string}")
             elif stock_chosen == "Transactions":
-                return redirect(f"/transactions/?id={id_chosen}")
+                base_url = reverse("transaction_list")
+                query_string = urlencode({"id":id})
+                return redirect(f"{base_url}?{query_string}")
         else:
             raise Exception(f"{stock_chosen} is not a valid option.")
     except Exception as e:

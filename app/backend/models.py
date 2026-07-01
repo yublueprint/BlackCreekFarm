@@ -160,7 +160,7 @@ class Supplies(models.Model):
     category = models.CharField(
         default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH
     )
-    quantity = models.FloatField(max_length=UNIT_INPUT_MAX_LENGTH)
+    quantity = models.FloatField(default=-1, max_length=UNIT_INPUT_MAX_LENGTH)
     unit = models.CharField(
         default=DEFAULT_FILLER_TEXT,
         blank=True,

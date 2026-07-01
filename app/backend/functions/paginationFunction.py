@@ -1,10 +1,9 @@
+from app.backend.functions.shared_variables import logger
+
+
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
-from app.logging.logging import Logger
-
-# Initialize application logger
-logger = Logger("app/logging/app.log")
-
+amount_to_go = 3
 
 def paginationFunction(objects, page_number=1, num_per_page=10):
     # FOR PAGINATION
@@ -39,7 +38,6 @@ def paginationFunction(objects, page_number=1, num_per_page=10):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    amount_to_go = 3
     backward_pages_end = max(1, page_number - amount_to_go)
     backward_pages = reversed(range(page_number - 1, backward_pages_end - 1, -1))
 
@@ -47,10 +45,3 @@ def paginationFunction(objects, page_number=1, num_per_page=10):
     forward_pages = range(page_number + 1, forward_pages_end + 1, 1)
 
     return page_obj, backward_pages, forward_pages, page_number
-
-
-def editStockNameChange(old_name, new_name):
-    if old_name != new_name:
-        return f"to {new_name}"
-    else:
-        return ""

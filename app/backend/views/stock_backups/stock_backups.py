@@ -15,7 +15,7 @@ from reportlab.platypus import (Paragraph, SimpleDocTemplate, Spacer, Table,
 
 from app.logging.logging import Logger
 
-from ..models import (Crop, Equipment, Livestock, Supplies, Transaction)
+from ...models import (Crop, Equipment, Livestock, Supplies, Transaction)
 
 logger = Logger("app/logging/app.log")
 

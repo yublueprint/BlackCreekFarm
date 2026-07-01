@@ -5,16 +5,27 @@ from app.backend.models import Supplies
 
 pytestmark = pytest.mark.django_db
 
+@pytest.fixture(autouse=True)
+def mock_logger(mocker):
+    """
+    Mocks the logger for supplies.
+    """
+    return mocker.patch("app.backend.views.supplies.supplies.logger.log")
 
 @pytest.fixture
-def user(client):
-    user = User.objects.create_user(username="tester", password="pass123")
-    client.force_login(user)
-    return user
-
+def valid_minimal_supply():
+    """
+    Supply object that does not have all properties given.
+    """
+    return Supplies.objects.create(
+        name="Gaskets",
+        category="Hardware",
+        quantity=50,
+        unit="pcs",
+    )
 
 @pytest.fixture
-def supply():
+def valid_full_supply():
     return Supplies.objects.create(
         name="Fertilizer",
         category="Nutrient",
@@ -29,7 +40,7 @@ def supply():
 
 
 @pytest.fixture
-def valid_supply_dict():
+def valid_full_supply_dict():
     return {
         "name": "Fertilizer",
         "supply_category": "Nutrient",

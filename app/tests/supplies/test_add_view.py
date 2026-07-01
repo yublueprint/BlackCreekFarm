@@ -1,119 +1,150 @@
 import pytest
-from django.contrib.messages import get_messages
 from django.urls import reverse
+from django.contrib.messages import get_messages
+from django.db import transaction, IntegrityError
 
-from app.backend.models import Supplies
+from app.backend.models import (
+    Supplies,
+    TEXTBOX_MAX_LENGTH,
+    DEFAULT_TEXT_MAX_LENGTH,
+    UNIT_INPUT_MAX_LENGTH,
+    DEFAULT_FILLER_TEXT,
+)
+from app.exceptions.supplies.exception import (
+    SupplyCreationException,
+    SupplyEditException,
+    SupplyDeleteException,
+)
 
 pytestmark = pytest.mark.django_db
 
+class TestAddSupplies():
+    class TestUnauthenticatedRequests:
+        def test_add_supplies_unauthenticated_redirect(self, client):
+            """
+            Unauthenticated requests should be redirected to the login page.
+            """
+            url = reverse("add_supplies")
+            response = client.post(url, data={})
+            assert response.status_code == 302
+            assert "login" in response.url
 
-@pytest.mark.skip(
-    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
-)
-def test_add_supplies_success(client, user, mocker, valid_supply_dict):
-    mock_create = mocker.patch("app.backend.supplies.supplies.Supplies.objects.create")
-    mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
+    class TestAddSuccess:
+        def test_add_supplies_success(self, logged_in_client, mock_logger):
+            """
+            If inputs are valid, it should be succesfully added.
+            """
+            client, user = logged_in_client
 
-    response = client.post(
-        reverse("add_supplies"),
-        valid_supply_dict,
-    )
+            url = reverse("add_supplies")
+            payload = {
+                "name": "Screws",
+                "supply_category": "Fasteners",
+                "quantity": 100,
+                "unit": "boxes",
+                "notes": "Grade 8 steel screws. Some note.\nCan have line break too. :)"
+            }
 
-    assert response.status_code == 302
-    assert response.url == reverse("supplies_list")
-    mock_create.assert_called_once()
-    mock_logger.assert_any_call(f"User {user} added supply: Fertilizer")
+            response = client.post(url, data=payload)
 
+            assert response.status_code == 302
+            assert response.url == reverse("supplies_list")
+            assert Supplies.objects.filter(name="Screws")
+            assert Supplies.objects.count() == 1
+            supply = Supplies.objects.get(name="Screws")
+            assert supply.category == "Fasteners"
+            assert supply.quantity == 100
+            assert supply.unit == "boxes"
+            assert supply.notes == "Grade 8 steel screws. Some note.\nCan have line break too. :)"
 
-@pytest.mark.skip(
-    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
-)
-def test_add_supplies_missing_fields_values_existing(client, user, mocker):
-    """
-    If a mandatory field like name, supply_category,
-    or quantity is empty, it should default
-    to 'Unknown' and succeed.
-    """
-    mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
+            mock_logger.assert_called_once_with(f"User {user} added supply: {supply.name} (ID: {supply.id}).")
 
-    payload = {"name": "", "supply_category": "", "quantity": ""}
+        def test_add_supplies_empty_inputs(self, logged_in_client, mock_logger):
+            """
+            If an input is empty, it should be replaced with the default filler text if needed.
+            """
+            client, user = logged_in_client
+            url = reverse("add_supplies")
 
-    response = client.post(reverse("add_supplies"), data=payload, follow=True)
-    assert response.status_code == 200
-    page_objects = response.context["page_obj"].object_list
-    names = [obj.name for obj in page_objects]
-    assert "Unknown" in names
-    assert Supplies.objects.filter(name="Unknown").exists()
+            payload = {
+                "name": "",
+                "supply_category": "",
+                "quantity": "",
+                "unit": "",
+                "last_restocked": "",
+                "minimum_required": "",
+                "cost_per_unit": "",
+                "procurement_date": "",
+                "notes": "",
+            }
 
-    mock_logger.assert_any_call(f"User {user.username} added supply: Unknown")
+            response = client.post(url, data=payload)
 
+            assert response.status_code == 302
+            assert response.url == reverse("supplies_list")
+            assert Supplies.objects.count() == 1
+            assert Supplies.objects.filter(name=DEFAULT_FILLER_TEXT).count() == 1
+            supply = Supplies.objects.get(name=DEFAULT_FILLER_TEXT)
+            assert supply.category == DEFAULT_FILLER_TEXT 
+            assert supply.quantity == -1 
+            assert supply.unit == DEFAULT_FILLER_TEXT
+            assert supply.minimum_required == None
+            assert supply.cost_per_unit == None
+            assert supply.last_restocked == None
+            assert supply.procurement_date == None
+            assert supply.notes == ""
 
-@pytest.mark.skip(
-    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
-)
-def test_add_supplies_missing_fields_values_not_existing(client, user, mocker):
-    """
-    If a mandatory field like name, supply_category,
-    or quantity is empty,
-    it should default to 'Unknown' and succeed.
-    """
-    mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
+            mock_logger.assert_called_once_with(f"User {user} added supply: {supply.name} (ID: {supply.id}).")
 
-    payload = {}
+    class TestAddErrors:
+        def test_add_supplies_validation_error_input_too_long(self, logged_in_client, mock_logger):
+            """
+            If an input is not valid (such as long input), it should raise error.
+            """
+            client, user = logged_in_client
+            url = reverse("add_supplies")
 
-    response = client.post(reverse("add_supplies"), data=payload, follow=True)
-    assert response.status_code == 200
-    page_objects = response.context["page_obj"].object_list
-    names = [obj.name for obj in page_objects]
-    assert "Unknown" in names
-    assert Supplies.objects.filter(name="Unknown").exists()
+            long_name = "A" * (DEFAULT_TEXT_MAX_LENGTH + 1)
+            payload = {
+                "name": long_name,
+                "supply_category": "Fasteners",
+                "quantity": 100,
+            }
 
-    mock_logger.assert_any_call(f"User {user.username} added supply: Unknown")
+            response = client.post(url, data=payload)
 
+            assert response.status_code == 302
+            assert response.url == reverse("supplies_list")
+            assert Supplies.objects.filter(name=long_name).count() == 0
+            assert Supplies.objects.count() == 0
 
-@pytest.mark.skip(
-    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
-)
-def test_add_supplies_invalid_input(client, user):
-    """
-    If a mandatory field input triggers an exception, check if the error message is shown.
-    """
+            messages = list(get_messages(response.wsgi_request))
+            assert len(messages) == 1
+            assert "input must be less than or equal to" in str(messages[0])
 
-    long_name = "a" * 1000
-    payload = {"name": long_name}
+            mock_logger.assert_called_once_with(f"Supply creation error by {user}: Supply name input must be less than or equal to {DEFAULT_TEXT_MAX_LENGTH} characters.")
 
-    response = client.post(reverse("add_supplies"), data=payload, follow=True)
+        def test_add_supplies_validation_error_input_wrong_type(self, logged_in_client, mock_logger):
+            """
+            If an input is not valid (such as wrong type), it should raise error.
+            """
+            client, user = logged_in_client
+            url = reverse("add_supplies")
 
-    storage = get_messages(response.wsgi_request)
-    messages = [m.message for m in storage]
+            payload = {
+                "name": "Screws",
+                "supply_category": "Fasteners",
+                "quantity": "String type, should be a number.",
+            }
 
-    assert any("input must be less or equal to" in m for m in messages)
+            response = client.post(url, data=payload)
 
+            assert response.status_code == 302
+            assert response.url == reverse("supplies_list")
 
-@pytest.mark.skip(
-    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
-)
-def test_add_supplies_unexpected_exception(client, user, mocker, valid_supply_dict):
-    mocker.patch(
-        "app.backend.supplies.supplies.Supplies.objects.create",
-        side_effect=Exception("DB Error"),
-    )
-    mock_logger = mocker.patch("app.backend.supplies.supplies.logger.log")
+            messages = list(get_messages(response.wsgi_request))
+            assert len(messages) == 1
+            assert "An unexpected error occurred while adding the supply" in str(messages[0])
 
-    response = client.post(reverse("add_supplies"), valid_supply_dict, follow=True)
-    assert response.status_code == 200
-    storage = get_messages(response.wsgi_request)
-    messages = [m.message for m in storage]
-
-    assert "An unexpected error occurred while adding the supply." in messages
-    assert not Supplies.objects.filter(name=valid_supply_dict["name"]).exists()
-    mock_logger.assert_any_call("Unexpected error during supply creation: DB Error")
-
-
-@pytest.mark.skip(
-    reason="Check Project Leads TODO/Ask Ryan, will be made when test cases are solid."
-)
-def test_add_supplies_redirect_on_get(client, user):
-    response = client.get(reverse("add_supplies"))
-    assert response.status_code == 302
-    assert response.url == reverse("supplies_list")
+            mock_logger.assert_called()
+            assert "Unexpected error during supply creation" in mock_logger.call_args[0][0]

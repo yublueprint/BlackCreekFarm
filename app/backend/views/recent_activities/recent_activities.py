@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import FileResponse
 from django.shortcuts import redirect, render
 
-from app.backend.functions import paginationFunction
+from app.backend.functions.paginationFunction import paginationFunction
 from app.logging.logging import Logger
 
 logger = Logger("app/logging/app.log")

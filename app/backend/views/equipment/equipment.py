@@ -2,15 +2,18 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from urllib.parse import urlencode
 
+from ...functions.paginationFunction import paginationFunction
 from app.exceptions.equipment.exception import (EquipmentCreationException,
                                                 EquipmentDeleteException,
                                                 EquipmentEditException)
 from app.logging.logging import Logger
 
-from ..forms import EquipmentSearchForm
-from ..functions import editStockNameChange, paginationFunction
-from ..models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+from ...forms.search_filtering_forms.EquipmentSearchForm import EquipmentSearchForm
+from ...functions.editStockNameChange import editStockNameChange
+from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
                       UNIT_INPUT_MAX_LENGTH, Equipment)
 
 logger = Logger("app/logging/app.log")
@@ -311,16 +314,10 @@ def equipment_list(request, id=None):
         active_filters, equipment = search_filtering(form)
 
         # If ID was given in URL. Ex: equipment/id/<int>
-        try:
-            if (id):
-                equipment = Equipment.objects.filter(id=id)
-
-                if not equipment.exists():
-                    raise Exception(f"Equipment of ID {id} does not exist.")
-        except Exception as e:
-            logger.log(f"Error in equipment view by {request.user}: {e}")
-            messages.error(request, str(e))
-            return redirect("equipment_list")
+        if (id):
+            base_url = reverse("equipment_list")
+            query_string = urlencode({"id":id})
+            return redirect(f"{base_url}?{query_string}")
 
         # FOR PAGINATION.
         page_number = request.GET.get("page")
@@ -398,7 +395,7 @@ def add_equipment(request):
             )
 
             logger.log(
-                f"User {request.user} added equipment: {name} (ID: {equipment.id})."
+                f"User {request.user} added equipment: {equipment.name} (ID: {equipment.id})."
             )
             return redirect("equipment_list")
 
