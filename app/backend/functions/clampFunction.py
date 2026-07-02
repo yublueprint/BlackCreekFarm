@@ -1,6 +1,6 @@
 def clamp(value, minimum, maximum):
     """
-    Ex: 
+    Ex:
     clamp(15, 1, 10) would give 10.
     clamp(-5, 1, 10) would give 1.
     clamp(5, 1, 10) would give 5.

@@ -6,10 +6,11 @@ from app.backend.models import Livestock
 
 pytestmark = pytest.mark.django_db
 
+
 class TestDeleteLivestock:
     def test_delete_livestock_unauthenticated(self, valid_minimal_livestock, client):
         assert Livestock.objects.count() == 1
-        
+
         url = reverse("delete_livestock")
         response = client.post(url, data={"id": valid_minimal_livestock.id})
         assert response.status_code == 302
@@ -17,7 +18,9 @@ class TestDeleteLivestock:
 
         assert Livestock.objects.count() == 1
 
-    def test_delete_livestock_sucess(self, logged_in_client, valid_minimal_livestock, mock_logger):
+    def test_delete_livestock_sucess(
+        self, logged_in_client, valid_minimal_livestock, mock_logger
+    ):
         client, user = logged_in_client
 
         id_gotten = valid_minimal_livestock.id
@@ -32,7 +35,9 @@ class TestDeleteLivestock:
         assert not Livestock.objects.filter(id=valid_minimal_livestock.id).exists()
         assert Livestock.objects.count() == 0
 
-        mock_logger.assert_called_once_with(f"User {user} deleted livestock: {name_gotten} (ID: {id_gotten}).")
+        mock_logger.assert_called_once_with(
+            f"User {user} deleted livestock: {name_gotten} (ID: {id_gotten})."
+        )
 
     def test_delete_livestock_not_found(self, logged_in_client, mock_logger):
         client, user = logged_in_client
@@ -49,4 +54,4 @@ class TestDeleteLivestock:
         messages = list(get_messages(response.wsgi_request))
         assert "Livestock not found." in str(messages[0])
 
-        f"Unexpected error during livestock deletion" in mock_logger.call_args[0][0]
+        "Unexpected error during livestock deletion" in mock_logger.call_args[0][0]

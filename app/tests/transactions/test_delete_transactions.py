@@ -6,10 +6,11 @@ from app.backend.models import Transaction
 
 pytestmark = pytest.mark.django_db
 
+
 class TestDeleteTransaction:
     def test_delete_transaction_unauthenticated(self, valid_full_transaction, client):
         assert Transaction.objects.count() == 1
-        
+
         url = reverse("delete_transaction")
         response = client.post(url, data={"id": valid_full_transaction.id})
         assert response.status_code == 302
@@ -17,7 +18,9 @@ class TestDeleteTransaction:
 
         assert Transaction.objects.count() == 1
 
-    def test_delete_transaction_sucess(self, logged_in_client, valid_full_transaction, mock_logger):
+    def test_delete_transaction_sucess(
+        self, logged_in_client, valid_full_transaction, mock_logger
+    ):
         client, user = logged_in_client
 
         id_gotten = valid_full_transaction.id
@@ -33,7 +36,9 @@ class TestDeleteTransaction:
         assert not Transaction.objects.filter(id=valid_full_transaction.id).exists()
         assert Transaction.objects.count() == 0
 
-        mock_logger.assert_called_once_with(f"User {user} deleted transaction: {item_type_gotten} of ID {item_id_gotten} (ID: {id_gotten}).")
+        mock_logger.assert_called_once_with(
+            f"User {user} deleted transaction: {item_type_gotten} of ID {item_id_gotten} (ID: {id_gotten})."
+        )
 
     def test_delete_transaction_not_found(self, logged_in_client, mock_logger):
         client, user = logged_in_client
@@ -50,4 +55,4 @@ class TestDeleteTransaction:
         messages = list(get_messages(response.wsgi_request))
         assert "Transaction not found." in str(messages[0])
 
-        f"Unexpected error during transaction deletion" in mock_logger.call_args[0][0]
+        "Unexpected error during transaction deletion" in mock_logger.call_args[0][0]

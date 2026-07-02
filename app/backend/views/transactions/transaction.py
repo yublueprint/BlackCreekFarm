@@ -1,20 +1,22 @@
+from urllib.parse import urlencode
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from urllib.parse import urlencode
 
-from ...functions.paginationFunction import paginationFunction
 from app.exceptions.transactions.exception import (
     TransactionCreationException, TransactionDeleteException,
     TransactionEditException)
 from app.logging.logging import Logger
 
-from ...forms.search_filtering_forms.TransactionSearchForm import TransactionSearchForm
+from ...forms.search_filtering_forms.TransactionSearchForm import \
+    TransactionSearchForm
 from ...functions.editStockNameChange import editStockNameChange
-from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, DEFAULT_FILLER_TEXT, Transaction)
+from ...functions.paginationFunction import paginationFunction
+from ...models import (DEFAULT_FILLER_TEXT, DEFAULT_TEXT_MAX_LENGTH,
+                       TEXTBOX_MAX_LENGTH, UNIT_INPUT_MAX_LENGTH, Transaction)
 
 logger = Logger("app/logging/app.log")
 
@@ -27,7 +29,9 @@ def get_properties(request, ExceptionToUse: Exception):
     item_type = (request.POST.get("item_type") or "").strip() or DEFAULT_FILLER_TEXT
     item_id = request.POST.get("item_id") or -1
     item_name = (request.POST.get("item_name") or "").strip() or DEFAULT_FILLER_TEXT
-    transaction_type = (request.POST.get("transaction_type") or "").strip() or DEFAULT_FILLER_TEXT
+    transaction_type = (
+        request.POST.get("transaction_type") or ""
+    ).strip() or DEFAULT_FILLER_TEXT
     quantity = request.POST.get("quantity") or -1
     date = request.POST.get("date") or None
     # Optional fields.
@@ -167,10 +171,10 @@ def search_filtering(form):
                     active_filters.append(f"Max Quantity: {str(data['max_qty'])}")
                 if data.get("qty_mode") == "highest":
                     transactions = transactions.order_by("-quantity")
-                    active_filters.append(f"Highest to Lowest Quantity")
+                    active_filters.append("Highest to Lowest Quantity")
                 if data.get("qty_mode") == "lowest":
                     transactions = transactions.order_by("quantity")
-                    active_filters.append(f"Lowest to Highest Quantity")
+                    active_filters.append("Lowest to Highest Quantity")
         if data.get("transaction_date_mode"):
             if data.get("transaction_date_mode") != "all":
                 if data.get("min_transaction_date") is not None:
@@ -189,10 +193,10 @@ def search_filtering(form):
                     )
                 if data.get("transaction_date_mode") == "highest":
                     transactions = transactions.order_by("-date")
-                    active_filters.append(f"Highest to Lowest Transaction Date")
+                    active_filters.append("Highest to Lowest Transaction Date")
                 if data.get("transaction_date_mode") == "lowest":
                     transactions = transactions.order_by("date")
-                    active_filters.append(f"Lowest to Highest Transaction Date")
+                    active_filters.append("Lowest to Highest Transaction Date")
     return active_filters, transactions
 
 
@@ -204,9 +208,9 @@ def transaction_list(request, id=None):
         active_filters, transactions = search_filtering(form)
 
         # If ID was given in URL. Ex: transactions/id/<int>
-        if (id):
+        if id:
             base_url = reverse("transaction_list")
-            query_string = urlencode({"id":id})
+            query_string = urlencode({"id": id})
             return redirect(f"{base_url}?{query_string}")
 
         # FOR PAGINATION.
@@ -332,7 +336,8 @@ def delete_transaction(request):
             transaction.delete()
 
             logger.log(
-                f"User {request.user} deleted transaction: {transaction_item_type} of ID {transaction_item_id} (ID: {transaction_id})."
+                f"User {request.user} deleted transaction: {transaction_item_type} "
+                f"of ID {transaction_item_id} (ID: {transaction_id})."
             )
             return redirect("transaction_list")
         except TransactionDeleteException as e:

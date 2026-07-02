@@ -1,20 +1,22 @@
+from urllib.parse import urlencode
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from urllib.parse import urlencode
 
-from ...functions.paginationFunction import paginationFunction
 from app.exceptions.supplies.exception import (SupplyCreationException,
                                                SupplyDeleteException,
                                                SupplyEditException)
 from app.logging.logging import Logger
 
-from ...forms.search_filtering_forms.SuppliesSearchForm import SuppliesSearchForm
+from ...forms.search_filtering_forms.SuppliesSearchForm import \
+    SuppliesSearchForm
 from ...functions.editStockNameChange import editStockNameChange
-from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, DEFAULT_FILLER_TEXT, Supplies)
+from ...functions.paginationFunction import paginationFunction
+from ...models import (DEFAULT_FILLER_TEXT, DEFAULT_TEXT_MAX_LENGTH,
+                       TEXTBOX_MAX_LENGTH, UNIT_INPUT_MAX_LENGTH, Supplies)
 
 logger = Logger("app/logging/app.log")
 
@@ -25,7 +27,9 @@ def get_properties(request, ExceptionToUse: Exception):
     """
     # Mandatory fields.
     name = (request.POST.get("name") or "").strip() or DEFAULT_FILLER_TEXT
-    supply_category = (request.POST.get("supply_category") or "").strip() or DEFAULT_FILLER_TEXT
+    supply_category = (
+        request.POST.get("supply_category") or ""
+    ).strip() or DEFAULT_FILLER_TEXT
     quantity = request.POST.get("quantity") or -1
     # Optional fields.
     unit = (request.POST.get("unit") or "").strip() or DEFAULT_FILLER_TEXT
@@ -112,10 +116,10 @@ def search_filtering(form):
                     active_filters.append(f"Max Qty: {str(data['max_qty'])}")
                 if data.get("qty_mode") == "highest":
                     supplies = supplies.order_by("-quantity")
-                    active_filters.append(f"Highest to Lowest Quantity")
+                    active_filters.append("Highest to Lowest Quantity")
                 if data.get("qty_mode") == "lowest":
                     supplies = supplies.order_by("quantity")
-                    active_filters.append(f"Lowest to Highest Quantity")
+                    active_filters.append("Lowest to Highest Quantity")
         if data.get("unit"):
             supplies = supplies.filter(unit__icontains=data["unit"])
             active_filters.append(f"Unit: {str(data['unit'])}")
@@ -143,10 +147,10 @@ def search_filtering(form):
                     )
                 if data.get("last_restocked_mode") == "highest":
                     supplies = supplies.order_by("-last_restocked")
-                    active_filters.append(f"Highest to Lowest Last Restocked Date")
+                    active_filters.append("Highest to Lowest Last Restocked Date")
                 if data.get("last_restocked_mode") == "lowest":
                     supplies = supplies.order_by("last_restocked")
-                    active_filters.append(f"Lowest to Highest Last Restocked Date")
+                    active_filters.append("Lowest to Highest Last Restocked Date")
 
         if data.get("procurement_date_mode"):
             if data.get("procurement_date_mode") != "all":
@@ -166,10 +170,10 @@ def search_filtering(form):
                     )
                 if data.get("procurement_date_mode") == "highest":
                     supplies = supplies.order_by("-procurement_date")
-                    active_filters.append(f"Highest to Lowest Procurement Date")
+                    active_filters.append("Highest to Lowest Procurement Date")
                 if data.get("procurement_date_mode") == "lowest":
                     supplies = supplies.order_by("procurement_date")
-                    active_filters.append(f"Lowest to Highest Procurement Date")
+                    active_filters.append("Lowest to Highest Procurement Date")
     return active_filters, supplies
 
 
@@ -181,9 +185,9 @@ def supplies_list(request, id=None):
         active_filters, supplies = search_filtering(form)
 
         # If ID was given in URL. Ex: supplies/id/<int>
-        if (id):
+        if id:
             base_url = reverse("supplies_list")
-            query_string = urlencode({"id":id})
+            query_string = urlencode({"id": id})
             return redirect(f"{base_url}?{query_string}")
 
         # FOR PAGINATION.
@@ -214,6 +218,7 @@ def supplies_list(request, id=None):
         messages.error(request, str(e))
         return redirect("error_page")
 
+
 @login_required
 def add_supplies(request):
     if request.method == "POST":
@@ -242,7 +247,9 @@ def add_supplies(request):
                 notes=notes,
             )
 
-            logger.log(f"User {request.user} added supply: {supply.name} (ID: {supply.id}).")
+            logger.log(
+                f"User {request.user} added supply: {supply.name} (ID: {supply.id})."
+            )
             return redirect("supplies_list")
 
         except SupplyCreationException as e:
@@ -250,7 +257,9 @@ def add_supplies(request):
             messages.error(request, str(e))
             return redirect("supplies_list")
         except Exception as e:
-            logger.log(f"Unexpected error during supply creation by {request.user}: {e}")
+            logger.log(
+                f"Unexpected error during supply creation by {request.user}: {e}"
+            )
             messages.error(
                 request, "An unexpected error occurred while adding the supply."
             )
@@ -326,7 +335,9 @@ def delete_supplies(request):
             messages.error(request, str(e))
             return redirect("supplies_list")
         except Exception as e:
-            logger.log(f"Unexpected error during supply deletion by {request.user}: {e}")
+            logger.log(
+                f"Unexpected error during supply deletion by {request.user}: {e}"
+            )
             messages.error(
                 request, "An unexpected error occurred while deleting the supply."
             )

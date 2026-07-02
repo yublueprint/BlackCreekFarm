@@ -4,12 +4,14 @@ from app.backend.models import Supplies
 
 pytestmark = pytest.mark.django_db
 
+
 @pytest.fixture(autouse=True)
 def mock_logger(mocker):
     """
     Mocks the logger for supplies.
     """
     return mocker.patch("app.backend.views.supplies.supplies.logger.log")
+
 
 @pytest.fixture
 def valid_minimal_supply():
@@ -22,6 +24,7 @@ def valid_minimal_supply():
         quantity=50,
         unit="pcs",
     )
+
 
 @pytest.fixture
 def valid_full_supply():

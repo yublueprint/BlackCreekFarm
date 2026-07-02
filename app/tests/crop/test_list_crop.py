@@ -1,15 +1,12 @@
 import pytest
-from django.urls import reverse
 from django.contrib.messages import get_messages
+from django.urls import reverse
 
-from app.backend.models import (
-    Crop,
-    TEXTBOX_MAX_LENGTH,
-    DEFAULT_TEXT_MAX_LENGTH,
-    UNIT_INPUT_MAX_LENGTH,
-)
+from app.backend.models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+                                UNIT_INPUT_MAX_LENGTH, Crop)
 
 pytestmark = pytest.mark.django_db
+
 
 class TestCropList:
     class TestDefaultStates:
@@ -38,7 +35,7 @@ class TestCropList:
 
         def test_crop_list_empty(self, logged_in_client, mock_logger):
             """
-            Tests the machinery of the crop list view. 
+            Tests the machinery of the crop list view.
             Checks if the right variables are given.
             No items are in DB in this test.
             """
@@ -56,11 +53,15 @@ class TestCropList:
             assert response.context["max_input_text_length"] == DEFAULT_TEXT_MAX_LENGTH
             assert response.context["max_input_unit_length"] == UNIT_INPUT_MAX_LENGTH
 
-            mock_logger.assert_called_once_with(f"User {user} viewed crop list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed crop list (page {1})."
+            )
 
-        def test_crop_list_with_item(self, logged_in_client, valid_minimal_crop, mock_logger):
+        def test_crop_list_with_item(
+            self, logged_in_client, valid_minimal_crop, mock_logger
+        ):
             """
-            Tests the machinery of the crop list view. 
+            Tests the machinery of the crop list view.
             Checks if the right variables are given.
             One item is in DB in this test.
             """
@@ -79,11 +80,13 @@ class TestCropList:
             assert response.context["max_input_text_length"] == DEFAULT_TEXT_MAX_LENGTH
             assert response.context["max_input_unit_length"] == UNIT_INPUT_MAX_LENGTH
 
-            mock_logger.assert_called_once_with(f"User {user} viewed crop list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed crop list (page {1})."
+            )
 
         def test_crop_list_with_items(self, logged_in_client, mock_logger):
             """
-            Tests the machinery of the crop list view. 
+            Tests the machinery of the crop list view.
             Checks if the right variables are given.
             Multiple items are in DB in this test.
             """
@@ -133,13 +136,18 @@ class TestCropList:
             assert "form" in response.context
             assert "page_obj" in response.context
             assert len(response.context["page_obj"].object_list) == 3
-            assert all(item in response.context["page_obj"].object_list for item in [item_1, item_2, item_3])
+            assert all(
+                item in response.context["page_obj"].object_list
+                for item in [item_1, item_2, item_3]
+            )
             assert response.context["search_filters_applied"] == []
             assert response.context["max_textbox_length"] == TEXTBOX_MAX_LENGTH
             assert response.context["max_input_text_length"] == DEFAULT_TEXT_MAX_LENGTH
             assert response.context["max_input_unit_length"] == UNIT_INPUT_MAX_LENGTH
 
-            mock_logger.assert_called_once_with(f"User {user} viewed crop list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed crop list (page {1})."
+            )
 
         def test_crop_list_error(self, logged_in_client, mocker, mock_logger):
             """
@@ -159,10 +167,15 @@ class TestCropList:
             messages = list(get_messages(response.wsgi_request))
             assert len(messages) == 1
             assert str(messages[0]) == exception_message
-            assert f"Error in crops view by {user}: {exception_message}" in mock_logger.call_args[0][0]
+            assert (
+                f"Error in crops view by {user}: {exception_message}"
+                in mock_logger.call_args[0][0]
+            )
 
     class TestIDGivenURL:
-        def test_crop_list_id_success(self, logged_in_client, valid_minimal_crop, mock_logger):
+        def test_crop_list_id_success(
+            self, logged_in_client, valid_minimal_crop, mock_logger
+        ):
             """
             Tests if ID of an existing crop is given in the url (e.g. crop/id/45), it shows that one crop with that ID.
             """
@@ -176,13 +189,18 @@ class TestCropList:
             assert "page_obj" in response.context
             assert len(response.context["page_obj"].object_list) == 1
             assert valid_minimal_crop == response.context["page_obj"].object_list[0]
-            assert f"ID: {valid_minimal_crop.id}" in response.context["search_filters_applied"]
+            assert (
+                f"ID: {valid_minimal_crop.id}"
+                in response.context["search_filters_applied"]
+            )
             assert len(response.context["search_filters_applied"]) == 1
             assert response.context["max_textbox_length"] == TEXTBOX_MAX_LENGTH
             assert response.context["max_input_text_length"] == DEFAULT_TEXT_MAX_LENGTH
             assert response.context["max_input_unit_length"] == UNIT_INPUT_MAX_LENGTH
 
-            mock_logger.assert_called_once_with(f"User {user} viewed crop list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed crop list (page {1})."
+            )
 
         def test_crop_list_id_not_found(self, logged_in_client, mock_logger):
             """
@@ -200,16 +218,22 @@ class TestCropList:
             assert "form" in response.context
             assert "page_obj" in response.context
             assert len(response.context["page_obj"].object_list) == 0
-            assert f"ID: {non_existant_id}" in response.context["search_filters_applied"]
+            assert (
+                f"ID: {non_existant_id}" in response.context["search_filters_applied"]
+            )
             assert len(response.context["search_filters_applied"]) == 1
             assert response.context["max_textbox_length"] == TEXTBOX_MAX_LENGTH
             assert response.context["max_input_text_length"] == DEFAULT_TEXT_MAX_LENGTH
             assert response.context["max_input_unit_length"] == UNIT_INPUT_MAX_LENGTH
 
-            mock_logger.assert_called_once_with(f"User {user} viewed crop list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed crop list (page {1})."
+            )
 
     class TestSearchFiltering:
-        def test_crop_list_search_filtering(self, logged_in_client, valid_minimal_crop, mock_logger):
+        def test_crop_list_search_filtering(
+            self, logged_in_client, valid_minimal_crop, mock_logger
+        ):
             """
             Simple search filtering test that checks if search filter is displayed and only searched items are shown.
             """
@@ -234,9 +258,12 @@ class TestCropList:
             url = reverse("crop_list")
 
             # This makes the url /crop/?name={name_search}.
-            response = client.get(url, data={
-                "name": name_search,
-            })
+            response = client.get(
+                url,
+                data={
+                    "name": name_search,
+                },
+            )
 
             assert response.status_code == 200
             assert f"Name: {name_search}" in response.context["search_filters_applied"]
@@ -248,4 +275,6 @@ class TestCropList:
             for item in filtered_items:
                 assert item.name != "Soy"
 
-            mock_logger.assert_called_once_with(f"User {user} viewed crop list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed crop list (page {1})."
+            )

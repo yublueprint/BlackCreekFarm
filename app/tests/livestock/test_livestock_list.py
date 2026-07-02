@@ -1,19 +1,18 @@
 import pytest
-from django.urls import reverse
 from django.contrib.messages import get_messages
+from django.urls import reverse
 
-from app.backend.models import (
-    Livestock,
-    TEXTBOX_MAX_LENGTH,
-    DEFAULT_TEXT_MAX_LENGTH,
-    UNIT_INPUT_MAX_LENGTH,
-)
+from app.backend.models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
+                                UNIT_INPUT_MAX_LENGTH, Livestock)
 
 pytestmark = pytest.mark.django_db
 
+
 class TestLivestockList:
     class TestDefaultStates:
-        def test_livestock_list_unauthenticated_redirect(self, valid_minimal_livestock, client):
+        def test_livestock_list_unauthenticated_redirect(
+            self, valid_minimal_livestock, client
+        ):
             """
             Livestock list should only be accessible by those who are logged in.
             If not logged in, they should be redirected to the login page.
@@ -24,13 +23,15 @@ class TestLivestockList:
             assert response.status_code == 302
             assert "login" in response.url
 
-            # Access supples list by giving in a VALID id in the url (e.g. livestock/id/45 if livestock with ID 45 exists).
+            # Access supples list by giving in a VALID id in the url
+            # (e.g. livestock/id/45 if livestock with ID 45 exists).
             url = reverse("load_livestock", kwargs={"id": valid_minimal_livestock.id})
             response = client.get(url)
             assert response.status_code == 302
             assert "login" in response.url
 
-            # Access supples list by giving in an INVALID id in the url (e.g. livestock/id/9999 if livestock with ID 9999 does not exist).
+            # Access supples list by giving in an INVALID id in the url
+            # (e.g. livestock/id/9999 if livestock with ID 9999 does not exist).
             url = reverse("load_livestock", kwargs={"id": 9999})
             response = client.get(url)
             assert response.status_code == 302
@@ -38,7 +39,7 @@ class TestLivestockList:
 
         def test_livestock_list_empty(self, logged_in_client, mock_logger):
             """
-            Tests the machinery of the livestock list view. 
+            Tests the machinery of the livestock list view.
             Checks if the right variables are given.
             No items are in DB in this test.
             """
@@ -56,11 +57,15 @@ class TestLivestockList:
             assert response.context["max_input_text_length"] == DEFAULT_TEXT_MAX_LENGTH
             assert response.context["max_input_unit_length"] == UNIT_INPUT_MAX_LENGTH
 
-            mock_logger.assert_called_once_with(f"User {user} viewed livestock list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed livestock list (page {1})."
+            )
 
-        def test_livestock_list_with_item(self, logged_in_client, valid_minimal_livestock, mock_logger):
+        def test_livestock_list_with_item(
+            self, logged_in_client, valid_minimal_livestock, mock_logger
+        ):
             """
-            Tests the machinery of the livestock list view. 
+            Tests the machinery of the livestock list view.
             Checks if the right variables are given.
             One item is in DB in this test.
             """
@@ -73,17 +78,21 @@ class TestLivestockList:
             assert "form" in response.context
             assert "page_obj" in response.context
             assert len(response.context["page_obj"].object_list) == 1
-            assert valid_minimal_livestock == response.context["page_obj"].object_list[0]
+            assert (
+                valid_minimal_livestock == response.context["page_obj"].object_list[0]
+            )
             assert response.context["search_filters_applied"] == []
             assert response.context["max_textbox_length"] == TEXTBOX_MAX_LENGTH
             assert response.context["max_input_text_length"] == DEFAULT_TEXT_MAX_LENGTH
             assert response.context["max_input_unit_length"] == UNIT_INPUT_MAX_LENGTH
 
-            mock_logger.assert_called_once_with(f"User {user} viewed livestock list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed livestock list (page {1})."
+            )
 
         def test_livestock_list_with_items(self, logged_in_client, mock_logger):
             """
-            Tests the machinery of the livestock list view. 
+            Tests the machinery of the livestock list view.
             Checks if the right variables are given.
             Multiple items are in DB in this test.
             """
@@ -130,13 +139,18 @@ class TestLivestockList:
             assert "form" in response.context
             assert "page_obj" in response.context
             assert len(response.context["page_obj"].object_list) == 3
-            assert all(item in response.context["page_obj"].object_list for item in [item_1, item_2, item_3])
+            assert all(
+                item in response.context["page_obj"].object_list
+                for item in [item_1, item_2, item_3]
+            )
             assert response.context["search_filters_applied"] == []
             assert response.context["max_textbox_length"] == TEXTBOX_MAX_LENGTH
             assert response.context["max_input_text_length"] == DEFAULT_TEXT_MAX_LENGTH
             assert response.context["max_input_unit_length"] == UNIT_INPUT_MAX_LENGTH
 
-            mock_logger.assert_called_once_with(f"User {user} viewed livestock list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed livestock list (page {1})."
+            )
 
         def test_livestock_list_error(self, logged_in_client, mocker, mock_logger):
             """
@@ -144,7 +158,9 @@ class TestLivestockList:
             """
             client, user = logged_in_client
 
-            mock_search = mocker.patch("app.backend.views.livestock.livestock.search_filtering")
+            mock_search = mocker.patch(
+                "app.backend.views.livestock.livestock.search_filtering"
+            )
             exception_message = "Forcing exception to test excpetion handling."
             mock_search.side_effect = Exception(exception_message)
 
@@ -156,12 +172,18 @@ class TestLivestockList:
             messages = list(get_messages(response.wsgi_request))
             assert len(messages) == 1
             assert str(messages[0]) == exception_message
-            assert f"Error in livestock view by {user}: {exception_message}" in mock_logger.call_args[0][0]
+            assert (
+                f"Error in livestock view by {user}: {exception_message}"
+                in mock_logger.call_args[0][0]
+            )
 
     class TestIDGivenURL:
-        def test_livestock_list_id_success(self, logged_in_client, valid_minimal_livestock, mock_logger):
+        def test_livestock_list_id_success(
+            self, logged_in_client, valid_minimal_livestock, mock_logger
+        ):
             """
-            Tests if ID of an existing livestock is given in the url (e.g. livestock/id/45), it shows that one livestock with that ID.
+            Tests if ID of an existing livestock is given in the url
+            (e.g. livestock/id/45), it shows that one livestock with that ID.
             """
             client, user = logged_in_client
 
@@ -172,14 +194,21 @@ class TestLivestockList:
             assert "form" in response.context
             assert "page_obj" in response.context
             assert len(response.context["page_obj"].object_list) == 1
-            assert valid_minimal_livestock == response.context["page_obj"].object_list[0]
-            assert f"ID: {valid_minimal_livestock.id}" in response.context["search_filters_applied"]
+            assert (
+                valid_minimal_livestock == response.context["page_obj"].object_list[0]
+            )
+            assert (
+                f"ID: {valid_minimal_livestock.id}"
+                in response.context["search_filters_applied"]
+            )
             assert len(response.context["search_filters_applied"]) == 1
             assert response.context["max_textbox_length"] == TEXTBOX_MAX_LENGTH
             assert response.context["max_input_text_length"] == DEFAULT_TEXT_MAX_LENGTH
             assert response.context["max_input_unit_length"] == UNIT_INPUT_MAX_LENGTH
 
-            mock_logger.assert_called_once_with(f"User {user} viewed livestock list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed livestock list (page {1})."
+            )
 
         def test_livestock_list_id_not_found(self, logged_in_client, mock_logger):
             """
@@ -197,16 +226,22 @@ class TestLivestockList:
             assert "form" in response.context
             assert "page_obj" in response.context
             assert len(response.context["page_obj"].object_list) == 0
-            assert f"ID: {non_existant_id}" in response.context["search_filters_applied"]
+            assert (
+                f"ID: {non_existant_id}" in response.context["search_filters_applied"]
+            )
             assert len(response.context["search_filters_applied"]) == 1
             assert response.context["max_textbox_length"] == TEXTBOX_MAX_LENGTH
             assert response.context["max_input_text_length"] == DEFAULT_TEXT_MAX_LENGTH
             assert response.context["max_input_unit_length"] == UNIT_INPUT_MAX_LENGTH
 
-            mock_logger.assert_called_once_with(f"User {user} viewed livestock list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed livestock list (page {1})."
+            )
 
     class TestSearchFiltering:
-        def test_livestock_list_search_filtering(self, logged_in_client, valid_minimal_livestock, mock_logger):
+        def test_livestock_list_search_filtering(
+            self, logged_in_client, valid_minimal_livestock, mock_logger
+        ):
             """
             Simple search filtering test that checks if search filter is displayed and only searched items are shown.
             """
@@ -224,9 +259,12 @@ class TestLivestockList:
             url = reverse("livestock_list")
 
             # This makes the url /livestock/?name={name_search}.
-            response = client.get(url, data={
-                "name": name_search,
-            })
+            response = client.get(
+                url,
+                data={
+                    "name": name_search,
+                },
+            )
 
             assert response.status_code == 200
             assert f"Name: {name_search}" in response.context["search_filters_applied"]
@@ -238,4 +276,6 @@ class TestLivestockList:
             for item in filtered_items:
                 assert item.name != "Pig"
 
-            mock_logger.assert_called_once_with(f"User {user} viewed livestock list (page {1}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} viewed livestock list (page {1})."
+            )

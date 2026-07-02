@@ -1,9 +1,9 @@
-from app.backend.functions.shared_variables import logger
-
-
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
+from app.backend.functions.shared_variables import logger
+
 amount_to_go = 3
+
 
 def paginationFunction(objects, page_number=1, num_per_page=10):
     # FOR PAGINATION
@@ -27,7 +27,8 @@ def paginationFunction(objects, page_number=1, num_per_page=10):
         page_number = 1
     except Exception as e:
         logger.log(
-            f"An unexpected error has occured while attempting to get page number ({page_number}). Page number automatically set to 1. Error is: {e}"
+            f"An unexpected error has occured while attempting to get page number ({page_number})."
+            f"Page number automatically set to 1. Error is: {e}"
         )
         page_number = 1
 

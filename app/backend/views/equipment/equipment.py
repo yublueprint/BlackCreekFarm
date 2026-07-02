@@ -1,20 +1,22 @@
+from urllib.parse import urlencode
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from urllib.parse import urlencode
 
-from ...functions.paginationFunction import paginationFunction
 from app.exceptions.equipment.exception import (EquipmentCreationException,
                                                 EquipmentDeleteException,
                                                 EquipmentEditException)
 from app.logging.logging import Logger
 
-from ...forms.search_filtering_forms.EquipmentSearchForm import EquipmentSearchForm
+from ...forms.search_filtering_forms.EquipmentSearchForm import \
+    EquipmentSearchForm
 from ...functions.editStockNameChange import editStockNameChange
-from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, DEFAULT_FILLER_TEXT, Equipment)
+from ...functions.paginationFunction import paginationFunction
+from ...models import (DEFAULT_FILLER_TEXT, DEFAULT_TEXT_MAX_LENGTH,
+                       TEXTBOX_MAX_LENGTH, UNIT_INPUT_MAX_LENGTH, Equipment)
 
 logger = Logger("app/logging/app.log")
 
@@ -28,7 +30,9 @@ def get_properties(request, ExceptionToUse: Exception):
     category = (request.POST.get("category") or "").strip() or DEFAULT_FILLER_TEXT
     type = (request.POST.get("type") or "").strip() or DEFAULT_FILLER_TEXT
     # Optional fields.
-    serial_number = (request.POST.get("serial_number") or "").strip() or DEFAULT_FILLER_TEXT
+    serial_number = (
+        request.POST.get("serial_number") or ""
+    ).strip() or DEFAULT_FILLER_TEXT
     purchase_date = request.POST.get("purchase_date") or None
     maintenance_due = request.POST.get("maintenance_due") or None
     next_checkup = request.POST.get("next_checkup") or None
@@ -39,7 +43,9 @@ def get_properties(request, ExceptionToUse: Exception):
     condition = (request.POST.get("condition") or "").strip() or DEFAULT_FILLER_TEXT
     purchase_cost = request.POST.get("purchase_cost") or 0
     active = request.POST.get("active") or "Yes"
-    last_service_by = (request.POST.get("last_service_by") or "").strip() or DEFAULT_FILLER_TEXT
+    last_service_by = (
+        request.POST.get("last_service_by") or ""
+    ).strip() or DEFAULT_FILLER_TEXT
     service_interval_days = request.POST.get("service_interval_days") or 0
     maintenance_history = request.POST.get("maintenance_history") or ""
     notes = request.POST.get("notes") or ""
@@ -86,7 +92,12 @@ def get_properties(request, ExceptionToUse: Exception):
     # check length if the optional field was actually provided.
     for input_given, max_length in inputs_given_list:
         for key, value in input_given.items():
-            if value and isinstance(value, str) and isinstance(value, str) and len(value) > max_length:
+            if (
+                value
+                and isinstance(value, str)
+                and isinstance(value, str)
+                and len(value) > max_length
+            ):
                 raise ExceptionToUse(
                     f"Equipment {key} input must be less than or equal to {max_length} characters."
                 )
@@ -153,10 +164,10 @@ def search_filtering(form):
                     )
                 if data.get("purchase_date_mode") == "highest":
                     equipment = equipment.order_by("-purchase_date")
-                    active_filters.append(f"Highest to Lowest Purchase Date")
+                    active_filters.append("Highest to Lowest Purchase Date")
                 if data.get("purchase_date_mode") == "lowest":
                     equipment = equipment.order_by("purchase_date")
-                    active_filters.append(f"Lowest to Highest Purchase Date")
+                    active_filters.append("Lowest to Highest Purchase Date")
         if data.get("maintenance_date_mode"):
             if data.get("maintenance_date_mode") != "all":
                 if data.get("min_maintenance_date") is not None:
@@ -175,10 +186,10 @@ def search_filtering(form):
                     )
                 if data.get("maintenance_date_mode") == "highest":
                     equipment = equipment.order_by("-maintenance_due")
-                    active_filters.append(f"Highest to Lowest Maintenance Date")
+                    active_filters.append("Highest to Lowest Maintenance Date")
                 if data.get("maintenance_date_mode") == "lowest":
                     equipment = equipment.order_by("maintenance_due")
-                    active_filters.append(f"Lowest to Highest Maintenance Date")
+                    active_filters.append("Lowest to Highest Maintenance Date")
         if data.get("next_checkup_mode"):
             if data.get("next_checkup_mode") != "all":
                 if data.get("min_next_checkup") is not None:
@@ -197,10 +208,10 @@ def search_filtering(form):
                     )
                 if data.get("next_checkup_mode") == "highest":
                     equipment = equipment.order_by("-next_checkup")
-                    active_filters.append(f"Highest to Lowest Next Checkup")
+                    active_filters.append("Highest to Lowest Next Checkup")
                 if data.get("next_checkup_mode") == "lowest":
                     equipment = equipment.order_by("next_checkup")
-                    active_filters.append(f"Lowest to Highest Next Checkup")
+                    active_filters.append("Lowest to Highest Next Checkup")
         if data.get("warranty_expiration_mode"):
             if data.get("warranty_expiration_mode") != "all":
                 if data.get("min_warranty_expiration") is not None:
@@ -219,10 +230,10 @@ def search_filtering(form):
                     )
                 if data.get("warranty_expiration_mode") == "highest":
                     equipment = equipment.order_by("-warranty_expiry")
-                    active_filters.append(f"Highest to Lowest Warranty Expiration")
+                    active_filters.append("Highest to Lowest Warranty Expiration")
                 if data.get("warranty_expiration_mode") == "lowest":
                     equipment = equipment.order_by("warranty_expiry")
-                    active_filters.append(f"Lowest to Highest Warranty Expiration")
+                    active_filters.append("Lowest to Highest Warranty Expiration")
         if data.get("location"):
             equipment = equipment.filter(location__icontains=data["location"])
             active_filters.append(f"Location: {str(data['location'])}")
@@ -243,10 +254,10 @@ def search_filtering(form):
                     )
                 if data.get("hours_used_mode") == "highest":
                     equipment = equipment.order_by("-hours_used")
-                    active_filters.append(f"Highest to Lowest Hours Used")
+                    active_filters.append("Highest to Lowest Hours Used")
                 if data.get("hours_used_mode") == "lowest":
                     equipment = equipment.order_by("hours_used")
-                    active_filters.append(f"Lowest to Highest Hours Used")
+                    active_filters.append("Lowest to Highest Hours Used")
         if data.get("condition"):
             equipment = equipment.filter(condition__icontains=data["condition"])
             active_filters.append(f"Condition: {str(data['condition'])}")
@@ -268,10 +279,10 @@ def search_filtering(form):
                     )
                 if data.get("purchase_cost_mode") == "highest":
                     equipment = equipment.order_by("-purchase_cost")
-                    active_filters.append(f"Highest to Lowest Purchase Cost")
+                    active_filters.append("Highest to Lowest Purchase Cost")
                 if data.get("purchase_cost_mode") == "lowest":
                     equipment = equipment.order_by("purchase_cost")
-                    active_filters.append(f"Lowest to Highest Purchase Cost")
+                    active_filters.append("Lowest to Highest Purchase Cost")
         if data.get("active"):
             if data.get("active") != "None":
                 equipment = equipment.filter(active__icontains=data["active"])
@@ -299,10 +310,10 @@ def search_filtering(form):
                     )
                 if data.get("service_interval_days_mode") == "highest":
                     equipment = equipment.order_by("-service_interval_days")
-                    active_filters.append(f"Highest to Lowest Service Interval Days")
+                    active_filters.append("Highest to Lowest Service Interval Days")
                 if data.get("service_interval_days_mode") == "lowest":
                     equipment = equipment.order_by("service_interval_days")
-                    active_filters.append(f"Lowest to Highest Service Interval Days")
+                    active_filters.append("Lowest to Highest Service Interval Days")
     return active_filters, equipment
 
 
@@ -314,9 +325,9 @@ def equipment_list(request, id=None):
         active_filters, equipment = search_filtering(form)
 
         # If ID was given in URL. Ex: equipment/id/<int>
-        if (id):
+        if id:
             base_url = reverse("equipment_list")
-            query_string = urlencode({"id":id})
+            query_string = urlencode({"id": id})
             return redirect(f"{base_url}?{query_string}")
 
         # FOR PAGINATION.
@@ -460,7 +471,9 @@ def edit_equipment(request):
             messages.error(request, str(e))
             return redirect("equipment_list")
         except Exception as e:
-            logger.log(f"Unexpected error during equipment edit by user {request.user}: {e}")
+            logger.log(
+                f"Unexpected error during equipment edit by user {request.user}: {e}"
+            )
             messages.error(
                 request, "An unexpected error occurred while editing the equipment."
             )

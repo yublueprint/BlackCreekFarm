@@ -1,23 +1,21 @@
 import pytest
-from django.urls import reverse
 from django.contrib.messages import get_messages
+from django.urls import reverse
 
-from app.backend.models import (
-    Crop,
-    DEFAULT_TEXT_MAX_LENGTH,
-    DEFAULT_FILLER_TEXT,
-)
+from app.backend.models import (DEFAULT_FILLER_TEXT, DEFAULT_TEXT_MAX_LENGTH,
+                                Crop)
 
 pytestmark = pytest.mark.django_db
 
-class TestAddCrop():
+
+class TestAddCrop:
     class TestUnauthenticatedRequests:
         def test_add_crop_unauthenticated_redirect(self, client):
             """
             Unauthenticated requests should be redirected to the login page.
             """
             assert Crop.objects.count() == 0
-            
+
             url = reverse("add_crop")
             response = client.post(url, data={})
             assert response.status_code == 302
@@ -45,7 +43,7 @@ class TestAddCrop():
                 "water_usage_liters": 5,
                 "next_checkup": "2026-07-15",
                 "region": "Soy Field",
-                "notes": "Some note.\nCan have line break too. :)"
+                "notes": "Some note.\nCan have line break too. :)",
             }
 
             response = client.post(url, data=payload)
@@ -65,7 +63,9 @@ class TestAddCrop():
             assert crop.region == payload["region"]
             assert crop.notes == payload["notes"]
 
-            mock_logger.assert_called_once_with(f"User {user} added crop: {crop.name} (ID: {crop.id}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} added crop: {crop.name} (ID: {crop.id})."
+            )
 
         def test_add_crop_empty_inputs(self, logged_in_client, mock_logger):
             """
@@ -84,7 +84,7 @@ class TestAddCrop():
                 "water_usage_liters": "",
                 "next_checkup": "",
                 "region": "",
-                "notes": ""
+                "notes": "",
             }
 
             response = client.post(url, data=payload)
@@ -94,20 +94,24 @@ class TestAddCrop():
             assert Crop.objects.count() == 1
             assert Crop.objects.filter(name=DEFAULT_FILLER_TEXT).count() == 1
             crop = Crop.objects.get(name=DEFAULT_FILLER_TEXT)
-            assert crop.crop_type == DEFAULT_FILLER_TEXT 
-            assert crop.planting_date == None 
-            assert crop.harvest_date == None 
-            assert crop.expected_yield == 0 
-            assert crop.yield_efficiency == 0 
-            assert crop.water_usage_liters == 0 
-            assert crop.next_checkup == None 
-            assert crop.region == DEFAULT_FILLER_TEXT 
+            assert crop.crop_type == DEFAULT_FILLER_TEXT
+            assert crop.planting_date is None
+            assert crop.harvest_date is None
+            assert crop.expected_yield == 0
+            assert crop.yield_efficiency == 0
+            assert crop.water_usage_liters == 0
+            assert crop.next_checkup is None
+            assert crop.region == DEFAULT_FILLER_TEXT
             assert crop.notes == ""
 
-            mock_logger.assert_called_once_with(f"User {user} added crop: {crop.name} (ID: {crop.id}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} added crop: {crop.name} (ID: {crop.id})."
+            )
 
     class TestAddErrors:
-        def test_add_crop_validation_error_input_too_long(self, logged_in_client, mock_logger):
+        def test_add_crop_validation_error_input_too_long(
+            self, logged_in_client, mock_logger
+        ):
             """
             If an input is not valid (such as long input), it should raise error.
             """
@@ -132,9 +136,14 @@ class TestAddCrop():
             assert len(messages) == 1
             assert "input must be less than or equal to" in str(messages[0])
 
-            mock_logger.assert_called_once_with(f"Crop creation error by {user}: Crop name input must be less than or equal to {DEFAULT_TEXT_MAX_LENGTH} characters.")
+            mock_logger.assert_called_once_with(
+                f"Crop creation error by {user}: Crop name input must be "
+                f"less than or equal to {DEFAULT_TEXT_MAX_LENGTH} characters."
+            )
 
-        def test_add_crop_validation_error_input_wrong_type(self, logged_in_client, mock_logger):
+        def test_add_crop_validation_error_input_wrong_type(
+            self, logged_in_client, mock_logger
+        ):
             """
             If an input is not valid (such as wrong type), it should raise error.
             """
@@ -184,7 +193,11 @@ class TestAddCrop():
 
             messages = list(get_messages(response.wsgi_request))
             assert len(messages) == 1
-            assert "An unexpected error occurred while adding the crop." in str(messages[0])
+            assert "An unexpected error occurred while adding the crop." in str(
+                messages[0]
+            )
 
             mock_logger.assert_called()
-            assert "Unexpected error during crop creation" in mock_logger.call_args[0][0]
+            assert (
+                "Unexpected error during crop creation" in mock_logger.call_args[0][0]
+            )

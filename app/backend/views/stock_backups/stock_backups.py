@@ -8,14 +8,14 @@ from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import landscape, letter
-from reportlab.lib.units import inch
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+from reportlab.lib.units import inch
 from reportlab.platypus import (Paragraph, SimpleDocTemplate, Spacer, Table,
                                 TableStyle)
 
 from app.logging.logging import Logger
 
-from ...models import (Crop, Equipment, Livestock, Equipment, Transaction)
+from ...models import Crop, Equipment, Livestock, Transaction
 
 logger = Logger("app/logging/app.log")
 
@@ -236,7 +236,7 @@ def download_backup(request):
                 parent=styles["Normal"],
                 fontSize=9,
                 leading=11,
-                wordWrap='CJK'
+                wordWrap="CJK",
             )
             header_style = ParagraphStyle(
                 "HeaderText",

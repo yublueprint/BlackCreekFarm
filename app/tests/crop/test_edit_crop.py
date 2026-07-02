@@ -2,14 +2,12 @@ import pytest
 from django.contrib.messages import get_messages
 from django.urls import reverse
 
-from app.backend.models import (
-    Crop,
-    DEFAULT_TEXT_MAX_LENGTH,
-    DEFAULT_FILLER_TEXT,
-)
 from app.backend.functions.editStockNameChange import editStockNameChange
+from app.backend.models import (DEFAULT_FILLER_TEXT, DEFAULT_TEXT_MAX_LENGTH,
+                                Crop)
 
 pytestmark = pytest.mark.django_db
+
 
 class TestEditCrop:
     class TestUnauthenticatedRequests:
@@ -18,7 +16,7 @@ class TestEditCrop:
             Unauthenticated requests should be redirected to the login page.
             """
             assert Crop.objects.count() == 1
-            
+
             old_name = valid_minimal_crop.name
 
             url = reverse("edit_crop")
@@ -44,7 +42,9 @@ class TestEditCrop:
             assert valid_minimal_crop.name != DEFAULT_FILLER_TEXT
 
     class TestEditSuccess:
-        def test_edit_crop_with_changes(self, logged_in_client, valid_minimal_crop, mock_logger):
+        def test_edit_crop_with_changes(
+            self, logged_in_client, valid_minimal_crop, mock_logger
+        ):
             client, user = logged_in_client
 
             old_name = valid_minimal_crop.name
@@ -78,15 +78,21 @@ class TestEditCrop:
             assert str(valid_minimal_crop.harvest_date) == payload["harvest_date"]
             assert valid_minimal_crop.expected_yield == payload["expected_yield"]
             assert valid_minimal_crop.yield_efficiency == payload["yield_efficiency"]
-            assert valid_minimal_crop.water_usage_liters == payload["water_usage_liters"]
+            assert (
+                valid_minimal_crop.water_usage_liters == payload["water_usage_liters"]
+            )
             assert str(valid_minimal_crop.next_checkup) == payload["next_checkup"]
             assert valid_minimal_crop.region == payload["region"]
             assert valid_minimal_crop.notes == payload["notes"]
 
             name_change_msg = editStockNameChange(old_name, valid_minimal_crop.name)
-            mock_logger.assert_called_once_with(f"User {user} edited crop: {old_name}{name_change_msg} (ID: {valid_minimal_crop.id}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} edited crop: {old_name}{name_change_msg} (ID: {valid_minimal_crop.id})."
+            )
 
-        def test_edit_crop_no_changes(self, logged_in_client, valid_full_crop, mock_logger):
+        def test_edit_crop_no_changes(
+            self, logged_in_client, valid_full_crop, mock_logger
+        ):
             client, user = logged_in_client
 
             old_name = valid_full_crop.name
@@ -126,10 +132,13 @@ class TestEditCrop:
             assert valid_full_crop.notes == payload["notes"]
 
             name_change_msg = editStockNameChange(old_name, valid_full_crop.name)
-            mock_logger.assert_called_once_with(f"User {user} edited crop: {old_name}{name_change_msg} (ID: {valid_full_crop.id}).")
+            mock_logger.assert_called_once_with(
+                f"User {user} edited crop: {old_name}{name_change_msg} (ID: {valid_full_crop.id})."
+            )
 
-        
-        def test_edit_crop_empty_inputs(self, logged_in_client, valid_full_crop, mock_logger):
+        def test_edit_crop_empty_inputs(
+            self, logged_in_client, valid_full_crop, mock_logger
+        ):
             client, user = logged_in_client
 
             old_name = valid_full_crop.name
@@ -159,18 +168,19 @@ class TestEditCrop:
             assert valid_full_crop.id == payload["id"]
             assert valid_full_crop.name == DEFAULT_FILLER_TEXT
             assert valid_full_crop.crop_type == DEFAULT_FILLER_TEXT
-            assert valid_full_crop.planting_date == None
-            assert valid_full_crop.harvest_date == None
-            assert valid_full_crop.expected_yield == None
-            assert valid_full_crop.yield_efficiency == None
-            assert valid_full_crop.water_usage_liters == None
-            assert valid_full_crop.next_checkup == None
+            assert valid_full_crop.planting_date is None
+            assert valid_full_crop.harvest_date is None
+            assert valid_full_crop.expected_yield is None
+            assert valid_full_crop.yield_efficiency is None
+            assert valid_full_crop.water_usage_liters is None
+            assert valid_full_crop.next_checkup is None
             assert valid_full_crop.region == DEFAULT_FILLER_TEXT
             assert valid_full_crop.notes == ""
 
             name_change_msg = editStockNameChange(old_name, valid_full_crop.name)
-            mock_logger.assert_called_once_with(f"User {user} edited crop: {old_name}{name_change_msg} (ID: {valid_full_crop.id}).")
-
+            mock_logger.assert_called_once_with(
+                f"User {user} edited crop: {old_name}{name_change_msg} (ID: {valid_full_crop.id})."
+            )
 
     class TestEditErrors:
         def test_edit_crop_not_found(self, logged_in_client, mock_logger):
@@ -191,7 +201,9 @@ class TestEditCrop:
 
             f"Crop edit error by {user}" in mock_logger.called_args[0][0]
 
-        def test_edit_crop_validation_error_input_too_long(self, logged_in_client, valid_minimal_crop, mock_logger):
+        def test_edit_crop_validation_error_input_too_long(
+            self, logged_in_client, valid_minimal_crop, mock_logger
+        ):
             """
             If an input is not valid (such as long input), it should raise error.
             """
@@ -227,9 +239,13 @@ class TestEditCrop:
             assert len(messages) == 1
             assert "input must be less than or equal to" in str(messages[0])
 
-            mock_logger.assert_called_once_with(f"Crop edit error by {user}: Crop name input must be less than or equal to {DEFAULT_TEXT_MAX_LENGTH} characters.")
+            mock_logger.assert_called_once_with(
+                f"Crop edit error by {user}: Crop name input must be less than or equal to {DEFAULT_TEXT_MAX_LENGTH} characters."
+            )
 
-        def test_edit_crop_validation_error_input_wrong_type(self, logged_in_client, valid_minimal_crop, mock_logger):
+        def test_edit_crop_validation_error_input_wrong_type(
+            self, logged_in_client, valid_minimal_crop, mock_logger
+        ):
             """
             If an input is not valid (such as wrong type), it should raise error.
             """
@@ -250,7 +266,9 @@ class TestEditCrop:
 
             messages = list(get_messages(response.wsgi_request))
             assert len(messages) == 1
-            assert "An unexpected error occurred while editing the crop" in str(messages[0])
+            assert "An unexpected error occurred while editing the crop" in str(
+                messages[0]
+            )
 
             mock_logger.assert_called()
             assert "Unexpected error during crop edit" in mock_logger.call_args[0][0]

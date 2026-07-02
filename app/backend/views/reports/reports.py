@@ -33,7 +33,7 @@ def download_livestock_report(request):
             return HttpResponse(response.content, content_type="application/pdf")
         else:
             logger.log(f"Analytics engine returned status {response.status_code}")
-            messages.error(request, f"Analytics Engine is currently unavailable.")
+            messages.error(request, "Analytics Engine is currently unavailable.")
             return redirect("reports")
     except Exception as e:
         logger.log(f"Error calling analytics engine: {e}")

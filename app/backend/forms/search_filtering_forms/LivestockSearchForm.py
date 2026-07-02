@@ -1,7 +1,7 @@
-from app.backend.forms.search_filtering_forms.shared_variables import search_dropdown_choices
-
-
 from django import forms
+
+from app.backend.forms.search_filtering_forms.shared_variables import \
+    search_dropdown_choices
 
 
 class LivestockSearchForm(forms.Form):

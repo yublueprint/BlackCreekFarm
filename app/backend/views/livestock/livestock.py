@@ -1,20 +1,22 @@
+from urllib.parse import urlencode
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from urllib.parse import urlencode
 
-from ...functions.paginationFunction import paginationFunction
 from app.exceptions.livestock.exception import (LivestockCreationException,
                                                 LivestockDeleteException,
                                                 LivestockEditException)
 from app.logging.logging import Logger
 
-from ...forms.search_filtering_forms.LivestockSearchForm import LivestockSearchForm
+from ...forms.search_filtering_forms.LivestockSearchForm import \
+    LivestockSearchForm
 from ...functions.editStockNameChange import editStockNameChange
-from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, DEFAULT_FILLER_TEXT, Livestock)
+from ...functions.paginationFunction import paginationFunction
+from ...models import (DEFAULT_FILLER_TEXT, DEFAULT_TEXT_MAX_LENGTH,
+                       TEXTBOX_MAX_LENGTH, UNIT_INPUT_MAX_LENGTH, Livestock)
 
 logger = Logger("app/logging/app.log")
 
@@ -29,7 +31,9 @@ def get_properties(request, ExceptionToUse: Exception):
     # Optional fields.
     age = request.POST.get("age") or None
     weight = request.POST.get("weight") or None
-    health_status = (request.POST.get("health_status") or "").strip() or DEFAULT_FILLER_TEXT
+    health_status = (
+        request.POST.get("health_status") or ""
+    ).strip() or DEFAULT_FILLER_TEXT
     purchase_price = request.POST.get("purchase_price") or None
     current_value = request.POST.get("current_value") or None
     next_vaccination_date = request.POST.get("next_vaccination_date") or None
@@ -119,10 +123,10 @@ def search_filtering(form):
                     active_filters.append(f"Max Age: {str(data['max_age'])}")
                 if data.get("age_mode") == "highest":
                     livestock = livestock.order_by("-age")
-                    active_filters.append(f"Highest to Lowest Age")
+                    active_filters.append("Highest to Lowest Age")
                 if data.get("age_mode") == "lowest":
                     livestock = livestock.order_by("age")
-                    active_filters.append(f"Lowest to Highest Age")
+                    active_filters.append("Lowest to Highest Age")
         # WEIGHT
         if data.get("weight_mode"):
             if data.get("weight_mode") != "all":
@@ -134,10 +138,10 @@ def search_filtering(form):
                     active_filters.append(f"Max Weight: {str(data['max_weight'])}")
                 if data.get("weight_mode") == "highest":
                     livestock = livestock.order_by("-weight")
-                    active_filters.append(f"Highest to Lowest Weight")
+                    active_filters.append("Highest to Lowest Weight")
                 if data.get("weight_mode") == "lowest":
                     livestock = livestock.order_by("weight")
-                    active_filters.append(f"Lowest to Highest Weight")
+                    active_filters.append("Lowest to Highest Weight")
         # HEALTH STATUS
         if data.get("health_status"):
             livestock = livestock.filter(health_status__icontains=data["health_status"])
@@ -161,10 +165,10 @@ def search_filtering(form):
                     )
                 if data.get("purchase_price_mode") == "highest":
                     livestock = livestock.order_by("-purchase_price")
-                    active_filters.append(f"Highest to Lowest Purchase Price")
+                    active_filters.append("Highest to Lowest Purchase Price")
                 if data.get("purchase_price_mode") == "lowest":
                     livestock = livestock.order_by("purchase_price")
-                    active_filters.append(f"Lowest to Highest Purchase Price")
+                    active_filters.append("Lowest to Highest Purchase Price")
         # CURRENT VALUE
         if data.get("current_value_mode"):
             if data.get("current_value_mode") != "all":
@@ -184,10 +188,10 @@ def search_filtering(form):
                     )
                 if data.get("current_value_mode") == "highest":
                     livestock = livestock.order_by("-current_value")
-                    active_filters.append(f"Highest to Lowest Current Value")
+                    active_filters.append("Highest to Lowest Current Value")
                 if data.get("current_value_mode") == "lowest":
                     livestock = livestock.order_by("current_value")
-                    active_filters.append(f"Lowest to Highest Current Value")
+                    active_filters.append("Lowest to Highest Current Value")
         # NEXT VACCINATION DATE
         if data.get("next_vaccination_mode"):
             if data.get("next_vaccination_mode") != "all":
@@ -207,10 +211,10 @@ def search_filtering(form):
                     )
                 if data.get("next_vaccination_mode") == "highest":
                     livestock = livestock.order_by("-next_vaccination_date")
-                    active_filters.append(f"Highest to Lowest Next Vaccination Date")
+                    active_filters.append("Highest to Lowest Next Vaccination Date")
                 if data.get("next_vaccination_mode") == "lowest":
                     livestock = livestock.order_by("next_vaccination_date")
-                    active_filters.append(f"Lowest to Highest Next Vaccination Date")
+                    active_filters.append("Lowest to Highest Next Vaccination Date")
     return active_filters, livestock
 
 
@@ -222,9 +226,9 @@ def livestock_list(request, id=None):
         active_filters, livestock = search_filtering(form)
 
         # If ID was given in URL. Ex: livestock/id/<int>
-        if (id):
+        if id:
             base_url = reverse("livestock_list")
-            query_string = urlencode({"id":id})
+            query_string = urlencode({"id": id})
             return redirect(f"{base_url}?{query_string}")
 
         # FOR PAGINATION.
@@ -294,7 +298,9 @@ def add_livestock(request):
             messages.error(request, str(e))
             return redirect("livestock_list")
         except Exception as e:
-            logger.log(f"Unexpected error during livestock creation by {request.user}: {e}")
+            logger.log(
+                f"Unexpected error during livestock creation by {request.user}: {e}"
+            )
             messages.error(
                 request, "An unexpected error occurred while adding the livestock."
             )
@@ -370,7 +376,9 @@ def delete_livestock(request):
             messages.error(request, str(e))
             return redirect("livestock_list")
         except Exception as e:
-            logger.log(f"Unexpected error during livestock deletion by {request.user}: {e}")
+            logger.log(
+                f"Unexpected error during livestock deletion by {request.user}: {e}"
+            )
             messages.error(
                 request, "An unexpected error occurred while deleting the livestock."
             )

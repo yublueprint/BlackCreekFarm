@@ -1,11 +1,11 @@
+from urllib.parse import urlencode
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
-from urllib.parse import urlencode
 
-from ...functions.paginationFunction import paginationFunction
 from app.exceptions.crop.exception import (CropCreationException,
                                            CropDeleteException,
                                            CropEditException)
@@ -13,8 +13,9 @@ from app.logging.logging import Logger
 
 from ...forms.search_filtering_forms.CropSearchForm import CropSearchForm
 from ...functions.editStockNameChange import editStockNameChange
-from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, DEFAULT_FILLER_TEXT, Crop)
+from ...functions.paginationFunction import paginationFunction
+from ...models import (DEFAULT_FILLER_TEXT, DEFAULT_TEXT_MAX_LENGTH,
+                       TEXTBOX_MAX_LENGTH, UNIT_INPUT_MAX_LENGTH, Crop)
 
 logger = Logger("app/logging/app.log")
 
@@ -120,10 +121,10 @@ def search_filtering(form):
                     )
                 if data.get("planting_date_mode") == "highest":
                     crops = crops.order_by("-planting_date")
-                    active_filters.append(f"Highest to Lowest Planting Date")
+                    active_filters.append("Highest to Lowest Planting Date")
                 if data.get("planting_date_mode") == "lowest":
                     crops = crops.order_by("planting_date")
-                    active_filters.append(f"Lowest to Highest Planting Date")
+                    active_filters.append("Lowest to Highest Planting Date")
         if data.get("harvest_date_mode"):
             if data.get("harvest_date_mode") == "range":
                 if data.get("min_harvest_date") is not None:
@@ -138,10 +139,10 @@ def search_filtering(form):
                     )
                 if data.get("harvest_date_mode") == "highest":
                     crops = crops.order_by("-harvest_date")
-                    active_filters.append(f"Highest to Lowest Harvest Date")
+                    active_filters.append("Highest to Lowest Harvest Date")
                 if data.get("harvest_date_mode") == "lowest":
                     crops = crops.order_by("harvest_date")
-                    active_filters.append(f"Lowest to Highest Harvest Date")
+                    active_filters.append("Lowest to Highest Harvest Date")
         if data.get("expected_yield_mode"):
             if data.get("expected_yield_mode") == "range":
                 if data.get("min_expected_yield") is not None:
@@ -156,10 +157,10 @@ def search_filtering(form):
                     )
                 if data.get("expected_yield_mode") == "highest":
                     crops = crops.order_by("-expected_yield")
-                    active_filters.append(f"Highest to Lowest Expected Yield")
+                    active_filters.append("Highest to Lowest Expected Yield")
                 if data.get("expected_yield_mode") == "lowest":
                     crops = crops.order_by("expected_yield")
-                    active_filters.append(f"Lowest to Highest Expected Yield")
+                    active_filters.append("Lowest to Highest Expected Yield")
         if data.get("yield_efficiency_mode"):
             if data.get("yield_efficiency_mode") == "range":
                 if data.get("min_yield_efficiency") is not None:
@@ -178,10 +179,10 @@ def search_filtering(form):
                     )
                 if data.get("yield_efficiency_mode") == "highest":
                     crops = crops.order_by("-yield_efficiency")
-                    active_filters.append(f"Highest to Lowest Yield Efficiency")
+                    active_filters.append("Highest to Lowest Yield Efficiency")
                 if data.get("yield_efficiency_mode") == "lowest":
                     crops = crops.order_by("yield_efficiency")
-                    active_filters.append(f"Lowest to Highest Yield Efficiency")
+                    active_filters.append("Lowest to Highest Yield Efficiency")
         if data.get("water_usage_mode"):
             if data.get("water_usage_mode") == "range":
                 if data.get("min_water_usage") is not None:
@@ -200,10 +201,10 @@ def search_filtering(form):
                     )
                 if data.get("water_usage_mode") == "highest":
                     crops = crops.order_by("-water_usage")
-                    active_filters.append(f"Highest to Lowest Water Usage")
+                    active_filters.append("Highest to Lowest Water Usage")
                 if data.get("water_usage_mode") == "lowest":
                     crops = crops.order_by("water_usage")
-                    active_filters.append(f"Lowest to Highest Water Usage")
+                    active_filters.append("Lowest to Highest Water Usage")
         if data.get("next_checkup_mode"):
             if data.get("next_checkup_mode") == "range":
                 if data.get("min_next_checkup") is not None:
@@ -218,10 +219,10 @@ def search_filtering(form):
                     )
                 if data.get("next_checkup_mode") == "highest":
                     crops = crops.order_by("-next_checkup")
-                    active_filters.append(f"Highest to Lowest Next Checkup")
+                    active_filters.append("Highest to Lowest Next Checkup")
                 if data.get("next_checkup_mode") == "lowest":
                     crops = crops.order_by("next_checkup")
-                    active_filters.append(f"Lowest to Highest Next Checkup")
+                    active_filters.append("Lowest to Highest Next Checkup")
         if data.get("region"):
             crops = crops.filter(region__icontains=data["region"])
             active_filters.append(f"Region: {str(data['region'])}")
@@ -236,9 +237,9 @@ def crop_list(request, id=None):
         active_filters, crops = search_filtering(form)
 
         # If ID was given in URL. Ex: crops/id/<int>
-        if (id):
+        if id:
             base_url = reverse("crop_list")
-            query_string = urlencode({"id":id})
+            query_string = urlencode({"id": id})
             return redirect(f"{base_url}?{query_string}")
 
         # FOR PAGINATION.
