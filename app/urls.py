@@ -1,26 +1,32 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 
-from .backend.alerts.alerts import (alerts_list, mark_alert_read,
-                                    mark_all_alerts_read)
-from .backend.crop.crop import add_crop, crop_list, delete_crop, edit_crop
-from .backend.dashboard.dashboard import dashboard
-from .backend.equipment.equipment import (add_equipment, delete_equipment,
-                                          edit_equipment, equipment_list)
-from .backend.error_page.error_page import error_page
-from .backend.livestock.livestock import (add_livestock, delete_livestock,
-                                          edit_livestock, livestock_list)
-from .backend.recent_activities.recent_activities import (
+from .backend.views.alerts.alerts import (alerts_list, mark_alert_read,
+                                          mark_all_alerts_read)
+from .backend.views.crop.crop import (add_crop, crop_list, delete_crop,
+                                      edit_crop)
+from .backend.views.dashboard.dashboard import dashboard
+from .backend.views.equipment.equipment import (add_equipment,
+                                                delete_equipment,
+                                                edit_equipment, equipment_list)
+from .backend.views.error_page.error_page import error_page
+from .backend.views.livestock.livestock import (add_livestock,
+                                                delete_livestock,
+                                                edit_livestock, livestock_list)
+from .backend.views.qr_scanner.qr_scanner import (manually_find_item,
+                                                  qr_scanner_camera,
+                                                  qr_scanner_page)
+from .backend.views.recent_activities.recent_activities import (
     download_all_activities, recent_activities_list)
-from .backend.reports.reports import download_livestock_report, reports
-from .backend.stock_backups.stock_backups import download_backup, stock_backups
-from .backend.qr_scanner.qr_scanner import qr_scanner_page, qr_scanner_camera, manually_find_item
-from .backend.supplies.supplies import (add_supplies, delete_supplies,
-                                        edit_supplies, supplies_list)
-from .backend.transactions.transaction import (add_transaction,
-                                               delete_transaction,
-                                               edit_transaction,
-                                               transaction_list)
+from .backend.views.reports.reports import download_livestock_report, reports
+from .backend.views.stock_backups.stock_backups import (download_backup,
+                                                        stock_backups)
+from .backend.views.supplies.supplies import (add_supplies, delete_supplies,
+                                              edit_supplies, supplies_list)
+from .backend.views.transactions.transaction import (add_transaction,
+                                                     delete_transaction,
+                                                     edit_transaction,
+                                                     transaction_list)
 
 urlpatterns = [
     path("", login_required(dashboard), name="dashboard"),

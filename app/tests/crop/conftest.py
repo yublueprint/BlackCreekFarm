@@ -1,20 +1,28 @@
 import pytest
-from django.contrib.auth.models import User
 
 from app.backend.models import Crop
 
 pytestmark = pytest.mark.django_db
 
 
-@pytest.fixture
-def user(client):
-    user = User.objects.create_user(username="tester", password="pass123")
-    client.force_login(user)
-    return user
+@pytest.fixture(autouse=True)
+def mock_logger(mocker):
+    """
+    Mocks the logger for crop.
+    """
+    return mocker.patch("app.backend.views.crop.crop.logger.log")
 
 
 @pytest.fixture
-def crop():
+def valid_minimal_crop():
+    """
+    Crop object that does not have all properties given.
+    """
+    return Crop.objects.create(name="Wheat", crop_type="Cereal", water_usage_liters=50)
+
+
+@pytest.fixture
+def valid_full_crop():
     return Crop.objects.create(
         name="Corn",
         crop_type="Grain",
@@ -30,7 +38,7 @@ def crop():
 
 
 @pytest.fixture
-def valid_crop_dict():
+def valid_full_crop_dict():
     return {
         "name": "Corn",
         "crop_type": "Grain",

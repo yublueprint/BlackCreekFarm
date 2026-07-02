@@ -160,7 +160,7 @@ class Supplies(models.Model):
     category = models.CharField(
         default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH
     )
-    quantity = models.FloatField(max_length=UNIT_INPUT_MAX_LENGTH)
+    quantity = models.FloatField(default=-1, max_length=UNIT_INPUT_MAX_LENGTH)
     unit = models.CharField(
         default=DEFAULT_FILLER_TEXT,
         blank=True,
@@ -182,28 +182,26 @@ class Supplies(models.Model):
 
 
 class Transaction(models.Model):
-    ITEM_TYPE_CHOICES = [
-        ("Crop", "Crop"),
-        ("Livestock", "Livestock"),
-        ("Equipment", "Equipment"),
-        ("Supplies", "Supplies"),
-    ]
+    class itemTypeChoices(models.TextChoices):
+        CROP = "Crop", "Crop"
+        LIVESTOCK = "Livestock", "Livestock"
+        EQUIPMENT = "Equipment", "Equipment"
+        SUPPLIES = "Supplies", "Supplies"
 
-    TRANSACTION_TYPE_CHOICES = [
-        ("Sale", "Sale"),
-        ("Purchase", "Purchase"),
-        ("Return", "Return"),
-    ]
+    class transactionTypeChoices(models.TextChoices):
+        SALE = "Sale", "Sale"
+        PURCHASE = "Purchase", "Purchase"
+        RETURN = "Return", "Return"
 
     item_type = models.CharField(
-        choices=ITEM_TYPE_CHOICES, max_length=DEFAULT_TEXT_MAX_LENGTH
+        choices=itemTypeChoices, max_length=DEFAULT_TEXT_MAX_LENGTH
     )
     item_id = models.PositiveIntegerField()
     item_name = models.CharField(
         default=DEFAULT_FILLER_TEXT, max_length=DEFAULT_TEXT_MAX_LENGTH
     )
     transaction_type = models.CharField(
-        choices=TRANSACTION_TYPE_CHOICES, max_length=DEFAULT_TEXT_MAX_LENGTH
+        choices=transactionTypeChoices, max_length=DEFAULT_TEXT_MAX_LENGTH
     )
     quantity = models.PositiveIntegerField()
     date = models.DateField()
