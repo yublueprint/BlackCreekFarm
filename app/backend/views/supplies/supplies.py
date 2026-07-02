@@ -68,7 +68,7 @@ def get_properties(request, ExceptionToUse: Exception):
     # check length if the optional field was actually provided.
     for input_given, max_length in inputs_given_list:
         for key, value in input_given.items():
-            if value and len(value) > max_length:
+            if value and isinstance(value, str) and len(value) > max_length:
                 raise ExceptionToUse(
                     f"Supply {key} input must be less than or equal to {max_length} characters."
                 )
@@ -250,7 +250,7 @@ def add_supplies(request):
             messages.error(request, str(e))
             return redirect("supplies_list")
         except Exception as e:
-            logger.log(f"Unexpected error during supply creation: {e}")
+            logger.log(f"Unexpected error during supply creation by {request.user}: {e}")
             messages.error(
                 request, "An unexpected error occurred while adding the supply."
             )
@@ -295,7 +295,7 @@ def edit_supplies(request):
             messages.error(request, str(e))
             return redirect("supplies_list")
         except Exception as e:
-            logger.log(f"Unexpected error during supply edit: {e}")
+            logger.log(f"Unexpected error during supply edit by {request.user}: {e}")
             messages.error(
                 request, "An unexpected error occurred while editing the supply."
             )
@@ -326,7 +326,7 @@ def delete_supplies(request):
             messages.error(request, str(e))
             return redirect("supplies_list")
         except Exception as e:
-            logger.log(f"Unexpected error during supply deletion: {e}")
+            logger.log(f"Unexpected error during supply deletion by {request.user}: {e}")
             messages.error(
                 request, "An unexpected error occurred while deleting the supply."
             )

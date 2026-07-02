@@ -1,13 +1,10 @@
 import pytest
 from django.contrib.messages import get_messages
-from django.http import Http404
 from django.urls import reverse
 
 from app.backend.models import (
     Supplies,
-    TEXTBOX_MAX_LENGTH,
     DEFAULT_TEXT_MAX_LENGTH,
-    UNIT_INPUT_MAX_LENGTH,
     DEFAULT_FILLER_TEXT,
 )
 from app.backend.functions.editStockNameChange import editStockNameChange
@@ -16,14 +13,34 @@ pytestmark = pytest.mark.django_db
 
 class TestEditSupplies:
     class TestUnauthenticatedRequests:
-        def test_edit_supplies_unauthenticated_redirect(self, client):
+        def test_edit_supplies_unauthenticated_redirect(self, valid_minimal_supply, client):
             """
             Unauthenticated requests should be redirected to the login page.
             """
+            assert Supplies.objects.count() == 1
+            
+            old_name = valid_minimal_supply.name
+
             url = reverse("edit_supplies")
-            response = client.post(url, data={})
+            payload = {
+                "id": valid_minimal_supply.id,
+                "name": "",
+                "supply_category": "",
+                "quantity": "",
+                "unit": "",
+                "last_restocked": "",
+                "minimum_required": "",
+                "cost_per_unit": "",
+                "procurement_date": "",
+                "notes": "",
+            }
+            response = client.post(url, data=payload)
             assert response.status_code == 302
             assert "login" in response.url
+
+            assert Supplies.objects.count() == 1
+            assert valid_minimal_supply.name == old_name
+            assert valid_minimal_supply.name != DEFAULT_FILLER_TEXT
 
     class TestEditSuccess:
         def test_edit_supplies_with_changes(self, logged_in_client, valid_minimal_supply, mock_logger):
@@ -46,8 +63,9 @@ class TestEditSupplies:
             valid_minimal_supply.refresh_from_db()
             assert Supplies.objects.count() == 1
             assert Supplies.objects.filter(name=payload["name"]).count() == 1
-            assert valid_minimal_supply.name == "Updated Gaskets"
-            assert valid_minimal_supply.quantity == 75
+            assert valid_minimal_supply.id == payload["id"]
+            assert valid_minimal_supply.name == payload["name"]
+            assert valid_minimal_supply.quantity == payload["quantity"]
 
             name_change_msg = editStockNameChange(old_name, valid_minimal_supply.name)
             mock_logger.assert_called_once_with(f"User {user} edited supply: {old_name}{name_change_msg} (ID: {valid_minimal_supply.id}).")
@@ -154,7 +172,7 @@ class TestEditSupplies:
 
             f"Supply edit error by {user}" in mock_logger.called_args[0][0]
 
-        def test_add_supplies_validation_error_input_too_long(self, logged_in_client, valid_minimal_supply, mock_logger):
+        def test_edit_supplies_validation_error_input_too_long(self, logged_in_client, valid_minimal_supply, mock_logger):
             """
             If an input is not valid (such as long input), it should raise error.
             """
@@ -189,7 +207,7 @@ class TestEditSupplies:
 
             mock_logger.assert_called_once_with(f"Supply edit error by {user}: Supply name input must be less than or equal to {DEFAULT_TEXT_MAX_LENGTH} characters.")
 
-        def test_add_supplies_validation_error_input_wrong_type(self, logged_in_client, valid_minimal_supply, mock_logger):
+        def test_edit_supplies_validation_error_input_wrong_type(self, logged_in_client, valid_minimal_supply, mock_logger):
             """
             If an input is not valid (such as wrong type), it should raise error.
             """

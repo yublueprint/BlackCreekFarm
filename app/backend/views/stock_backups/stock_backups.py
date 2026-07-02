@@ -15,7 +15,7 @@ from reportlab.platypus import (Paragraph, SimpleDocTemplate, Spacer, Table,
 
 from app.logging.logging import Logger
 
-from ...models import (Crop, Equipment, Livestock, Supplies, Transaction)
+from ...models import (Crop, Equipment, Livestock, Equipment, Transaction)
 
 logger = Logger("app/logging/app.log")
 
@@ -145,7 +145,7 @@ def download_backup(request):
                     "notes",
                 ]
             elif stock_chosen == "Supplies":
-                model = Supplies
+                model = Equipment
                 headers_given = [
                     "ID",
                     "Name",

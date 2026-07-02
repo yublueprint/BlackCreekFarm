@@ -1,5 +1,4 @@
 import pytest
-from django.contrib.auth.models import User
 
 from app.backend.models import Supplies
 

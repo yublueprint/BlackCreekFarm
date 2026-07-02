@@ -14,7 +14,7 @@ from app.logging.logging import Logger
 from ...forms.search_filtering_forms.EquipmentSearchForm import EquipmentSearchForm
 from ...functions.editStockNameChange import editStockNameChange
 from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, Equipment)
+                      UNIT_INPUT_MAX_LENGTH, DEFAULT_FILLER_TEXT, Equipment)
 
 logger = Logger("app/logging/app.log")
 
@@ -24,22 +24,22 @@ def get_properties(request, ExceptionToUse: Exception):
     Gets properties of equipment and validates the inputs.
     """
     # Mandatory fields.
-    name = (request.POST.get("name") or "").strip() or "Unknown"
-    category = (request.POST.get("category") or "").strip() or "Unknown"
-    type = (request.POST.get("type") or "").strip() or "Unknown"
+    name = (request.POST.get("name") or "").strip() or DEFAULT_FILLER_TEXT
+    category = (request.POST.get("category") or "").strip() or DEFAULT_FILLER_TEXT
+    type = (request.POST.get("type") or "").strip() or DEFAULT_FILLER_TEXT
     # Optional fields.
-    serial_number = (request.POST.get("serial_number") or "").strip() or "Unknown"
+    serial_number = (request.POST.get("serial_number") or "").strip() or DEFAULT_FILLER_TEXT
     purchase_date = request.POST.get("purchase_date") or None
     maintenance_due = request.POST.get("maintenance_due") or None
     next_checkup = request.POST.get("next_checkup") or None
     warranty_expiry = request.POST.get("warranty_expiry") or None
-    location = (request.POST.get("location") or "").strip() or "Unknown"
-    supplier = (request.POST.get("supplier") or "").strip() or "Unknown"
+    location = (request.POST.get("location") or "").strip() or DEFAULT_FILLER_TEXT
+    supplier = (request.POST.get("supplier") or "").strip() or DEFAULT_FILLER_TEXT
     hours_used = request.POST.get("hours_used") or None
-    condition = (request.POST.get("condition") or "").strip() or "Unknown"
+    condition = (request.POST.get("condition") or "").strip() or DEFAULT_FILLER_TEXT
     purchase_cost = request.POST.get("purchase_cost") or 0
-    active = request.POST.get("active")
-    last_service_by = (request.POST.get("last_service_by") or "").strip() or "Unknown"
+    active = request.POST.get("active") or "Yes"
+    last_service_by = (request.POST.get("last_service_by") or "").strip() or DEFAULT_FILLER_TEXT
     service_interval_days = request.POST.get("service_interval_days") or 0
     maintenance_history = request.POST.get("maintenance_history") or ""
     notes = request.POST.get("notes") or ""
@@ -86,9 +86,9 @@ def get_properties(request, ExceptionToUse: Exception):
     # check length if the optional field was actually provided.
     for input_given, max_length in inputs_given_list:
         for key, value in input_given.items():
-            if value and len(value) > max_length:
+            if value and isinstance(value, str) and isinstance(value, str) and len(value) > max_length:
                 raise ExceptionToUse(
-                    f"Equipment {key} input must be less or equal to {max_length} characters."
+                    f"Equipment {key} input must be less than or equal to {max_length} characters."
                 )
 
     return (
@@ -451,7 +451,7 @@ def edit_equipment(request):
             name_change_msg = editStockNameChange(old_name, equipment.name)
 
             logger.log(
-                f"User {request.user} edited equipment: {old_name} {name_change_msg} (ID: {equipment.id})"
+                f"User {request.user} edited equipment: {old_name}{name_change_msg} (ID: {equipment.id})."
             )
             return redirect("equipment_list")
 
@@ -460,7 +460,7 @@ def edit_equipment(request):
             messages.error(request, str(e))
             return redirect("equipment_list")
         except Exception as e:
-            logger.log(f"Unexpected error during equipment edit: {e}")
+            logger.log(f"Unexpected error during equipment edit by user {request.user}: {e}")
             messages.error(
                 request, "An unexpected error occurred while editing the equipment."
             )

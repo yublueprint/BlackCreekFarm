@@ -14,7 +14,7 @@ from app.logging.logging import Logger
 from ...forms.search_filtering_forms.LivestockSearchForm import LivestockSearchForm
 from ...functions.editStockNameChange import editStockNameChange
 from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, Livestock)
+                      UNIT_INPUT_MAX_LENGTH, DEFAULT_FILLER_TEXT, Livestock)
 
 logger = Logger("app/logging/app.log")
 
@@ -24,12 +24,12 @@ def get_properties(request, ExceptionToUse: Exception):
     Gets properties of livestock and validates the inputs.
     """
     # Mandatory fields.
-    name = (request.POST.get("name") or "").strip() or "Unknown"
-    type = (request.POST.get("type") or "").strip() or "Unknown"
+    name = (request.POST.get("name") or "").strip() or DEFAULT_FILLER_TEXT
+    type = (request.POST.get("type") or "").strip() or DEFAULT_FILLER_TEXT
     # Optional fields.
     age = request.POST.get("age") or None
     weight = request.POST.get("weight") or None
-    health_status = (request.POST.get("health_status") or "").strip() or "Unknown"
+    health_status = (request.POST.get("health_status") or "").strip() or DEFAULT_FILLER_TEXT
     purchase_price = request.POST.get("purchase_price") or None
     current_value = request.POST.get("current_value") or None
     next_vaccination_date = request.POST.get("next_vaccination_date") or None
@@ -71,9 +71,9 @@ def get_properties(request, ExceptionToUse: Exception):
     # check length if the optional field was actually provided.
     for input_given, max_length in inputs_given_list:
         for key, value in input_given.items():
-            if value and len(value) > max_length:
+            if value and isinstance(value, str) and len(value) > max_length:
                 raise ExceptionToUse(
-                    f"Livestock {key} input must be less or equal to {max_length} characters."
+                    f"Livestock {key} input must be less than or equal to {max_length} characters."
                 )
 
     return (
@@ -294,7 +294,7 @@ def add_livestock(request):
             messages.error(request, str(e))
             return redirect("livestock_list")
         except Exception as e:
-            logger.log(f"Unexpected error during livestock creation: {e}")
+            logger.log(f"Unexpected error during livestock creation by {request.user}: {e}")
             messages.error(
                 request, "An unexpected error occurred while adding the livestock."
             )
@@ -330,7 +330,7 @@ def edit_livestock(request):
             name_change_msg = editStockNameChange(old_name, animal.name)
 
             logger.log(
-                f"User {request.user} edited livestock: {old_name} {name_change_msg} (ID: {animal.id})."
+                f"User {request.user} edited livestock: {old_name}{name_change_msg} (ID: {animal.id})."
             )
             return redirect("livestock_list")
 
@@ -339,7 +339,7 @@ def edit_livestock(request):
             messages.error(request, str(e))
             return redirect("livestock_list")
         except Exception as e:
-            logger.log(f"Unexpected error during livestock edit: {e}")
+            logger.log(f"Unexpected error during livestock edit by {request.user}: {e}")
             messages.error(
                 request, "An unexpected error occurred while editing the livestock."
             )
@@ -370,7 +370,7 @@ def delete_livestock(request):
             messages.error(request, str(e))
             return redirect("livestock_list")
         except Exception as e:
-            logger.log(f"Unexpected error during livestock deletion: {e}")
+            logger.log(f"Unexpected error during livestock deletion by {request.user}: {e}")
             messages.error(
                 request, "An unexpected error occurred while deleting the livestock."
             )

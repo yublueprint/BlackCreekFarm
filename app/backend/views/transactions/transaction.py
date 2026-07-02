@@ -14,7 +14,7 @@ from app.logging.logging import Logger
 from ...forms.search_filtering_forms.TransactionSearchForm import TransactionSearchForm
 from ...functions.editStockNameChange import editStockNameChange
 from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, Transaction)
+                      UNIT_INPUT_MAX_LENGTH, DEFAULT_FILLER_TEXT, Transaction)
 
 logger = Logger("app/logging/app.log")
 
@@ -24,10 +24,10 @@ def get_properties(request, ExceptionToUse: Exception):
     Gets properties of transaction and validates the inputs.
     """
     # Mandatory fields.
-    item_type = (request.POST.get("item_type") or "").strip() or "Unknown"
+    item_type = (request.POST.get("item_type") or "").strip() or DEFAULT_FILLER_TEXT
     item_id = request.POST.get("item_id") or -1
-    item_name = (request.POST.get("item_name") or "").strip() or "Unknown"
-    transaction_type = (request.POST.get("transaction_type") or "").strip() or "Unknown"
+    item_name = (request.POST.get("item_name") or "").strip() or DEFAULT_FILLER_TEXT
+    transaction_type = (request.POST.get("transaction_type") or "").strip() or DEFAULT_FILLER_TEXT
     quantity = request.POST.get("quantity") or -1
     date = request.POST.get("date") or None
     # Optional fields.
@@ -70,9 +70,9 @@ def get_properties(request, ExceptionToUse: Exception):
     # check length if the optional field was actually provided.
     for input_given, max_length in inputs_given_list:
         for key, value in input_given.items():
-            if value and len(value) > max_length:
+            if value and isinstance(value, str) and len(value) > max_length:
                 raise ExceptionToUse(
-                    f"Equipment {key} input must be less or equal to {max_length} characters."
+                    f"Transaction {key} input must be less than or equal to {max_length} characters."
                 )
 
     return (
@@ -121,7 +121,7 @@ def get_edit_properties(request, ExceptionToUse: Exception):
         for key, value in input_given.items():
             if value and len(value) > max_length:
                 raise ExceptionToUse(
-                    f"Transaction {key} input must be less or equal to {max_length} characters."
+                    f"Transaction {key} input must be less than or equal to {max_length} characters."
                 )
 
     return (notes,)
@@ -287,7 +287,7 @@ def edit_transaction(request):
             try:
                 transaction = get_object_or_404(Transaction, id=request.POST.get("id"))
             except Http404:
-                raise TransactionEditException("Supply not found.")
+                raise TransactionEditException("Transaction not found.")
 
             old_name = transaction.item_name
 
@@ -300,7 +300,7 @@ def edit_transaction(request):
             name_change_msg = editStockNameChange(old_name, transaction.item_name)
 
             logger.log(
-                f"User {request.user} edited transaction: {old_name} {name_change_msg} (ID: {transaction.id})."
+                f"User {request.user} edited transaction: {old_name}{name_change_msg} (ID: {transaction.id})."
             )
             return redirect("transaction_list")
 

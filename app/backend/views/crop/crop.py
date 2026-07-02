@@ -14,7 +14,7 @@ from app.logging.logging import Logger
 from ...forms.search_filtering_forms.CropSearchForm import CropSearchForm
 from ...functions.editStockNameChange import editStockNameChange
 from ...models import (DEFAULT_TEXT_MAX_LENGTH, TEXTBOX_MAX_LENGTH,
-                      UNIT_INPUT_MAX_LENGTH, Crop)
+                      UNIT_INPUT_MAX_LENGTH, DEFAULT_FILLER_TEXT, Crop)
 
 logger = Logger("app/logging/app.log")
 
@@ -24,8 +24,8 @@ def get_properties(request, ExceptionToUse: Exception):
     Gets properties of crop and validates the inputs.
     """
     # Mandatory fields.
-    name = (request.POST.get("name") or "").strip() or "Unknown"
-    crop_type = (request.POST.get("crop_type") or "").strip() or "Unknown"
+    name = (request.POST.get("name") or "").strip() or DEFAULT_FILLER_TEXT
+    crop_type = (request.POST.get("crop_type") or "").strip() or DEFAULT_FILLER_TEXT
     # Optional fields.
     planting_date = request.POST.get("planting_date") or None
     harvest_date = request.POST.get("harvest_date") or None
@@ -33,7 +33,7 @@ def get_properties(request, ExceptionToUse: Exception):
     yield_efficiency = request.POST.get("yield_efficiency") or None
     water_usage_liters = request.POST.get("water_usage_liters") or None
     next_checkup = request.POST.get("next_checkup") or None
-    region = (request.POST.get("region") or "").strip() or "Unknown"
+    region = (request.POST.get("region") or "").strip() or DEFAULT_FILLER_TEXT
     notes = request.POST.get("notes") or ""
 
     required_inputs = {
@@ -71,9 +71,9 @@ def get_properties(request, ExceptionToUse: Exception):
     # check length if the optional field was actually provided.
     for input_given, max_length in inputs_given_list:
         for key, value in input_given.items():
-            if value and len(value) > max_length:
+            if value and isinstance(value, str) and len(value) > max_length:
                 raise ExceptionToUse(
-                    f"Crop {key} input must be less or equal to {max_length} characters."
+                    f"Crop {key} input must be less than or equal to {max_length} characters."
                 )
 
     return (
@@ -351,7 +351,7 @@ def edit_crop(request):
             name_change_msg = editStockNameChange(old_name, crop.name)
 
             logger.log(
-                f"User {request.user} edited crop: {old_name} {name_change_msg} (ID: {crop.id})."
+                f"User {request.user} edited crop: {old_name}{name_change_msg} (ID: {crop.id})."
             )
             return redirect("crop_list")
 

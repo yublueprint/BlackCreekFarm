@@ -6,8 +6,6 @@ from urllib.parse import urlencode
 
 from app.logging.logging import Logger
 
-from ...models import (Crop, Equipment, Livestock, Supplies, Transaction)
-
 logger = Logger("app/logging/app.log")
 
 @login_required

@@ -1,19 +1,11 @@
 import pytest
 from django.urls import reverse
 from django.contrib.messages import get_messages
-from django.db import transaction, IntegrityError
 
 from app.backend.models import (
     Supplies,
-    TEXTBOX_MAX_LENGTH,
     DEFAULT_TEXT_MAX_LENGTH,
-    UNIT_INPUT_MAX_LENGTH,
     DEFAULT_FILLER_TEXT,
-)
-from app.exceptions.supplies.exception import (
-    SupplyCreationException,
-    SupplyEditException,
-    SupplyDeleteException,
 )
 
 pytestmark = pytest.mark.django_db
@@ -24,10 +16,14 @@ class TestAddSupplies():
             """
             Unauthenticated requests should be redirected to the login page.
             """
+            assert Supplies.objects.count() == 0
+            
             url = reverse("add_supplies")
             response = client.post(url, data={})
             assert response.status_code == 302
             assert "login" in response.url
+
+            assert Supplies.objects.count() == 0
 
     class TestAddSuccess:
         def test_add_supplies_success(self, logged_in_client, mock_logger):
@@ -36,12 +32,18 @@ class TestAddSupplies():
             """
             client, user = logged_in_client
 
+            assert Supplies.objects.count() == 0
+
             url = reverse("add_supplies")
             payload = {
                 "name": "Screws",
                 "supply_category": "Fasteners",
                 "quantity": 100,
                 "unit": "boxes",
+                "last_restocked": "2027-03-25",
+                "minimum_required": 20,
+                "cost_per_unit": 5,
+                "procurement_date": "2027-05-21",
                 "notes": "Grade 8 steel screws. Some note.\nCan have line break too. :)"
             }
 
@@ -49,13 +51,17 @@ class TestAddSupplies():
 
             assert response.status_code == 302
             assert response.url == reverse("supplies_list")
-            assert Supplies.objects.filter(name="Screws")
+            assert Supplies.objects.filter(name=payload["name"])
             assert Supplies.objects.count() == 1
-            supply = Supplies.objects.get(name="Screws")
-            assert supply.category == "Fasteners"
-            assert supply.quantity == 100
-            assert supply.unit == "boxes"
-            assert supply.notes == "Grade 8 steel screws. Some note.\nCan have line break too. :)"
+            supply = Supplies.objects.get(name=payload["name"])
+            assert supply.category == payload["supply_category"]
+            assert supply.quantity == payload["quantity"]
+            assert supply.unit == payload["unit"]
+            assert str(supply.last_restocked) == payload["last_restocked"]
+            assert supply.minimum_required == payload["minimum_required"]
+            assert supply.cost_per_unit == payload["cost_per_unit"]
+            assert str(supply.procurement_date) == payload["procurement_date"]
+            assert supply.notes == payload["notes"]
 
             mock_logger.assert_called_once_with(f"User {user} added supply: {supply.name} (ID: {supply.id}).")
 
