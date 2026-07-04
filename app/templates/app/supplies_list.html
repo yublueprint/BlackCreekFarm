@@ -195,13 +195,13 @@
         <div class="flex space-x-2 justify-between w-full">
             <div class="w-1/2">
                 <!-- Name of the Supply (required) -->
-                <label class="block mb-2">Name: <span class="text-red-500">*</span></label>
+                <label for="name" class="block mb-2">Name: <span class="text-red-500">*</span></label>
                 <input type="text" name="name" class="w-full border rounded px-3 py-2 mb-4"
                 maxlength="{{ max_input_text_length }}" required />
             </div>
             <div class="w-1/2">
                 <!-- Category of the Supply (required) -->
-                <label class="block mb-2">Category: <span class="text-red-500">*</span></label>
+                <label for="supply_category" class="block mb-2">Category: <span class="text-red-500">*</span></label>
                 <input type="text" name="supply_category" class="w-full border rounded px-3 py-2 mb-4"
                 maxlength="{{ max_input_text_length }}" required />
             </div>
@@ -209,13 +209,13 @@
         <div class="flex space-x-2 justify-between w-full">
             <div class="w-1/2">
                 <!-- Quantity of the Supply (required) -->
-                <label class="block mb-2">Quantity: <span class="text-red-500">*</span></label>
+                <label for="quantity" class="block mb-2">Quantity: <span class="text-red-500">*</span></label>
                 <input type="number" name="quantity" class="w-full border rounded px-3 py-2 mb-4"
                 maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" required />
             </div>
             <div class="w-1/2">
                 <!-- Type of Unit of Quantity of the Supply (optional) -->
-                <label class="block mb-2">Unit:</label>
+                <label for="unit" class="block mb-2">Unit:</label>
                 <input type="text" name="unit" class="w-full border rounded px-3 py-2 mb-4"
                 maxlength="{{ max_input_unit_length }}" />
             </div>
@@ -224,13 +224,13 @@
         <div class="flex space-x-2">
             <div class="w-1/2">
                 <!-- Minimum required amount of the Supply (optional) -->
-                <label class="block mb-2">Minimum required:</label>
+                <label for="minimum_required" class="block mb-2">Minimum required:</label>
                 <input type="number" name="minimum_required"
                  maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4"/>
             </div>
             <div class="w-1/2">
                 <!-- Cost per unit of the Supply (optional) -->
-                <label class="block mb-2">Cost per unit ($):</label>
+                <label for="cost_per_unit" class="block mb-2">Cost per unit ($):</label>
                 <input type="number" name="cost_per_unit"
                  maxlength="{{ max_input_unit_length }}" oninput="limitInputLength(this)" class="w-full border rounded px-3 py-2 mb-4" />
             </div>
@@ -239,18 +239,18 @@
         <div class="flex space-x-2 justify-between w-full">
             <div class="w-1/2">
                 <!-- Last Restocking Date of the Supply (optional) -->
-                <label class="block mb-2">Last restocked:</label>
+                <label for="last_restocked" class="block mb-2">Last restocked:</label>
                 <input type="date" name="last_restocked" class="w-full border rounded px-3 py-2 mb-4" />
             </div>
             <div class="w-1/2">
                 <!-- Procurement date of the Supply (optional) -->
-                <label class="block mb-2">Procurement date:</label>
+                <label for="procurement_date" class="block mb-2">Procurement date:</label>
                 <input type="date" name="procurement_date" class="w-full border rounded px-3 py-2 mb-4" />
             </div>
         </div>
 
         <!-- Notes for the Supply (optional) -->
-        <label class="block mb-2">Notes:</label>
+        <label for="notes" class="block mb-2">Notes:</label>
         <textarea name="notes" rows="10" class="w-full border rounded px-3 py-2 mb-4 overflow-y-auto resize-none"
         maxlength="{{ max_textbox_length }}"></textarea>
     {% endcapture %}

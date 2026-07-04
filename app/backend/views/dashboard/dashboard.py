@@ -9,6 +9,7 @@ from ...models import Alert, Crop, Equipment, Livestock
 # Initialize application logger
 logger = Logger("app/logging/app.log")
 
+
 def dashboard(request):
     """
     Render the dashboard page with live data and recent activity.
@@ -27,7 +28,9 @@ def dashboard(request):
             except Exception as e:
                 logger.log(f"Failed to fetch growth metrics: {e}")
 
-        recent_alerts = list(Alert.objects.filter(is_read=False).order_by("-timestamp")[:5])
+        recent_alerts = list(
+            Alert.objects.filter(is_read=False).order_by("-timestamp")[:5]
+        )
 
         context = {
             "livestock_count": Livestock.objects.count(),

@@ -6,7 +6,7 @@
             <p>Are you sure you want to delete this {{ stock_name }}?</p>
             <strong id="deleteObjectName"></strong>
         </div>
-        <form method="post" id="deleteObjectForm" action="{% url delete_url_given %}">
+        <form method="post" name="deleteObjectForm" id="deleteObjectForm" action="{% url delete_url_given %}">
             {% csrf_token %}
             <input type="hidden" name="id" id="deleteId" />
             <!-- Action Buttons -->
