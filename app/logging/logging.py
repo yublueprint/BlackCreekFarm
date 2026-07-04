@@ -72,7 +72,7 @@ class Logger:
         line_object = activityObject(the_activity, the_location, the_user, the_time)
         return line_object
 
-    def log(self, message):
+    def log(self, message=""):
         Logger.__rotate_if_needed(
             self.filename, self.max_bytes, self.first_backup_count
         )

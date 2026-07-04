@@ -2,7 +2,7 @@
 <div id="popupForm" class="hidden fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center">
     <div class="bg-white p-6 rounded shadow-md w-full max-w-3xl flex-1 max-h-[90vh] overflow-y-auto">
         <h3 class="text-xl font-bold mb-4">Add {{ stock_name|default:"Item" }}</h3>
-        <form method="post" id="addForm" action="{% url add_url_given %}">
+        <form method="post" name="addForm" id="addForm" action="{% url add_url_given %}">
             {% csrf_token %}
             {{ form_inside|safe }}
 
