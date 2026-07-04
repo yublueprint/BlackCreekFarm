@@ -1,4 +1,4 @@
-Django>=6.0.4
+Django>=5.2
 asgiref
 autoflake 
 black 
