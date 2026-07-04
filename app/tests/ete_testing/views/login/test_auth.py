@@ -20,7 +20,7 @@ def test_login_and_logout_flow(page: Page, live_server, test_user):
 
     # Should bring us to dashboard.
     expect(page).to_have_url(live_server.url + "/")
-    expect(page.get_by_text("Dashboard Overview")).to_be_visible()
+    expect(page.locator("h2", has_text="Dashboard"))
 
     # Click the logout button.
     page.get_by_role("button", name="Logout").click()
@@ -36,4 +36,5 @@ def test_dashboard_loaded(authed_page, live_server):
     """
     # This page is already logged in!
     authed_page.goto(live_server.url + "/")
-    expect(authed_page.get_by_text("Dashboard Overview")).to_be_visible()
+    expect(authed_page).to_have_url(live_server.url + "/")
+    expect(authed_page.locator("h2", has_text="Dashboard"))

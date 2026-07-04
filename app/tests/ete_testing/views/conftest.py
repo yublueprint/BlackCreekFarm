@@ -10,6 +10,13 @@ def mock_dashboard_logger(mocker):
     """
     return mocker.patch("app.backend.views.dashboard.dashboard.logger.log")
 
+@pytest.fixture(autouse=True)
+def mock_dashboard_logger(mocker):
+    """
+    Mocks the logger for error page.
+    """
+    return mocker.patch("app.backend.views.error_page.error_page.logger.log")
+
 
 @pytest.fixture(autouse=True)
 def mock_supplies_logger(mocker):
