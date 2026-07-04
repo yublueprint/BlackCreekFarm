@@ -3,14 +3,6 @@ import pytest
 pytestmark = pytest.mark.django_db
 
 
-@pytest.fixture(autouse=True)
-def mock_logger(mocker):
-    """
-    Mocks the logger for supplies.
-    """
-    return mocker.patch("app.backend.views.supplies.supplies.logger.log")
-
-
 @pytest.fixture
 def valid_supply_1_dict():
     return {
