@@ -44,6 +44,12 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Ensure Playwright browsers and system dependencies are installed
+        run: |
+          source venv/bin/activate
+          # Install the required browser binaries (Chromium, Firefox, WebKit)
+          playwright install --with-deps
+
       - name: Wait for Postgres
         run: |
           until pg_isready -h localhost -U user -d blackcreekfarm; do
