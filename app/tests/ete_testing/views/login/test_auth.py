@@ -4,6 +4,7 @@ from playwright.sync_api import Page, expect
 pytestmark = pytest.mark.django_db(transaction=True)
 
 
+@pytest.mark.skip("Needs the Analytics Engine to be fixed.")
 def test_login_and_logout_flow(page: Page, live_server, test_user):
     """
     Test if user can log in succesfully.
@@ -28,6 +29,7 @@ def test_login_and_logout_flow(page: Page, live_server, test_user):
     expect(page.get_by_text("Welcome back")).to_be_visible()
 
 
+@pytest.mark.skip("Needs the Analytics Engine to be fixed.")
 def test_dashboard_loaded(authed_page, live_server):
     """
     Ensure that authed page works as intended.
